@@ -1,0 +1,208 @@
+import json
+
+notebook = {
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "# 22AIE437 Medical Image Processing - Project Review 2 Upgrade\n",
+                "## Automated Retinal Blood Vessel Segmentation using CAR-UNet on the FIVES Benchmark\n",
+                "\n",
+                "**Authors / Project Group**: Medical Image Processing Team  \n",
+                "**Upgrade Research Paper**: Guo et al. (IEEE 2021 / arXiv:2004.03702) *\"Channel Attention Residual U-Net for Retinal Vessel Segmentation\"*  \n",
+                "**Dataset Reference**: Jin et al. (Nature Scientific Data, 2022) *\"FIVES: A Fundus Image Dataset for AI-based Vessel Segmentation\"*  \n",
+                "**Baseline Reference**: Ronneberger et al. (2015) *\"U-Net: Convolutional Networks for Biomedical Image Segmentation\"*  \n",
+                "\n",
+                "---\n",
+                "\n",
+                "### Key Review 2 Innovations & Methodology\n",
+                "1. **Dataset Scaling (DRIVE -> FIVES)**: Upgraded from 40 DRIVE images to 800 high-resolution FIVES images (20x scale) across Normal, AMD, Diabetic Retinopathy, and Glaucoma cohorts.\n",
+                "2. **Modified Efficient Channel Attention (MECA)**: Adaptive 1D convolution across channels without dimensionality reduction.\n",
+                "3. **Channel Attention Double Residual Blocks (CADRB)**: Deep identity residual learning embedded with channel attention.\n",
+                "4. **MECA Bridge Attention**: Recalibrates encoder skip connection features before decoder concatenation.\n",
+                "5. **Ronneberger Overlap-Tile Strategy**: Valid convolutions (padding=0) with 284x284 to 100x100 patch reconstruction."
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": ["## 1. Setup & Environment Verification"]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "import os\n",
+                "os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'\n",
+                "import sys\n",
+                "import glob\n",
+                "import json\n",
+                "import numpy as np\n",
+                "import pandas as pd\n",
+                "import matplotlib.pyplot as plt\n",
+                "from PIL import Image\n",
+                "import cv2\n",
+                "import torch\n",
+                "\n",
+                "sys.path.append(os.path.abspath('.'))\n",
+                "from src.preprocessing_fives import preprocess_image, extract_green_channel, apply_clahe, apply_noise_reduction, generate_fov_mask\n",
+                "from src.unet_model import UNet\n",
+                "from src.car_unet import CARUNet\n",
+                "from src.losses import CombinedBCEDiceLoss\n",
+                "from src.metrics import compute_fov_metrics\n",
+                "from src.utils import predict_full_image, save_prediction_figure\n",
+                "\n",
+                "device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\n",
+                "print('Using compute device:', device)\n",
+                "if torch.cuda.is_available():\n",
+                "    print('GPU:', torch.cuda.get_device_name(0))\n"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": ["## 2. Classical Preprocessing Pipeline Demonstration"]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "img_paths = sorted(glob.glob('data/FIVES_resized/train/images/*.png'))\n",
+                "mask_paths = sorted(glob.glob('data/FIVES_resized/train/masks/*.png'))\n",
+                "\n",
+                "sample_idx = 0\n",
+                "raw_bgr = cv2.imread(img_paths[sample_idx])\n",
+                "raw_rgb = cv2.cvtColor(raw_bgr, cv2.COLOR_BGR2RGB)\n",
+                "green = extract_green_channel(raw_rgb)\n",
+                "clahe = apply_clahe(green, clip_limit=2.0, tile_grid_size=(8, 8))\n",
+                "denoised = apply_noise_reduction(clahe, method='bilateral')\n",
+                "prep = preprocess_image(raw_rgb)\n",
+                "fov = generate_fov_mask(raw_rgb)\n",
+                "gt_mask = np.array(Image.open(mask_paths[sample_idx]))\n",
+                "\n",
+                "fig, axes = plt.subplots(1, 6, figsize=(22, 4))\n",
+                "axes[0].imshow(raw_rgb); axes[0].set_title('1. Raw RGB'); axes[0].axis('off')\n",
+                "axes[1].imshow(green, cmap='gray'); axes[1].set_title('2. Green Channel'); axes[1].axis('off')\n",
+                "axes[2].imshow(clahe, cmap='gray'); axes[2].set_title('3. CLAHE Enhanced'); axes[2].axis('off')\n",
+                "axes[3].imshow(denoised, cmap='gray'); axes[3].set_title('4. Bilateral Filter'); axes[3].axis('off')\n",
+                "axes[4].imshow(prep, cmap='gray'); axes[4].set_title('5. Normalized [0, 1]'); axes[4].axis('off')\n",
+                "axes[5].imshow(gt_mask, cmap='gray'); axes[5].set_title('6. Ground Truth'); axes[5].axis('off')\n",
+                "plt.tight_layout()\n",
+                "plt.show()\n"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": ["## 3. CAR-UNet Model Architecture Verification"]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "model_car = CARUNet(in_channels=1, out_channels=1, base_filters=64).to(device)\n",
+                "total_params = sum(p.numel() for p in model_car.parameters())\n",
+                "trainable_params = sum(p.numel() for p in model_car.parameters() if p.requires_grad)\n",
+                "\n",
+                "print('CAR-UNet Architecture:')\n",
+                "print(f'  Total Parameters:     {total_params:,}')\n",
+                "print(f'  Trainable Parameters: {trainable_params:,}')\n",
+                "\n",
+                "dummy_in = torch.randn(2, 1, 284, 284, device=device)\n",
+                "dummy_out = model_car(dummy_in)\n",
+                "print('Input shape: ', dummy_in.shape)\n",
+                "print('Output shape:', dummy_out.shape, '(Expected: [2, 1, 100, 100])')\n"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": ["## 4. Load Trained Model Checkpoints & Run Test Inference"]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "# 1. Load U-Net on FIVES\n",
+                "unet_model = UNet(in_channels=1, out_channels=1, base_filters=64).to(device)\n",
+                "unet_ckpt = torch.load('outputs/saved_models/unet_fives.pt', map_location=device)\n",
+                "unet_model.load_state_dict(unet_ckpt['model_state_dict'])\n",
+                "unet_model.eval()\n",
+                "print('Loaded Scaled U-Net (FIVES) Checkpoint')\n",
+                "\n",
+                "# 2. Load CAR-UNet on FIVES\n",
+                "car_model = CARUNet(in_channels=1, out_channels=1, base_filters=64).to(device)\n",
+                "car_ckpt = torch.load('outputs/saved_models/car_unet_fives.pt', map_location=device)\n",
+                "car_model.load_state_dict(car_ckpt['model_state_dict'])\n",
+                "car_model.eval()\n",
+                "print('Loaded CAR-UNet (FIVES) Checkpoint')\n"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": ["## 5. Consolidated 3-Way Benchmark Comparison Table"]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "df_comp = pd.read_csv('results/comparison_table.csv')\n",
+                "print(df_comp.to_string(index=False))\n"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": ["## 6. Visual 5-Column Side-by-Side Demonstration"]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "fig_img = Image.open('outputs/final_comparison_figure.png')\n",
+                "plt.figure(figsize=(24, 14))\n",
+                "plt.imshow(fig_img)\n",
+                "plt.axis('off')\n",
+                "plt.title('3-Way Visual Benchmark Comparison (Raw Fundus -> GT -> U-Net DRIVE -> U-Net FIVES -> CAR-UNet FIVES)', fontsize=14, fontweight='bold')\n",
+                "plt.show()\n"
+            ]
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "codemirror_mode": {"name": "ipython", "version": 3},
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbformat": 4,
+            "nbformat_minor": 5,
+            "version": "3.10.0"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 5
+}
+
+with open("Review2_CAR_UNet_FIVES.ipynb", "w", encoding="utf-8") as f:
+    json.dump(notebook, f, indent=2)
+
+print("Generated Review2_CAR_UNet_FIVES.ipynb successfully!")
