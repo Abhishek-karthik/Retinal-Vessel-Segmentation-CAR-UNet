@@ -12,46 +12,54 @@ import cv2
 
 from src.preprocessing_fives import preprocess_image, apply_elastic_transform, generate_fov_mask
 
-def load_fives_image_pairs(data_dir: str, mode: str = 'train', val_ratio: float = 0.2):
+DISEASE_NAMES = {"A": "AMD", "D": "DR", "G": "Glaucoma", "N": "Normal"}
+
+def get_disease_code(path: str) -> str:
+    """
+    Returns the FIVES disease code from a filename such as '12_A.png' -> 'A'
+    (A = AMD, D = Diabetic Retinopathy, G = Glaucoma, N = Normal).
+    """
+    return os.path.splitext(os.path.basename(path))[0].split("_")[-1][0].upper()
+
+def _sorted_pairs(img_dir: str, mask_dir: str):
+    img_paths = sorted(glob.glob(os.path.join(img_dir, "*.png")))
+    mask_paths = sorted(glob.glob(os.path.join(mask_dir, "*.png")))
+    assert len(img_paths) == len(mask_paths), f"Mismatch: {len(img_paths)} imgs vs {len(mask_paths)} masks"
+    for img_p, mask_p in zip(img_paths, mask_paths):
+        assert os.path.basename(img_p) == os.path.basename(mask_p), f"Unpaired files: {img_p} vs {mask_p}"
+    return list(zip(img_paths, mask_paths))
+
+def load_fives_image_pairs(data_dir: str, mode: str = 'train', val_ratio: float = 0.2, split_seed: int = 42):
     """
     Loads image and ground truth mask paths from FIVES dataset (resized to 512x512).
-    Performs image-level 80/20 train/val split on the 600 training images to prevent data leakage.
-    
+    Performs an image-level, disease-stratified train/val split on the 600 training images
+    (prevents data leakage and keeps AMD / DR / Glaucoma / Normal equally represented in validation).
+
     Args:
         data_dir: Path to FIVES or FIVES_resized directory (e.g. data/FIVES_resized)
         mode: 'train', 'val', or 'test'
-        val_ratio: Fraction of training images for validation (default: 0.2 -> 480 train / 120 val)
-        
+        val_ratio: Fraction of each disease group used for validation (default: 0.2 -> 480 train / 120 val, 30 val per disease)
+        split_seed: Seed for the train/val split. Kept fixed so every model and seed sees the same split.
+
     Returns:
         list of tuples: (image_path, mask_path)
     """
     if mode in ['train', 'val']:
-        img_dir = os.path.join(data_dir, "train", "images")
-        mask_dir = os.path.join(data_dir, "train", "masks")
-        
-        img_paths = sorted(glob.glob(os.path.join(img_dir, "*.png")))
-        mask_paths = sorted(glob.glob(os.path.join(mask_dir, "*.png")))
-        
-        assert len(img_paths) == len(mask_paths), f"Mismatch: {len(img_paths)} imgs vs {len(mask_paths)} masks"
-        
-        val_count = int(len(img_paths) * val_ratio) # 120 val, 480 train
-        if mode == 'train':
-            img_paths = img_paths[:-val_count]
-            mask_paths = mask_paths[:-val_count]
-        else: # 'val'
-            img_paths = img_paths[-val_count:]
-            mask_paths = mask_paths[-val_count:]
-            
-        return list(zip(img_paths, mask_paths))
-        
+        pairs = _sorted_pairs(os.path.join(data_dir, "train", "images"), os.path.join(data_dir, "train", "masks"))
+
+        rng = np.random.RandomState(split_seed)
+        train_pairs, val_pairs = [], []
+        for code in sorted(set(get_disease_code(p[0]) for p in pairs)):
+            group = [p for p in pairs if get_disease_code(p[0]) == code]
+            order = rng.permutation(len(group))
+            val_count = int(round(len(group) * val_ratio))
+            val_pairs += [group[i] for i in order[:val_count]]
+            train_pairs += [group[i] for i in order[val_count:]]
+
+        return sorted(train_pairs) if mode == 'train' else sorted(val_pairs)
+
     elif mode == 'test':
-        img_dir = os.path.join(data_dir, "test", "images")
-        mask_dir = os.path.join(data_dir, "test", "masks")
-        
-        img_paths = sorted(glob.glob(os.path.join(img_dir, "*.png")))
-        mask_paths = sorted(glob.glob(os.path.join(mask_dir, "*.png")))
-        
-        return list(zip(img_paths, mask_paths))
+        return _sorted_pairs(os.path.join(data_dir, "test", "images"), os.path.join(data_dir, "test", "masks"))
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
@@ -105,36 +113,44 @@ class FIVESPatchDataset(Dataset):
     """
     PyTorch Dataset serving retinal vessel image & ground truth patches for FIVES dataset.
     Extracts valid convolution patches (284x284 -> 100x100) with data augmentation.
+    Preprocessed images are cached in memory; call resample() at the start of every epoch
+    to draw a fresh set of random patch locations.
     """
-    def __init__(self, data_dir: str, mode: str = 'train', in_patch_size: int = 284, patches_per_img: int = 10, augment: bool = True):
+    def __init__(self, data_dir: str, mode: str = 'train', in_patch_size: int = 284, patches_per_img: int = 10, augment: bool = True, image_pairs=None):
         super().__init__()
         self.mode = mode
         self.in_patch_size = in_patch_size
         self.out_patch_size = in_patch_size - 184
+        self.patches_per_img = patches_per_img
         self.augment = augment
-        
-        image_pairs = load_fives_image_pairs(data_dir, mode=mode)
-        
-        all_img_patches = []
-        all_mask_patches = []
-        
+
+        if image_pairs is None:
+            image_pairs = load_fives_image_pairs(data_dir, mode=mode)
+
+        self.prep_imgs, self.gt_masks, self.fov_masks = [], [], []
         print(f"Loading {mode.upper()} dataset ({len(image_pairs)} images, {patches_per_img} patches/image)...")
         for img_path, mask_path in image_pairs:
             raw_rgb = cv2.imread(img_path)
             raw_rgb = cv2.cvtColor(raw_rgb, cv2.COLOR_BGR2RGB)
-            prep_img = preprocess_image(raw_rgb)
-            
+            self.prep_imgs.append(preprocess_image(raw_rgb))
+
             raw_mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-            manual_gt = (raw_mask > 128).astype(np.float32)
-            fov_mask = generate_fov_mask(raw_rgb)
-            
-            imgs, masks = extract_random_patches(prep_img, manual_gt, fov_mask, in_patch_size=in_patch_size, num_patches=patches_per_img)
+            self.gt_masks.append((raw_mask > 128).astype(np.float32))
+            self.fov_masks.append(generate_fov_mask(raw_rgb))
+
+        self.resample()
+
+    def resample(self):
+        """Draws a new random set of FOV-centred patches from every cached image."""
+        all_img_patches = []
+        all_mask_patches = []
+        for prep_img, manual_gt, fov_mask in zip(self.prep_imgs, self.gt_masks, self.fov_masks):
+            imgs, masks = extract_random_patches(prep_img, manual_gt, fov_mask, in_patch_size=self.in_patch_size, num_patches=self.patches_per_img)
             all_img_patches.append(imgs)
             all_mask_patches.append(masks)
-            
+
         self.images = np.concatenate(all_img_patches, axis=0) # Shape: (N, in_patch_size, in_patch_size)
         self.masks = np.concatenate(all_mask_patches, axis=0)   # Shape: (N, out_patch_size, out_patch_size)
-        print(f"[{mode.upper()}] Extracted {len(self.images)} patches total.")
 
     def __len__(self):
         return len(self.images)

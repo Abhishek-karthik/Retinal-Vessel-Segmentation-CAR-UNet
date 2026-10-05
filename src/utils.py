@@ -3,7 +3,7 @@ import torch
 import cv2
 import matplotlib.pyplot as plt
 
-def predict_full_image(model: torch.nn.Module, prep_img: np.ndarray, fov_mask: np.ndarray, in_patch_size: int = 572, device: torch.device = torch.device('cpu')) -> np.ndarray:
+def predict_full_image(model: torch.nn.Module, prep_img: np.ndarray, fov_mask: np.ndarray, in_patch_size: int = 572, device: torch.device = torch.device('cpu'), batch_size: int = 4) -> np.ndarray:
     """
     Performs full image vessel segmentation inference using Ronneberger et al. (2015) Overlap-Tile Strategy.
     Mirror-pads the image border by margin (92 px), slides input tile window of size 572x572, and places predicted
@@ -35,7 +35,6 @@ def predict_full_image(model: torch.nn.Module, prep_img: np.ndarray, fov_mask: n
             patch_list.append(p)
             coord_list.append((y, x))
             
-    batch_size = 4
     patch_tensors = torch.from_numpy(np.array(patch_list)).unsqueeze(1).float() # Shape: (N, 1, 572, 572)
     
     predictions = []

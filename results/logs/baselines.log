@@ -1,0 +1,542 @@
+start 2026-10-05 15:49:12
+
+[run] unet_seed0
+======================================================================
+U-Net on FIVES | run: unet_seed0 | device: cuda
+{
+  "model": "unet",
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 31,036,481
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  258.1s | lr 1.00e-03 | train loss 0.2971 | val Dice 0.7373 Sens 0.6933 Spec 0.9819  <- best
+Epoch [02/30]  241.6s | lr 9.97e-04 | train loss 0.2053 | val Dice 0.7684 Sens 0.7103 Spec 0.9858  <- best
+Epoch [03/30]  241.8s | lr 9.89e-04 | train loss 0.1840 | val Dice 0.8079 Sens 0.7592 Spec 0.9875  <- best
+Epoch [04/30]  228.3s | lr 9.76e-04 | train loss 0.1750 | val Dice 0.7958 Sens 0.7328 Spec 0.9890
+Epoch [05/30]  161.6s | lr 9.57e-04 | train loss 0.1683 | val Dice 0.8214 Sens 0.7962 Spec 0.9850  <- best
+Epoch [06/30]  142.1s | lr 9.33e-04 | train loss 0.1595 | val Dice 0.8275 Sens 0.7949 Spec 0.9867  <- best
+Epoch [07/30]  141.6s | lr 9.05e-04 | train loss 0.1560 | val Dice 0.8302 Sens 0.8102 Spec 0.9851  <- best
+Epoch [08/30]  141.5s | lr 8.72e-04 | train loss 0.1540 | val Dice 0.8210 Sens 0.8152 Spec 0.9819
+Epoch [09/30]  140.4s | lr 8.35e-04 | train loss 0.1498 | val Dice 0.8479 Sens 0.8264 Spec 0.9869  <- best
+Epoch [10/30]  144.0s | lr 7.94e-04 | train loss 0.1481 | val Dice 0.8344 Sens 0.8432 Spec 0.9808
+Epoch [11/30]  144.5s | lr 7.50e-04 | train loss 0.1463 | val Dice 0.8351 Sens 0.8116 Spec 0.9859
+Epoch [12/30]  143.5s | lr 7.03e-04 | train loss 0.1437 | val Dice 0.8312 Sens 0.8460 Spec 0.9794
+Epoch [13/30]  144.1s | lr 6.55e-04 | train loss 0.1418 | val Dice 0.8538 Sens 0.8542 Spec 0.9839  <- best
+Epoch [14/30]  143.1s | lr 6.04e-04 | train loss 0.1395 | val Dice 0.8443 Sens 0.8369 Spec 0.9843
+Epoch [15/30]  142.6s | lr 5.52e-04 | train loss 0.1402 | val Dice 0.8518 Sens 0.8572 Spec 0.9832
+Epoch [16/30]  141.0s | lr 5.00e-04 | train loss 0.1392 | val Dice 0.8479 Sens 0.8354 Spec 0.9853
+Epoch [17/30]  140.0s | lr 4.48e-04 | train loss 0.1365 | val Dice 0.8592 Sens 0.8691 Spec 0.9839  <- best
+Epoch [18/30]  141.0s | lr 3.96e-04 | train loss 0.1362 | val Dice 0.8591 Sens 0.8519 Spec 0.9859
+Epoch [19/30]  141.5s | lr 3.45e-04 | train loss 0.1362 | val Dice 0.8627 Sens 0.8682 Spec 0.9844  <- best
+Epoch [20/30]  142.6s | lr 2.97e-04 | train loss 0.1319 | val Dice 0.8487 Sens 0.8467 Spec 0.9841
+Epoch [21/30]  144.1s | lr 2.50e-04 | train loss 0.1345 | val Dice 0.8551 Sens 0.8442 Spec 0.9860
+Epoch [22/30]  143.7s | lr 2.06e-04 | train loss 0.1332 | val Dice 0.8625 Sens 0.8697 Spec 0.9841
+Epoch [23/30]  141.2s | lr 1.65e-04 | train loss 0.1306 | val Dice 0.8510 Sens 0.8517 Spec 0.9838
+Epoch [24/30]  140.2s | lr 1.28e-04 | train loss 0.1306 | val Dice 0.8631 Sens 0.8612 Spec 0.9855  <- best
+Epoch [25/30]  141.3s | lr 9.55e-05 | train loss 0.1304 | val Dice 0.8625 Sens 0.8647 Spec 0.9849
+Epoch [26/30]  139.6s | lr 6.70e-05 | train loss 0.1304 | val Dice 0.8601 Sens 0.8576 Spec 0.9853
+Epoch [27/30]  141.1s | lr 4.32e-05 | train loss 0.1299 | val Dice 0.8579 Sens 0.8643 Spec 0.9838
+Epoch [28/30]  139.7s | lr 2.45e-05 | train loss 0.1293 | val Dice 0.8600 Sens 0.8522 Spec 0.9860
+Epoch [29/30]  140.5s | lr 1.09e-05 | train loss 0.1279 | val Dice 0.8615 Sens 0.8603 Spec 0.9853
+Epoch [30/30]  140.1s | lr 2.74e-06 | train loss 0.1279 | val Dice 0.8627 Sens 0.8657 Spec 0.9849
+Training finished in 77.9 min. Best val Dice 0.8631 at epoch 24.
+Loaded best checkpoint: epoch 24, val Dice 0.8631
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- U-Net (seed 0) on 200 FIVES test images ---
+    Accuracy: 0.9718 +/- 0.0094
+ Sensitivity: 0.8166 +/- 0.1246
+ Specificity: 0.9856 +/- 0.0063
+   Precision: 0.8583 +/- 0.0361
+     F1_Dice: 0.8305 +/- 0.0993
+         IoU: 0.7190 +/- 0.1067
+     AUC_ROC: 0.9846 +/- 0.0211
+      AUC_PR: 0.9160 +/- 0.0902
+Per-disease Dice: AMD 0.8601, DR 0.8534, Glaucoma 0.7858, Normal 0.8229
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\unet_seed0
+
+[run] car_unet_seed0
+======================================================================
+CAR-UNet on FIVES | run: car_unet_seed0 | device: cuda
+{
+  "model": "car_unet",
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,435,132
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  198.7s | lr 1.00e-03 | train loss 0.2760 | val Dice 0.7186 Sens 0.6390 Spec 0.9869  <- best
+Epoch [02/30]  198.7s | lr 9.97e-04 | train loss 0.1954 | val Dice 0.7725 Sens 0.7027 Spec 0.9883  <- best
+Epoch [03/30]  194.1s | lr 9.89e-04 | train loss 0.1759 | val Dice 0.8017 Sens 0.7583 Spec 0.9859  <- best
+Epoch [04/30]  199.8s | lr 9.76e-04 | train loss 0.1649 | val Dice 0.8170 Sens 0.7688 Spec 0.9881  <- best
+Epoch [05/30]  191.0s | lr 9.57e-04 | train loss 0.1577 | val Dice 0.8306 Sens 0.8071 Spec 0.9853  <- best
+Epoch [06/30]  191.8s | lr 9.33e-04 | train loss 0.1525 | val Dice 0.8238 Sens 0.7820 Spec 0.9877
+Epoch [07/30]  191.0s | lr 9.05e-04 | train loss 0.1498 | val Dice 0.8387 Sens 0.8196 Spec 0.9856  <- best
+Epoch [08/30]  192.4s | lr 8.72e-04 | train loss 0.1483 | val Dice 0.8339 Sens 0.8286 Spec 0.9829
+Epoch [09/30]  189.3s | lr 8.35e-04 | train loss 0.1454 | val Dice 0.8494 Sens 0.8063 Spec 0.9903  <- best
+Epoch [10/30]  190.1s | lr 7.94e-04 | train loss 0.1415 | val Dice 0.8526 Sens 0.8562 Spec 0.9837  <- best
+Epoch [11/30]  190.4s | lr 7.50e-04 | train loss 0.1426 | val Dice 0.8313 Sens 0.8235 Spec 0.9830
+Epoch [12/30]  192.2s | lr 7.03e-04 | train loss 0.1395 | val Dice 0.8421 Sens 0.8038 Spec 0.9889
+Epoch [13/30]  190.2s | lr 6.55e-04 | train loss 0.1382 | val Dice 0.8433 Sens 0.8679 Spec 0.9794
+Epoch [14/30]  189.8s | lr 6.04e-04 | train loss 0.1364 | val Dice 0.8482 Sens 0.8624 Spec 0.9820
+Epoch [15/30]  194.1s | lr 5.52e-04 | train loss 0.1365 | val Dice 0.8427 Sens 0.8294 Spec 0.9850
+Epoch [16/30]  202.2s | lr 5.00e-04 | train loss 0.1340 | val Dice 0.8482 Sens 0.8477 Spec 0.9839
+Epoch [17/30]  192.9s | lr 4.48e-04 | train loss 0.1349 | val Dice 0.8473 Sens 0.8443 Spec 0.9840
+Epoch [18/30]  192.1s | lr 3.96e-04 | train loss 0.1331 | val Dice 0.8609 Sens 0.8562 Spec 0.9859  <- best
+Epoch [19/30]  189.6s | lr 3.45e-04 | train loss 0.1317 | val Dice 0.8580 Sens 0.8515 Spec 0.9856
+Epoch [20/30]  190.3s | lr 2.97e-04 | train loss 0.1291 | val Dice 0.8540 Sens 0.8588 Spec 0.9836
+Epoch [21/30]  190.3s | lr 2.50e-04 | train loss 0.1298 | val Dice 0.8603 Sens 0.8684 Spec 0.9842
+Epoch [22/30]  191.2s | lr 2.06e-04 | train loss 0.1292 | val Dice 0.8505 Sens 0.8660 Spec 0.9818
+Epoch [23/30]  191.8s | lr 1.65e-04 | train loss 0.1267 | val Dice 0.8516 Sens 0.8531 Spec 0.9838
+Epoch [24/30]  192.0s | lr 1.28e-04 | train loss 0.1267 | val Dice 0.8642 Sens 0.8750 Spec 0.9841  <- best
+Epoch [25/30]  192.4s | lr 9.55e-05 | train loss 0.1264 | val Dice 0.8661 Sens 0.8674 Spec 0.9856  <- best
+Epoch [26/30]  191.6s | lr 6.70e-05 | train loss 0.1268 | val Dice 0.8655 Sens 0.8605 Spec 0.9864
+Epoch [27/30]  192.7s | lr 4.32e-05 | train loss 0.1255 | val Dice 0.8604 Sens 0.8665 Spec 0.9844
+Epoch [28/30]  191.9s | lr 2.45e-05 | train loss 0.1253 | val Dice 0.8681 Sens 0.8763 Spec 0.9849  <- best
+Epoch [29/30]  191.6s | lr 1.09e-05 | train loss 0.1247 | val Dice 0.8663 Sens 0.8710 Spec 0.9852
+Epoch [30/30]  192.6s | lr 2.74e-06 | train loss 0.1245 | val Dice 0.8647 Sens 0.8659 Spec 0.9855
+Training finished in 96.3 min. Best val Dice 0.8681 at epoch 28.
+Loaded best checkpoint: epoch 28, val Dice 0.8681
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet (seed 0) on 200 FIVES test images ---
+    Accuracy: 0.9729 +/- 0.0085
+ Sensitivity: 0.8411 +/- 0.1084
+ Specificity: 0.9847 +/- 0.0058
+   Precision: 0.8493 +/- 0.0416
+     F1_Dice: 0.8411 +/- 0.0899
+         IoU: 0.7331 +/- 0.0969
+     AUC_ROC: 0.9871 +/- 0.0169
+      AUC_PR: 0.9233 +/- 0.0866
+Per-disease Dice: AMD 0.8650, DR 0.8590, Glaucoma 0.8008, Normal 0.8397
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_seed0
+
+[run] unet_seed1
+======================================================================
+U-Net on FIVES | run: unet_seed1 | device: cuda
+{
+  "model": "unet",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 31,036,481
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  196.3s | lr 1.00e-03 | train loss 0.3047 | val Dice 0.7368 Sens 0.7148 Spec 0.9775  <- best
+Epoch [02/30]  197.9s | lr 9.97e-04 | train loss 0.2159 | val Dice 0.7747 Sens 0.7900 Spec 0.9738  <- best
+Epoch [03/30]  202.2s | lr 9.89e-04 | train loss 0.1856 | val Dice 0.8025 Sens 0.8125 Spec 0.9777  <- best
+Epoch [04/30]  161.0s | lr 9.76e-04 | train loss 0.1752 | val Dice 0.7442 Sens 0.6618 Spec 0.9888
+Epoch [05/30]  143.2s | lr 9.57e-04 | train loss 0.1677 | val Dice 0.7633 Sens 0.8685 Spec 0.9576
+Epoch [06/30]  142.3s | lr 9.33e-04 | train loss 0.1617 | val Dice 0.8147 Sens 0.8031 Spec 0.9822  <- best
+Epoch [07/30]  144.9s | lr 9.05e-04 | train loss 0.1570 | val Dice 0.8127 Sens 0.8193 Spec 0.9789
+Epoch [08/30]  143.6s | lr 8.72e-04 | train loss 0.1551 | val Dice 0.8241 Sens 0.7937 Spec 0.9861  <- best
+Epoch [09/30]  142.8s | lr 8.35e-04 | train loss 0.1517 | val Dice 0.8510 Sens 0.8204 Spec 0.9885  <- best
+Epoch [10/30]  142.1s | lr 7.94e-04 | train loss 0.1461 | val Dice 0.8509 Sens 0.8509 Spec 0.9842
+Epoch [11/30]  142.1s | lr 7.50e-04 | train loss 0.1456 | val Dice 0.7921 Sens 0.7197 Spec 0.9905
+Epoch [12/30]  143.5s | lr 7.03e-04 | train loss 0.1459 | val Dice 0.8315 Sens 0.8065 Spec 0.9856
+Epoch [13/30]  142.8s | lr 6.55e-04 | train loss 0.1417 | val Dice 0.8663 Sens 0.8674 Spec 0.9854  <- best
+Epoch [14/30]  142.5s | lr 6.04e-04 | train loss 0.1409 | val Dice 0.8282 Sens 0.8236 Spec 0.9820
+Epoch [15/30]  140.7s | lr 5.52e-04 | train loss 0.1392 | val Dice 0.8490 Sens 0.8277 Spec 0.9868
+Epoch [16/30]  138.8s | lr 5.00e-04 | train loss 0.1397 | val Dice 0.8421 Sens 0.8338 Spec 0.9841
+Epoch [17/30]  138.6s | lr 4.48e-04 | train loss 0.1365 | val Dice 0.8577 Sens 0.8601 Spec 0.9844
+Epoch [18/30]  139.7s | lr 3.96e-04 | train loss 0.1371 | val Dice 0.8487 Sens 0.8357 Spec 0.9856
+Epoch [19/30]  139.8s | lr 3.45e-04 | train loss 0.1358 | val Dice 0.8559 Sens 0.8425 Spec 0.9864
+Epoch [20/30]  138.3s | lr 2.97e-04 | train loss 0.1311 | val Dice 0.8463 Sens 0.8458 Spec 0.9834
+Epoch [21/30]  139.4s | lr 2.50e-04 | train loss 0.1327 | val Dice 0.8575 Sens 0.8562 Spec 0.9847
+Epoch [22/30]  138.6s | lr 2.06e-04 | train loss 0.1316 | val Dice 0.8610 Sens 0.8665 Spec 0.9844
+Epoch [23/30]  139.4s | lr 1.65e-04 | train loss 0.1293 | val Dice 0.8567 Sens 0.8517 Spec 0.9853
+Epoch [24/30]  138.1s | lr 1.28e-04 | train loss 0.1302 | val Dice 0.8594 Sens 0.8585 Spec 0.9849
+Epoch [25/30]  134.7s | lr 9.55e-05 | train loss 0.1310 | val Dice 0.8551 Sens 0.8493 Spec 0.9852
+Epoch [26/30]  140.5s | lr 6.70e-05 | train loss 0.1295 | val Dice 0.8515 Sens 0.8512 Spec 0.9841
+Epoch [27/30]  141.9s | lr 4.32e-05 | train loss 0.1277 | val Dice 0.8622 Sens 0.8588 Spec 0.9856
+Epoch [28/30]  143.3s | lr 2.45e-05 | train loss 0.1290 | val Dice 0.8640 Sens 0.8666 Spec 0.9851
+Epoch [29/30]  141.9s | lr 1.09e-05 | train loss 0.1282 | val Dice 0.8598 Sens 0.8575 Spec 0.9852
+Epoch [30/30]  142.7s | lr 2.74e-06 | train loss 0.1309 | val Dice 0.8609 Sens 0.8612 Spec 0.9850
+Training finished in 73.7 min. Best val Dice 0.8663 at epoch 13.
+Loaded best checkpoint: epoch 13, val Dice 0.8663
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- U-Net (seed 1) on 200 FIVES test images ---
+    Accuracy: 0.9723 +/- 0.0094
+ Sensitivity: 0.8321 +/- 0.1220
+ Specificity: 0.9843 +/- 0.0080
+   Precision: 0.8522 +/- 0.0456
+     F1_Dice: 0.8356 +/- 0.0968
+         IoU: 0.7262 +/- 0.1067
+     AUC_ROC: 0.9840 +/- 0.0225
+      AUC_PR: 0.9161 +/- 0.0917
+Per-disease Dice: AMD 0.8641, DR 0.8550, Glaucoma 0.7894, Normal 0.8339
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\unet_seed1
+
+[run] car_unet_seed1
+======================================================================
+CAR-UNet on FIVES | run: car_unet_seed1 | device: cuda
+{
+  "model": "car_unet",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,435,132
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  199.5s | lr 1.00e-03 | train loss 0.2678 | val Dice 0.7755 Sens 0.7285 Spec 0.9846  <- best
+Epoch [02/30]  192.2s | lr 9.97e-04 | train loss 0.1850 | val Dice 0.8050 Sens 0.7907 Spec 0.9819  <- best
+Epoch [03/30]  191.1s | lr 9.89e-04 | train loss 0.1631 | val Dice 0.8288 Sens 0.8244 Spec 0.9823  <- best
+Epoch [04/30]  191.1s | lr 9.76e-04 | train loss 0.1593 | val Dice 0.8285 Sens 0.7971 Spec 0.9868
+Epoch [05/30]  191.9s | lr 9.57e-04 | train loss 0.1544 | val Dice 0.8301 Sens 0.7872 Spec 0.9887  <- best
+Epoch [06/30]  191.4s | lr 9.33e-04 | train loss 0.1527 | val Dice 0.8256 Sens 0.7899 Spec 0.9869
+Epoch [07/30]  192.9s | lr 9.05e-04 | train loss 0.1509 | val Dice 0.7672 Sens 0.6734 Spec 0.9924
+Epoch [08/30]  191.4s | lr 8.72e-04 | train loss 0.1510 | val Dice 0.8354 Sens 0.8407 Spec 0.9814  <- best
+Epoch [09/30]  190.6s | lr 8.35e-04 | train loss 0.1456 | val Dice 0.8515 Sens 0.8393 Spec 0.9860  <- best
+Epoch [10/30]  190.1s | lr 7.94e-04 | train loss 0.1446 | val Dice 0.8367 Sens 0.8311 Spec 0.9834
+Epoch [11/30]  190.7s | lr 7.50e-04 | train loss 0.1434 | val Dice 0.8442 Sens 0.8823 Spec 0.9779
+Epoch [12/30]  191.1s | lr 7.03e-04 | train loss 0.1417 | val Dice 0.8325 Sens 0.8471 Spec 0.9799
+Epoch [13/30]  171.8s | lr 6.55e-04 | train loss 0.1396 | val Dice 0.8679 Sens 0.8795 Spec 0.9845  <- best
+Epoch [14/30]  169.2s | lr 6.04e-04 | train loss 0.1403 | val Dice 0.8436 Sens 0.8471 Spec 0.9826
+Epoch [15/30]  168.5s | lr 5.52e-04 | train loss 0.1373 | val Dice 0.8427 Sens 0.8484 Spec 0.9825
+Epoch [16/30]  168.6s | lr 5.00e-04 | train loss 0.1382 | val Dice 0.8634 Sens 0.8378 Spec 0.9890
+Epoch [17/30]  169.0s | lr 4.48e-04 | train loss 0.1337 | val Dice 0.8483 Sens 0.8466 Spec 0.9841
+Epoch [18/30]  169.5s | lr 3.96e-04 | train loss 0.1357 | val Dice 0.8573 Sens 0.8407 Spec 0.9872
+Epoch [19/30]  169.2s | lr 3.45e-04 | train loss 0.1336 | val Dice 0.8310 Sens 0.8019 Spec 0.9863
+Epoch [20/30]  168.2s | lr 2.97e-04 | train loss 0.1305 | val Dice 0.8588 Sens 0.8539 Spec 0.9857
+Epoch [21/30]  169.3s | lr 2.50e-04 | train loss 0.1311 | val Dice 0.8563 Sens 0.8525 Spec 0.9851
+Epoch [22/30]  169.4s | lr 2.06e-04 | train loss 0.1307 | val Dice 0.8499 Sens 0.8473 Spec 0.9843
+Epoch [23/30]  169.6s | lr 1.65e-04 | train loss 0.1287 | val Dice 0.8570 Sens 0.8582 Spec 0.9846
+Epoch [24/30]  168.2s | lr 1.28e-04 | train loss 0.1281 | val Dice 0.8597 Sens 0.8543 Spec 0.9858
+Epoch [25/30]  169.1s | lr 9.55e-05 | train loss 0.1292 | val Dice 0.8611 Sens 0.8641 Spec 0.9850
+Epoch [26/30]  168.7s | lr 6.70e-05 | train loss 0.1288 | val Dice 0.8538 Sens 0.8599 Spec 0.9836
+Epoch [27/30]  168.4s | lr 4.32e-05 | train loss 0.1266 | val Dice 0.8597 Sens 0.8594 Spec 0.9852
+Epoch [28/30]  169.3s | lr 2.45e-05 | train loss 0.1275 | val Dice 0.8633 Sens 0.8664 Spec 0.9851
+Epoch [29/30]  170.3s | lr 1.09e-05 | train loss 0.1273 | val Dice 0.8618 Sens 0.8642 Spec 0.9851
+Epoch [30/30]  168.8s | lr 2.74e-06 | train loss 0.1288 | val Dice 0.8627 Sens 0.8620 Spec 0.9856
+Training finished in 89.2 min. Best val Dice 0.8679 at epoch 13.
+Loaded best checkpoint: epoch 13, val Dice 0.8679
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet (seed 1) on 200 FIVES test images ---
+    Accuracy: 0.9721 +/- 0.0091
+ Sensitivity: 0.8352 +/- 0.1207
+ Specificity: 0.9843 +/- 0.0061
+   Precision: 0.8448 +/- 0.0494
+     F1_Dice: 0.8349 +/- 0.0943
+         IoU: 0.7248 +/- 0.1054
+     AUC_ROC: 0.9845 +/- 0.0202
+      AUC_PR: 0.9151 +/- 0.0934
+Per-disease Dice: AMD 0.8620, DR 0.8538, Glaucoma 0.7948, Normal 0.8288
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_seed1
+
+[run] unet_seed2
+======================================================================
+U-Net on FIVES | run: unet_seed2 | device: cuda
+{
+  "model": "unet",
+  "seed": 2,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 31,036,481
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  126.4s | lr 1.00e-03 | train loss 0.2862 | val Dice 0.7723 Sens 0.7497 Spec 0.9804  <- best
+Epoch [02/30]  120.0s | lr 9.97e-04 | train loss 0.1901 | val Dice 0.7712 Sens 0.6984 Spec 0.9886
+Epoch [03/30]  119.2s | lr 9.89e-04 | train loss 0.1751 | val Dice 0.8102 Sens 0.8197 Spec 0.9781  <- best
+Epoch [04/30]  119.6s | lr 9.76e-04 | train loss 0.1653 | val Dice 0.7897 Sens 0.8253 Spec 0.9722
+Epoch [05/30]  119.9s | lr 9.57e-04 | train loss 0.1600 | val Dice 0.8166 Sens 0.7593 Spec 0.9896  <- best
+Epoch [06/30]  126.0s | lr 9.33e-04 | train loss 0.1565 | val Dice 0.8305 Sens 0.7994 Spec 0.9866  <- best
+Epoch [07/30]  120.3s | lr 9.05e-04 | train loss 0.1552 | val Dice 0.8192 Sens 0.8419 Spec 0.9769
+Epoch [08/30]  119.4s | lr 8.72e-04 | train loss 0.1557 | val Dice 0.8334 Sens 0.7963 Spec 0.9878  <- best
+Epoch [09/30]  119.1s | lr 8.35e-04 | train loss 0.1540 | val Dice 0.8504 Sens 0.8220 Spec 0.9882  <- best
+Epoch [10/30]  119.6s | lr 7.94e-04 | train loss 0.1494 | val Dice 0.8209 Sens 0.8384 Spec 0.9782
+Epoch [11/30]  119.8s | lr 7.50e-04 | train loss 0.1490 | val Dice 0.8300 Sens 0.8282 Spec 0.9822
+Epoch [12/30]  120.6s | lr 7.03e-04 | train loss 0.1457 | val Dice 0.8496 Sens 0.8435 Spec 0.9848
+Epoch [13/30]  141.9s | lr 6.55e-04 | train loss 0.1437 | val Dice 0.8426 Sens 0.8339 Spec 0.9842
+Epoch [14/30]  145.8s | lr 6.04e-04 | train loss 0.1425 | val Dice 0.8309 Sens 0.8304 Spec 0.9819
+Epoch [15/30]  142.4s | lr 5.52e-04 | train loss 0.1410 | val Dice 0.8453 Sens 0.8229 Spec 0.9866
+Epoch [16/30]  141.1s | lr 5.00e-04 | train loss 0.1389 | val Dice 0.8445 Sens 0.8553 Spec 0.9818
+Epoch [17/30]  143.1s | lr 4.48e-04 | train loss 0.1396 | val Dice 0.8608 Sens 0.8386 Spec 0.9883  <- best
+Epoch [18/30]  143.0s | lr 3.96e-04 | train loss 0.1348 | val Dice 0.8426 Sens 0.8324 Spec 0.9844
+Epoch [19/30]  126.5s | lr 3.45e-04 | train loss 0.1349 | val Dice 0.8462 Sens 0.8453 Spec 0.9835
+Epoch [20/30]  120.9s | lr 2.97e-04 | train loss 0.1326 | val Dice 0.8454 Sens 0.8524 Spec 0.9825
+Epoch [21/30]  120.6s | lr 2.50e-04 | train loss 0.1332 | val Dice 0.8467 Sens 0.8515 Spec 0.9826
+Epoch [22/30]  120.5s | lr 2.06e-04 | train loss 0.1325 | val Dice 0.8670 Sens 0.8628 Spec 0.9862  <- best
+Epoch [23/30]  120.2s | lr 1.65e-04 | train loss 0.1305 | val Dice 0.8575 Sens 0.8647 Spec 0.9837
+Epoch [24/30]  119.5s | lr 1.28e-04 | train loss 0.1307 | val Dice 0.8454 Sens 0.8480 Spec 0.9829
+Epoch [25/30]  120.7s | lr 9.55e-05 | train loss 0.1307 | val Dice 0.8651 Sens 0.8696 Spec 0.9850
+Epoch [26/30]  119.8s | lr 6.70e-05 | train loss 0.1276 | val Dice 0.8622 Sens 0.8646 Spec 0.9848
+Epoch [27/30]  119.9s | lr 4.32e-05 | train loss 0.1283 | val Dice 0.8595 Sens 0.8561 Spec 0.9854
+Epoch [28/30]  120.4s | lr 2.45e-05 | train loss 0.1298 | val Dice 0.8564 Sens 0.8544 Spec 0.9849
+Epoch [29/30]  120.5s | lr 1.09e-05 | train loss 0.1255 | val Dice 0.8594 Sens 0.8537 Spec 0.9857
+Epoch [30/30]  119.7s | lr 2.74e-06 | train loss 0.1264 | val Dice 0.8613 Sens 0.8602 Spec 0.9853
+Training finished in 62.6 min. Best val Dice 0.8670 at epoch 22.
+Loaded best checkpoint: epoch 22, val Dice 0.8670
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- U-Net (seed 2) on 200 FIVES test images ---
+    Accuracy: 0.9728 +/- 0.0090
+ Sensitivity: 0.8254 +/- 0.1215
+ Specificity: 0.9857 +/- 0.0071
+   Precision: 0.8614 +/- 0.0471
+     F1_Dice: 0.8370 +/- 0.0997
+         IoU: 0.7286 +/- 0.1064
+     AUC_ROC: 0.9855 +/- 0.0210
+      AUC_PR: 0.9201 +/- 0.0913
+Per-disease Dice: AMD 0.8647, DR 0.8568, Glaucoma 0.7909, Normal 0.8359
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\unet_seed2
+
+[run] car_unet_seed2
+======================================================================
+CAR-UNet on FIVES | run: car_unet_seed2 | device: cuda
+{
+  "model": "car_unet",
+  "seed": 2,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,435,132
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  176.6s | lr 1.00e-03 | train loss 0.2680 | val Dice 0.7245 Sens 0.6556 Spec 0.9845  <- best
+Epoch [02/30]  168.3s | lr 9.97e-04 | train loss 0.1889 | val Dice 0.8216 Sens 0.8179 Spec 0.9816  <- best
+Epoch [03/30]  168.6s | lr 9.89e-04 | train loss 0.1672 | val Dice 0.8049 Sens 0.7878 Spec 0.9822
+Epoch [04/30]  176.2s | lr 9.76e-04 | train loss 0.1586 | val Dice 0.8090 Sens 0.7810 Spec 0.9840
+Epoch [05/30]  171.9s | lr 9.57e-04 | train loss 0.1547 | val Dice 0.8125 Sens 0.7789 Spec 0.9853
+Epoch [06/30]  172.4s | lr 9.33e-04 | train loss 0.1508 | val Dice 0.8202 Sens 0.7766 Spec 0.9878
+Epoch [07/30]  180.7s | lr 9.05e-04 | train loss 0.1502 | val Dice 0.8293 Sens 0.7956 Spec 0.9870  <- best
+Epoch [08/30]  168.5s | lr 8.72e-04 | train loss 0.1489 | val Dice 0.8310 Sens 0.7924 Spec 0.9878  <- best
+Epoch [09/30]  168.5s | lr 8.35e-04 | train loss 0.1487 | val Dice 0.8289 Sens 0.7835 Spec 0.9887
+Epoch [10/30]  168.8s | lr 7.94e-04 | train loss 0.1437 | val Dice 0.8344 Sens 0.8645 Spec 0.9783  <- best
+Epoch [11/30]  171.2s | lr 7.50e-04 | train loss 0.1429 | val Dice 0.8428 Sens 0.8290 Spec 0.9853  <- best
+Epoch [12/30]  169.8s | lr 7.03e-04 | train loss 0.1407 | val Dice 0.8535 Sens 0.8420 Spec 0.9861  <- best
+Epoch [13/30]  172.0s | lr 6.55e-04 | train loss 0.1376 | val Dice 0.8496 Sens 0.8634 Spec 0.9818
+Epoch [14/30]  170.3s | lr 6.04e-04 | train loss 0.1380 | val Dice 0.8221 Sens 0.8018 Spec 0.9839
+Epoch [15/30]  183.6s | lr 5.52e-04 | train loss 0.1364 | val Dice 0.8518 Sens 0.8431 Spec 0.9853
+Epoch [16/30]  194.1s | lr 5.00e-04 | train loss 0.1339 | val Dice 0.8556 Sens 0.8450 Spec 0.9859  <- best
+Epoch [17/30]  198.7s | lr 4.48e-04 | train loss 0.1354 | val Dice 0.8639 Sens 0.8662 Spec 0.9851  <- best
+Epoch [18/30]  190.3s | lr 3.96e-04 | train loss 0.1314 | val Dice 0.8529 Sens 0.8554 Spec 0.9840
+Epoch [19/30]  187.9s | lr 3.45e-04 | train loss 0.1303 | val Dice 0.8532 Sens 0.8449 Spec 0.9857
+Epoch [20/30]  182.5s | lr 2.97e-04 | train loss 0.1306 | val Dice 0.8583 Sens 0.8398 Spec 0.9874
+Epoch [21/30]  169.8s | lr 2.50e-04 | train loss 0.1302 | val Dice 0.8511 Sens 0.8403 Spec 0.9856
+Epoch [22/30]  169.1s | lr 2.06e-04 | train loss 0.1294 | val Dice 0.8686 Sens 0.8560 Spec 0.9878  <- best
+Epoch [23/30]  169.0s | lr 1.65e-04 | train loss 0.1280 | val Dice 0.8542 Sens 0.8541 Spec 0.9845
+Epoch [24/30]  168.4s | lr 1.28e-04 | train loss 0.1275 | val Dice 0.8606 Sens 0.8464 Spec 0.9872
+Epoch [25/30]  169.4s | lr 9.55e-05 | train loss 0.1275 | val Dice 0.8648 Sens 0.8726 Spec 0.9847
+Epoch [26/30]  168.6s | lr 6.70e-05 | train loss 0.1246 | val Dice 0.8647 Sens 0.8655 Spec 0.9855
+Epoch [27/30]  168.8s | lr 4.32e-05 | train loss 0.1248 | val Dice 0.8631 Sens 0.8635 Spec 0.9853
+Epoch [28/30]  169.5s | lr 2.45e-05 | train loss 0.1260 | val Dice 0.8603 Sens 0.8562 Spec 0.9858
+Epoch [29/30]  169.1s | lr 1.09e-05 | train loss 0.1228 | val Dice 0.8650 Sens 0.8649 Spec 0.9857
+Epoch [30/30]  169.5s | lr 2.74e-06 | train loss 0.1234 | val Dice 0.8645 Sens 0.8639 Spec 0.9857
+Training finished in 87.2 min. Best val Dice 0.8686 at epoch 22.
+Loaded best checkpoint: epoch 22, val Dice 0.8686
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet (seed 2) on 200 FIVES test images ---
+    Accuracy: 0.9735 +/- 0.0084
+ Sensitivity: 0.8168 +/- 0.1182
+ Specificity: 0.9875 +/- 0.0055
+   Precision: 0.8729 +/- 0.0409
+     F1_Dice: 0.8385 +/- 0.0989
+         IoU: 0.7307 +/- 0.1062
+     AUC_ROC: 0.9865 +/- 0.0181
+      AUC_PR: 0.9220 +/- 0.0890
+Per-disease Dice: AMD 0.8658, DR 0.8558, Glaucoma 0.7918, Normal 0.8405
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_seed2
+# FIVES Test Results (all models trained with identical settings)
+
+Metrics are computed per image inside the field of view (threshold 0.5) and averaged over all test images.
+With more than one seed, values are mean ± standard deviation across seeds.
+
+## Overall
+
+| Model | Dataset | Seeds | Test images | Parameters | Accuracy | Sensitivity | Specificity | Precision | F1_Dice | IoU | AUC_ROC | AUC_PR |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| U-Net | FIVES | 3 | 200 | 31036481 | 0.9723 ± 0.0005 | 0.8247 ± 0.0078 | 0.9852 ± 0.0008 | 0.8573 ± 0.0047 | 0.8344 ± 0.0034 | 0.7246 ± 0.0050 | 0.9847 ± 0.0008 | 0.9174 ± 0.0024 |
+| CAR-UNet | FIVES | 3 | 200 | 32435132 | 0.9728 ± 0.0007 | 0.8310 ± 0.0126 | 0.9855 ± 0.0018 | 0.8557 ± 0.0151 | 0.8382 ± 0.0031 | 0.7295 ± 0.0043 | 0.9860 ± 0.0014 | 0.9202 ± 0.0044 |
+
+## Per disease
+
+| Model | Disease | Images | F1_Dice | Sensitivity | Specificity | AUC_ROC |
+|---|---|---|---|---|---|---|
+| U-Net | AMD | 50 | 0.8630 | 0.8653 | 0.9840 | 0.9890 |
+| CAR-UNet | AMD | 50 | 0.8643 | 0.8710 | 0.9838 | 0.9895 |
+| U-Net | DR | 50 | 0.8550 | 0.8475 | 0.9876 | 0.9894 |
+| CAR-UNet | DR | 50 | 0.8562 | 0.8544 | 0.9872 | 0.9901 |
+| U-Net | Glaucoma | 50 | 0.7887 | 0.7604 | 0.9889 | 0.9761 |
+| CAR-UNet | Glaucoma | 50 | 0.7958 | 0.7765 | 0.9885 | 0.9786 |
+| U-Net | Normal | 50 | 0.8309 | 0.8257 | 0.9802 | 0.9842 |
+| CAR-UNet | Normal | 50 | 0.8363 | 0.8222 | 0.9826 | 0.9860 |
+
+## Is the difference real?
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over seeds):
+- mean Dice CAR-UNet − U-Net = +0.0038
+- CAR-UNet better on 154 / 200 images
+- p = 2.223e-14 (significant at 0.05)
+
+## Individual runs
+
+| model | seed | num_test_images | best_epoch | parameters | epochs | train_minutes | Accuracy | Sensitivity | Specificity | Precision | F1_Dice | IoU | AUC_ROC | AUC_PR |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| CAR-UNet | 0 | 200 | 28 | 32435132 | 30 | 96.3200 | 0.9729 | 0.8411 | 0.9847 | 0.8493 | 0.8411 | 0.7331 | 0.9871 | 0.9233 |
+| CAR-UNet | 1 | 200 | 13 | 32435132 | 30 | 89.1500 | 0.9721 | 0.8352 | 0.9843 | 0.8448 | 0.8349 | 0.7248 | 0.9845 | 0.9151 |
+| CAR-UNet | 2 | 200 | 22 | 32435132 | 30 | 87.2000 | 0.9735 | 0.8168 | 0.9875 | 0.8729 | 0.8385 | 0.7307 | 0.9865 | 0.9220 |
+| U-Net | 0 | 200 | 24 | 31036481 | 30 | 77.9400 | 0.9718 | 0.8166 | 0.9856 | 0.8583 | 0.8305 | 0.7190 | 0.9846 | 0.9160 |
+| U-Net | 1 | 200 | 13 | 31036481 | 30 | 73.7200 | 0.9723 | 0.8321 | 0.9843 | 0.8522 | 0.8356 | 0.7262 | 0.9840 | 0.9161 |
+| U-Net | 2 | 200 | 22 | 31036481 | 30 | 62.6100 | 0.9728 | 0.8254 | 0.9857 | 0.8614 | 0.8370 | 0.7286 | 0.9855 | 0.9201 |
+
