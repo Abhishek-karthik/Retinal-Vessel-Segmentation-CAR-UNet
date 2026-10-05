@@ -9,7 +9,7 @@ import time
 
 print(f"PyTorch pre-loaded: {torch.__version__} | CUDA: {torch.cuda.is_available()}")
 
-notebook_path = "Review2_Complete_CAR_UNet_Pipeline.ipynb"
+notebook_path = sys.argv[1] if len(sys.argv) > 1 else "Review2_Complete_CAR_UNet_Pipeline.ipynb"
 with open(notebook_path, "r", encoding="utf-8") as f:
     nb = json_nb = nbformat.read(f, as_version=4)
 
@@ -30,6 +30,7 @@ globs = {
 
 start_time = time.time()
 executed_cells = 0
+failed_cells = []
 
 for idx, cell in enumerate(nb.cells):
     if cell.cell_type == "code":
@@ -75,6 +76,7 @@ for idx, cell in enumerate(nb.cells):
             
         except Exception as e:
             print(f"Error in cell {idx+1}: {e}")
+            failed_cells.append(idx)
             import traceback
             tb = traceback.format_exc()
             cell_outputs.append(nbformat.v4.new_output(
@@ -87,9 +89,14 @@ for idx, cell in enumerate(nb.cells):
             cell.execution_count = executed_cells
 
 total_duration = time.time() - start_time
-print(f"\nAll {executed_cells} code cells executed successfully in {total_duration:.2f} seconds!")
+if failed_cells:
+    print(f"\n{len(failed_cells)} of {executed_cells} code cells FAILED (notebook cell indices {failed_cells}) in {total_duration:.2f} seconds.")
+else:
+    print(f"\nAll {executed_cells} code cells executed successfully in {total_duration:.2f} seconds!")
 
 with open(notebook_path, "w", encoding="utf-8") as f:
     nbformat.write(nb, f)
 
-print(f"Saved fully executed notebook to: {notebook_path}")
+print(f"Saved executed notebook to: {notebook_path}")
+if failed_cells:
+    sys.exit(1)

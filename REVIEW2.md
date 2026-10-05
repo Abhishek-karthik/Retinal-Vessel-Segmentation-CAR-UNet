@@ -1,7 +1,7 @@
 # Automated Retinal Blood Vessel Segmentation Using CAR-UNet on the FIVES Dataset
-### Complete Project Review — Medical Image Processing (Review 2 Upgrade)
+### Complete Project Review — Medical Image Processing
 ### Based on: 
-1. **Guo et al. (IEEE 2021 / arXiv:2004.03702):** *"Channel Attention Residual U-Net for Retinal Vessel Segmentation"*
+1. **Guo et al. (IEEE ICASSP 2021, conference paper / arXiv:2004.03702):** *"Channel Attention Residual U-Net for Retinal Vessel Segmentation"*
 2. **Jin et al. (Nature Scientific Data, 2022):** *"FIVES: A Fundus Image Dataset for AI-based Vessel Segmentation"*
 3. **Ronneberger et al. (2015):** *"U-Net: Convolutional Networks for Biomedical Image Segmentation"* (Review 1 Baseline)
 
@@ -11,14 +11,16 @@
 
 In **Review 1**, we established a baseline retinal blood vessel segmentation pipeline using the classical **Ronneberger et al. (2015) U-Net** on the **DRIVE dataset** (40 fundus images, $565 \times 584$ resolution). While effective as an initial benchmark (Validation Accuracy: 93.99%, Dice: 75.88%), Review 1 had two key bottlenecks:
 1. **Severe Data Scarcity:** DRIVE contains only 20 training images and 20 held-out test images from a single screening program, limiting generalizability across diverse optical conditions and disease stages.
-2. **Plain Convolutional Backbone:** Standard U-Net treats all feature channels uniformly and lacks residual connections, leading to vanishing gradient problems in deep layers and suboptimal delineation of tiny peripheral capillaries.
+2. **Plain Convolutional Backbone:** Standard U-Net treats all feature channels uniformly and has no residual connections, which can limit how well thin peripheral capillaries are delineated.
 
-In **Review 2**, we execute a comprehensive, two-fold upgrade:
+In the current version we made a two-fold upgrade, then evaluated it under a fair, repeatable protocol (identical training settings for both models, 3 seeds, all 200 FIVES test images):
 1. **Dataset Upgrade (DRIVE $\to$ FIVES):** Replaced DRIVE with the **FIVES benchmark** (800 high-resolution fundus images, standardized to $512 \times 512$). FIVES represents a **$20\times$ increase in scale** and covers four distinct clinical cohorts: Normal, Diabetic Retinopathy (DR), Glaucoma, and Age-related Macular Degeneration (AMD).
 2. **Architecture Upgrade (Plain U-Net $\to$ CAR-UNet):** Implemented **Channel Attention Residual U-Net (CAR-UNet)** incorporating:
    - **Modified Efficient Channel Attention (MECA):** Fast, non-dimensionality-reducing channel attention using adaptive 1D convolutions.
    - **Channel Attention Double Residual Blocks (CADRB):** Identity residual mappings embedded with channel attention to facilitate gradient flow and preserve fine vessel margins.
    - **Attentive Skip Connections (Bridge Attention):** Channel-recalibrated skip pathways that filter out irrelevant background artifacts before feature fusion in the expansive path.
+
+**Headline result (mean ± std over 3 seeds, 200 test images):** CAR-UNet Dice **0.8382 ± 0.0031** vs U-Net **0.8344 ± 0.0034** — a small but consistent gain (+0.0038; better on 154/200 images, paired Wilcoxon p = 2.2×10⁻¹⁴), largest on Glaucoma (+0.0071) and Normal (+0.0055) images. The gain is about the size of the seed-to-seed variation (CAR-UNet was better in 2 of 3 seeds), costs ~27% more training time, and leaves thin capillaries and very low-quality images as the main remaining failure modes (Section 10).
 
 ---
 
@@ -34,10 +36,10 @@ In **Review 2**, we execute a comprehensive, two-fold upgrade:
    - 5.3 MECA Bridge Attention on Skip Connections
 6. [Loss Formulation & Optimization Strategy](#6-loss-formulation--optimization-strategy)
 7. [Inference: Ronneberger Overlap-Tile Strategy](#7-inference-ronneberger-overlap-tile-strategy)
-8. [Comprehensive 3-Way Benchmark Results](#8-comprehensive-3-way-benchmark-results)
+8. [Benchmark Results on FIVES](#8-benchmark-results-on-fives)
 9. [Visual Comparison & Error Map Analysis](#9-visual-comparison--error-map-analysis)
-10. [Ablation Study: Dataset Scaling vs. Model Architecture](#10-ablation-study-dataset-scaling-vs-model-architecture)
-11. [Clinical Diagnostic Implications](#11-clinical-diagnostic-implications)
+10. [Analysis, Limitations & Failure Cases](#10-analysis-limitations--failure-cases)
+11. [Evaluation Protocol Fixes (v1 → v2)](#11-evaluation-protocol-fixes-v1--v2)
 12. [Project Codebase Architecture](#12-project-codebase-architecture)
 
 ---
@@ -51,7 +53,7 @@ Retinal vessel morphology serves as a non-invasive window into the human microva
 - **Age-Related Macular Degeneration (AMD):** Choroidal neovascularization near the macula.
 
 ### Key Technical Challenges
-1. **Extreme Class Imbalance:** Vessels occupy only $\approx 10-15\%$ of retinal pixels, with peripheral capillaries often narrower than 2 pixels.
+1. **Extreme Class Imbalance:** Vessels occupy only $\approx 8-9\%$ of training-patch pixels on FIVES, with peripheral capillaries often narrower than 2 pixels.
 2. **Pathological Distractors:** Exudates, hemorrhages, cotton wool spots, and laser scars exhibit high optical contrast that standard networks frequently mistake for vessels.
 3. **Illumination Gradients:** Fundus camera flash creates bright central illumination and dark peripheral vignetting.
 
@@ -62,17 +64,17 @@ Retinal vessel morphology serves as a non-invasive window into the human microva
 | Property | Review 1 (DRIVE) | Review 2 (FIVES Upgrade) | Improvement Factor |
 |---|---|---|---|
 | **Total Images** | 40 images | 800 images | **20× Scale Increase** |
-| **Training Split** | 16 train / 4 val | 480 train / 120 val | **30× Training Scale** |
-| **Test Split** | 20 images (unlabeled) | 200 images (expert labeled) | **10× Benchmark Test Set** |
+| **Training Split** | 16 train / 4 val | 480 train / 120 val (stratified: 120 / 30 per disease) | **30× Training Scale** |
+| **Reported on** | 4 validation images | 200 test images (50 per disease), all evaluated | **50× more evaluation images** |
 | **Pathology Coverage** | Diabetic screening only | Normal, DR, Glaucoma, AMD | **Multi-disease Diversity** |
 | **Raw Resolution** | $565 \times 584$ | $2048 \times 2048$ (Resized $512 \times 512$) | High-fidelity vascular ground truth |
-| **Annotation Quality** | 1 manual rater | Multi-expert consensus + AI quality scoring | High boundary fidelity |
+| **Annotation** | 1 manual rater | Consensus of 3 ophthalmologists + 24 medical staff; manual image-quality grades | Higher annotation reliability |
 
 ```
 data/FIVES_resized/
 ├── train/
-│   ├── images/      480 train + 120 val RGB fundus images (.png, 512x512)
-│   └── masks/       480 train + 120 val binary ground truth vessel masks (.png)
+│   ├── images/      600 RGB fundus images (.png, 512x512) -> 480 train / 120 val, split by disease (seed 42)
+│   └── masks/       600 binary ground truth vessel masks (.png)
 └── test/
     ├── images/      200 held-out test RGB fundus images (.png, 512x512)
     └── masks/       200 held-out expert ground truth vessel masks (.png)
@@ -93,10 +95,11 @@ The preprocessing pipeline ported in `src/preprocessing_fives.py` transforms raw
 ## 4. Patch Extraction & Spatial Augmentation
 
 - **Patch Math:** To match Ronneberger valid convolutions (`padding=0`), input patches of size $284 \times 284$ produce centered target masks of size $100 \times 100$ (92-pixel margin on all sides).
+- **Patch sampling:** 6 patch centres per training image are drawn at random inside the FOV, and a **new set is drawn every epoch** (2,880 patches/epoch), so the model sees far more of each retina than with a fixed patch set.
 - **Data Augmentations:**
   - Horizontal & vertical flips ($p=0.5$)
-  - Orthogonal rotations ($90^\circ, 180^\circ, 270^\circ$)
-  - **Elastic Deformation (Ronneberger et al. 2015):** Random displacement fields generated via $\text{Gaussian}(\sigma=4.0)$ scaled by $\alpha=30.0$ and applied via bicubic spline interpolation.
+  - Orthogonal rotations ($0^\circ, 90^\circ, 180^\circ, 270^\circ$, uniform)
+  - **Elastic Deformation (Ronneberger et al. 2015):** applied with $p=0.35$; random displacement fields smoothed by $\text{Gaussian}(\sigma=4.0)$ and scaled by $\alpha=25.0$; bilinear interpolation for the image, nearest-neighbour for the mask.
 
 ---
 
@@ -187,9 +190,17 @@ $$\mathcal{L}_{\text{BCE}} = -\frac{1}{N}\sum_{i=1}^N \left[ y_i \log(\hat{y}_i)
 
 $$\mathcal{L}_{\text{Dice}} = 1 - \frac{2 \sum_{i=1}^N y_i \hat{y}_i + \epsilon}{\sum_{i=1}^N y_i + \sum_{i=1}^N \hat{y}_i + \epsilon}$$
 
-- **Optimizer:** Adam ($\beta_1=0.9, \beta_2=0.999$, weight decay $=10^{-5}$)
-- **Learning Rate Schedule:** Cosine Annealing scheduler ($\text{lr}_0 = 10^{-3}$)
-- **Checkpointing:** Model selection based on maximum validation F1/Dice score.
+Both models are trained by the **same script** (`scripts/train_fives.py`) with **identical settings**:
+
+| Setting | Value |
+|---|---|
+| Epochs | 30 |
+| Batch size | 8 patches |
+| Optimizer | Adam ($\beta_1=0.9, \beta_2=0.999$, lr $=10^{-3}$, weight decay $=10^{-5}$) |
+| LR schedule | Cosine annealing over 30 epochs |
+| Seeds | 0, 1, 2 (Python, NumPy and PyTorch seeded; same train/val split for all) |
+| Checkpoint selection | Epoch with the best mean per-image Dice on the 120 **full** validation images (Overlap-Tile inference, inside FOV, threshold 0.5) |
+| Hardware | NVIDIA RTX 4050 Laptop GPU (6 GB) |
 
 ---
 
@@ -204,48 +215,87 @@ To produce seamless full-image predictions without boundary artifacts:
 
 ---
 
-## 8. Comprehensive 3-Way Benchmark Results
+## 8. Benchmark Results on FIVES
 
-The table below summarizes the quantitative evaluation across the three evolutionary stages of the project evaluated inside the Field of View (FOV) on held-out test sets:
+All numbers are on **all 200 FIVES test images** (50 per disease), computed per image inside the FOV at threshold 0.5 and averaged; ± is the standard deviation over 3 training seeds. Source: `results/RESULTS_TABLE.md` (generated by `scripts/summarize_results.py`).
 
-| Model | Dataset | Training Scale | Accuracy | Sensitivity (Recall) | Specificity | F1 / Dice Score | AUC-ROC |
-|---|---|---|---|---|---|---|---|
-| **U-Net (Baseline)** | DRIVE | 16 train / 4 val | **93.99%** | **77.61%** | **96.28%** | **75.88%** | **95.65%** |
-| **U-Net (Dataset Scale)** | FIVES | 480 train / 120 val | **97.56%** | **72.88%** | **99.05%** | **77.44%** | **97.47%** |
-| **CAR-UNet (Review 2 Upgrade ★)** | FIVES | 480 train / 120 val | **97.56%** | **76.92%** | **98.81%** | **79.16%** | **97.59%** |
+| Model | Params | Accuracy | Sensitivity | Specificity | Precision | **Dice (F1)** | IoU | AUC-ROC | AUC-PR |
+|---|---|---|---|---|---|---|---|---|---|
+| U-Net | 31.0 M | 0.9723 ± 0.0005 | 0.8247 ± 0.0078 | 0.9852 ± 0.0008 | **0.8573 ± 0.0047** | 0.8344 ± 0.0034 | 0.7246 ± 0.0050 | 0.9847 ± 0.0008 | 0.9174 ± 0.0024 |
+| **CAR-UNet** | 32.4 M | **0.9728 ± 0.0007** | **0.8310 ± 0.0126** | **0.9855 ± 0.0018** | 0.8557 ± 0.0151 | **0.8382 ± 0.0031** | **0.7295 ± 0.0043** | **0.9860 ± 0.0014** | **0.9202 ± 0.0044** |
+
+### 8.1 Per disease (Dice, 50 test images each, mean over 3 seeds)
+
+| Disease | U-Net | CAR-UNet | Gain |
+|---|---|---|---|
+| AMD | 0.8630 | 0.8643 | +0.0013 |
+| DR | 0.8550 | 0.8562 | +0.0012 |
+| Glaucoma | 0.7887 | 0.7958 | +0.0071 |
+| Normal | 0.8309 | 0.8363 | +0.0055 |
+
+### 8.2 Is the difference real?
+
+| Test | Result |
+|---|---|
+| Paired Wilcoxon on per-image Dice (200 images, averaged over seeds) | CAR-UNet better on **154 / 200** images, mean +0.0038, **p = 2.2×10⁻¹⁴** |
+| Per seed (same seed for both models) | seed 0: +0.0106 · seed 1: −0.0007 · seed 2: +0.0014 → CAR-UNet better in **2 / 3** seeds |
+| Seed-to-seed std of Dice | U-Net 0.0034 · CAR-UNet 0.0031 |
+
+**Reading:** CAR-UNet segments most test images slightly better, but the average gain (+0.004 Dice) is about the same size as the variation between training runs. The improvement is real but small.
+
+### 8.3 Cost
+
+| | U-Net | CAR-UNet |
+|---|---|---|
+| Parameters | 31.0 M | 32.4 M (+4.5%) |
+| Training time (30 epochs, mean of 3 seeds) | 71.4 min | 90.9 min (+27%) |
+| Best validation Dice (seeds 0 / 1 / 2) | 0.8631 / 0.8663 / 0.8670 | 0.8681 / 0.8679 / 0.8686 |
+
+*The Review 1 DRIVE result (Dice 0.759) is not compared here: it was measured on 4 DRIVE validation images, a different dataset.*
 
 ---
 
 ## 9. Visual Comparison & Error Map Analysis
 
-The visual comparison figure (`outputs/final_comparison_figure.png`) demonstrates:
-1. **DRIVE U-Net Baseline:** Exhibits broken capillary segments and false positives near optic disc boundaries.
-2. **FIVES U-Net:** Continuous major vessels, significantly fewer false alarms on lesion-dense retinal regions.
-3. **FIVES CAR-UNet:** Crystal-clear delineation of thin tertiary branching vessels with high sensitivity and minimal background false positives.
+`outputs/final_comparison_figure.png` shows one test image per disease — the image with the **median** CAR-UNet Dice in that group, so these are typical cases, not hand-picked best ones. Columns: RGB | ground truth | U-Net | CAR-UNet | U-Net error map | CAR-UNet error map (green = correct vessel, red = false vessel, blue = missed vessel).
 
-```
-[Column 1: Raw Fundus] → [Column 2: Ground Truth] → [Column 3: U-Net (DRIVE)] → [Column 4: U-Net (FIVES)] → [Column 5: CAR-UNet (FIVES)]
-```
+Observations:
+1. Both models segment the major vessels and their branches almost perfectly.
+2. Nearly all remaining errors are **missed thin capillaries at vessel tips** (blue), plus a few false detections along vessel borders and near the optic disc (red).
+3. CAR-UNet recovers slightly more thin vessels (higher sensitivity in all four examples), matching its +0.006 average sensitivity gain.
 
----
-
-## 10. Ablation Study: Dataset Scaling vs. Model Architecture
-
-- **Dataset Scaling Impact ($\Delta_{\text{Data}}$):** Scaling training data from 16 images to 480 images (20× increase) boosted Accuracy from 93.99% to 97.56%, Specificity from 96.28% to 99.05%, Dice from 75.88% to 77.44%, and AUC-ROC from 95.65% to 97.47%, proving that dataset diversity eliminates background false alarms on complex retinal lesions (AMD, DR, Glaucoma).
-- **Architecture Upgrade Impact ($\Delta_{\text{Arch}}$):** Adding MECA adaptive channel attention, CADRB residual blocks, and bridge attention increased F1/Dice by **+1.72%** (77.44% $\to$ 79.16%), Sensitivity (vessel recall) by **+4.04%** (72.88% $\to$ 76.92%), and AUC-ROC by **+0.12%** (97.47% $\to$ 97.59%) on the identical FIVES dataset under the same 15-epoch training regime.
-- **Cumulative Gain (Review 1 $\to$ Review 2):**
-  - **Overall Accuracy:** $93.99\% \to 97.56\%$ (**+3.57% Absolute Gain**)
-  - **F1 / Dice Score:** $75.88\% \to 79.16\%$ (**+3.28% Absolute Gain**)
-  - **Discriminatory Power (AUC-ROC):** $95.65\% \to 97.59\%$ (**+1.94% Absolute Gain**)
-  - **Capillary Delineation:** Sharp boundary fidelity on high-resolution ($512 \times 512$) fundus images across all multi-cohort diseases.
+`outputs/training_curves.png` shows training loss and validation Dice (mean ± std over seeds): both models converge smoothly without overfitting and plateau around validation Dice 0.86 by epoch ~25; CAR-UNet learns faster in the first epochs.
 
 ---
 
-## 11. Clinical Diagnostic Implications
+## 10. Analysis, Limitations & Failure Cases
 
-1. **Capillary Integrity in Diabetic Retinopathy:** CAR-UNet's superior sensitivity ($85.92\%$) enables automated detection of early capillary drop-out and foveal avascular zone (FAZ) enlargement before irreversible vision loss occurs.
-2. **Arteriolar-to-Venular Ratio (AVR):** Unbroken vessel continuity allows accurate automated topological skeletonization and vessel caliber measurement.
-3. **Generalization Across Diverse Retinal Lesions:** Training across FIVES's AMD, Glaucoma, and DR cohorts ensures robustness against pathological confounders that typically degrade classical algorithms.
+1. **The architecture gain is small.** Channel attention + residual blocks add +0.004 Dice / +0.006 sensitivity on average. Most of the change from the earlier (v1) numbers came from fixing the training and evaluation protocol, not from the architecture (Section 11).
+2. **Glaucoma is the hardest group** (Dice 0.79 vs 0.83–0.86 for the others) and is also where CAR-UNet helps most.
+3. **Thin capillaries remain the main error source** (Section 9) — partly because FIVES images were downsampled from 2048×2048 to 512×512, which erases the finest vessels.
+4. **Very low-quality images fail.** Two hazy, very dark Glaucoma images (122_G, 123_G) score Dice < 0.1 for both models; their expert masks contain only 0.7% and 1.7% vessel pixels (typical ≈ 6%) because few vessels are visible at all. They are **kept** in the test set (excluding hard cases would inflate results). Without them the mean Dice would be 0.8422 (U-Net) and 0.8458 (CAR-UNet); median Dice is 0.8614 vs 0.8630.
+5. **Implementation differs from the original CAR-UNet paper**: we keep the Ronneberger valid-convolution geometry (284→100 patches) and Dropout rather than the paper's own configuration (e.g. DropBlock), so absolute numbers are not directly comparable with the paper.
+6. **Only FIVES** is evaluated; cross-dataset generalisation (e.g. FIVES → DRIVE) has not been tested yet.
+
+These limitations are the starting points for the next upgrade (spatial attention, a connectivity-aware loss such as clDice, higher-resolution training, cross-dataset testing).
+
+---
+
+## 11. Evaluation Protocol Fixes (v1 → v2)
+
+The first FIVES results (kept in `results/legacy_v1/` for reference) had protocol problems that made the comparison unreliable. All were fixed before producing the numbers above:
+
+| Problem in v1 | Fix in v2 |
+|---|---|
+| Only 50 of 200 test images scored — and, because filenames were sorted as text, these were 45 Glaucoma, 4 AMD, 1 DR, 0 Normal | All 200 test images (50 per disease) |
+| Validation set = last 120 filenames = 68 Normal + 52 AMD only (no DR, no Glaucoma) | Disease-stratified split, 30 per disease, fixed seed |
+| Separate training scripts with different defaults (5 vs 15 epochs, 2 vs 6 patches/image) | One script, identical settings for both models |
+| No seed, one run per model | Seeds 0, 1, 2; mean ± std; paired significance tests |
+| Same training patches reused every epoch | Fresh random patches every epoch |
+| Model selected on patch-level validation Dice | Selected on full-image validation Dice (same protocol as test) |
+| DRIVE row compared with FIVES test results | Removed from the comparison (different dataset) |
+
+v1 reported Dice 0.7744 (U-Net) vs 0.7916 (CAR-UNet); under the fixed protocol the values are 0.8344 vs 0.8382.
 
 ---
 
@@ -253,42 +303,39 @@ The visual comparison figure (`outputs/final_comparison_figure.png`) demonstrate
 
 ```
 Medical-Image-processing-Project/
-├── AGENT_INSTRUCTIONS_Retinal_Vessel_Upgrade.md   Official upgrade specification
-├── CURRENT_STATE_SUMMARY.md                       Review 1 baseline reconnaissance
-├── RESULTS_SUMMARY.md                             Detailed results analysis
-├── REVIEW.md                                      Review 1 documentation
-├── REVIEW2.md                                     Complete Review 2 upgrade documentation
-├── requirements.txt                               Python package dependencies
-├── research paper_baseline.pdf                    Ronneberger et al. (2015) paper
-├── research_paper_upgrade.pdf                     Guo et al. (2021) CAR-UNet paper
+├── Review2_Complete_CAR_UNet_Pipeline.ipynb      Main all-in-one notebook (results + live demo)
+├── Review2_CAR_UNet_FIVES.ipynb                  Short demo notebook
+├── REVIEW.md / REVIEW2.md                        Review 1 / current documentation
+├── RESULTS_SUMMARY.md                            Results summary
+├── research paper_baseline.pdf                   Ronneberger et al. (2015) U-Net
+├── research_paper_upgrade.pdf                    Guo et al. (ICASSP 2021) CAR-UNet
 ├── data/
-│   ├── DRIVE/                                     Review 1 baseline dataset
-│   ├── FIVES/                                     Full FIVES dataset (800 images)
-│   └── FIVES_resized/                             Working resolution dataset (512x512)
-├── models/
-│   ├── unet_fives.pt                              Trained U-Net on FIVES
-│   └── car_unet_fives.pt                          Trained CAR-UNet on FIVES
+│   ├── DRIVE/                                    Review 1 dataset
+│   ├── FIVES .../                                Original FIVES (2048x2048)
+│   └── FIVES_resized/                            Working copy (512x512)
+├── models/                                       Best checkpoints: unet_seed{0,1,2}.pt, car_unet_seed{0,1,2}.pt
 ├── outputs/
-│   ├── fives_dataset_check.png                    Dataset verification panel
-│   ├── final_comparison_figure.png                3-Way benchmark visual comparison
-│   ├── fives_preprocessing_examples/              Preprocessing before/after figures
-│   ├── unet_fives_predictions/                    5 Sample U-Net predictions
-│   └── car_unet_fives_predictions/                5 Sample CAR-UNet predictions
+│   ├── final_comparison_figure.png               Typical case per disease + error maps
+│   ├── training_curves.png                       Loss / validation Dice, mean ± std over seeds
+│   └── predictions/<model>_seed<N>/              One saved prediction per disease per run
 ├── results/
-│   ├── comparison_table.csv                       Consolidated 3-way metrics table
-│   ├── unet_fives_metrics.json                    U-Net on FIVES metrics JSON
-│   └── car_unet_fives_metrics.json                CAR-UNet on FIVES metrics JSON
+│   ├── RESULTS_TABLE.md                          All tables + significance tests
+│   ├── comparison_table.csv, per_disease_table.csv
+│   ├── runs/<model>_seed<N>/                     summary.json, per-image test metrics, training history
+│   ├── logs/baselines.log                        Full training log
+│   └── legacy_v1/                                Superseded first results (see README there)
 ├── scripts/
-│   ├── resize_fives.py                            Multithreaded FIVES preparation & resizing
-│   ├── train_unet_fives.py                        U-Net training engine on FIVES
-│   ├── train_car_unet_fives.py                    CAR-UNet training engine on FIVES
-│   └── compare_results.py                         Metrics compiler & visual comparison generator
+│   ├── train_fives.py                            Train + evaluate U-Net or CAR-UNet (identical settings)
+│   ├── run_baselines.py                          Runs all models x seeds (resumable) and summarises
+│   ├── summarize_results.py                      Builds tables + significance tests
+│   ├── make_figures.py                           Builds comparison figure + training curves
+│   └── resize_fives.py                           FIVES preparation (2048 -> 512)
 └── src/
-    ├── car_unet.py                                CAR-UNet architecture (MECA + CADRB)
-    ├── data_loader_fives.py                       FIVES patch dataset & train/val split
-    ├── preprocessing_fives.py                     Classical preprocessing for FIVES
-    ├── unet_model.py                              Baseline U-Net model
-    ├── losses.py                                  Combined BCE + Dice loss
-    ├── metrics.py                                 FOV evaluation metrics
-    └── utils.py                                   Overlap-Tile inference engine
+    ├── car_unet.py                               CAR-UNet (MECA + CADRB)
+    ├── unet_model.py                             Baseline U-Net
+    ├── data_loader_fives.py                      Stratified split + per-epoch patch sampling
+    ├── preprocessing_fives.py                    Green channel, CLAHE, bilateral filter, FOV mask
+    ├── losses.py                                 0.5 BCE + 0.5 Dice
+    ├── metrics.py                                FOV metrics
+    └── utils.py                                  Overlap-Tile inference
 ```
