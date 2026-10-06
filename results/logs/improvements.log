@@ -1,0 +1,727 @@
+start 2026-10-06 01:13:12
+[eval_only] unet_seed0 01:13:12
+======================================================================
+U-Net on FIVES | run: unet_seed0 | device: cuda
+{
+  "model": "unet",
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "none",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 31,036,481
+Loaded best checkpoint: epoch 24, val Dice 0.8631
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- U-Net (seed 0) on 200 FIVES test images ---
+    Accuracy: 0.9718 +/- 0.0094
+ Sensitivity: 0.8166 +/- 0.1246
+ Specificity: 0.9856 +/- 0.0063
+   Precision: 0.8583 +/- 0.0361
+     F1_Dice: 0.8305 +/- 0.0993
+         IoU: 0.7190 +/- 0.1067
+     AUC_ROC: 0.9846 +/- 0.0211
+      AUC_PR: 0.9160 +/- 0.0902
+      clDice: 0.8580 +/- 0.1080
+Per-disease Dice: AMD 0.8601, DR 0.8534, Glaucoma 0.7858, Normal 0.8229
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\unet_seed0
+[eval_only] unet_seed1 01:15:22
+======================================================================
+U-Net on FIVES | run: unet_seed1 | device: cuda
+{
+  "model": "unet",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "none",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 31,036,481
+Loaded best checkpoint: epoch 13, val Dice 0.8663
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- U-Net (seed 1) on 200 FIVES test images ---
+    Accuracy: 0.9723 +/- 0.0094
+ Sensitivity: 0.8321 +/- 0.1220
+ Specificity: 0.9843 +/- 0.0080
+   Precision: 0.8522 +/- 0.0456
+     F1_Dice: 0.8356 +/- 0.0968
+         IoU: 0.7262 +/- 0.1067
+     AUC_ROC: 0.9840 +/- 0.0225
+      AUC_PR: 0.9161 +/- 0.0917
+      clDice: 0.8576 +/- 0.1034
+Per-disease Dice: AMD 0.8641, DR 0.8550, Glaucoma 0.7894, Normal 0.8339
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\unet_seed1
+[eval_only] unet_seed2 01:17:31
+======================================================================
+U-Net on FIVES | run: unet_seed2 | device: cuda
+{
+  "model": "unet",
+  "seed": 2,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "none",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 31,036,481
+Loaded best checkpoint: epoch 22, val Dice 0.8670
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- U-Net (seed 2) on 200 FIVES test images ---
+    Accuracy: 0.9728 +/- 0.0090
+ Sensitivity: 0.8254 +/- 0.1215
+ Specificity: 0.9857 +/- 0.0071
+   Precision: 0.8614 +/- 0.0471
+     F1_Dice: 0.8370 +/- 0.0997
+         IoU: 0.7286 +/- 0.1064
+     AUC_ROC: 0.9855 +/- 0.0210
+      AUC_PR: 0.9201 +/- 0.0913
+      clDice: 0.8623 +/- 0.1073
+Per-disease Dice: AMD 0.8647, DR 0.8568, Glaucoma 0.7909, Normal 0.8359
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\unet_seed2
+[eval_only] car_unet_seed0 01:19:42
+======================================================================
+CAR-UNet on FIVES | run: car_unet_seed0 | device: cuda
+{
+  "model": "car_unet",
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "meca",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,435,132
+Loaded best checkpoint: epoch 28, val Dice 0.8681
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet (seed 0) on 200 FIVES test images ---
+    Accuracy: 0.9729 +/- 0.0085
+ Sensitivity: 0.8411 +/- 0.1084
+ Specificity: 0.9847 +/- 0.0058
+   Precision: 0.8493 +/- 0.0416
+     F1_Dice: 0.8411 +/- 0.0899
+         IoU: 0.7331 +/- 0.0969
+     AUC_ROC: 0.9871 +/- 0.0169
+      AUC_PR: 0.9233 +/- 0.0866
+      clDice: 0.8685 +/- 0.0955
+Per-disease Dice: AMD 0.8650, DR 0.8590, Glaucoma 0.8008, Normal 0.8397
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_seed0
+[eval_only] car_unet_seed1 01:22:16
+======================================================================
+CAR-UNet on FIVES | run: car_unet_seed1 | device: cuda
+{
+  "model": "car_unet",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "meca",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,435,132
+Loaded best checkpoint: epoch 13, val Dice 0.8679
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet (seed 1) on 200 FIVES test images ---
+    Accuracy: 0.9721 +/- 0.0091
+ Sensitivity: 0.8352 +/- 0.1207
+ Specificity: 0.9843 +/- 0.0061
+   Precision: 0.8448 +/- 0.0494
+     F1_Dice: 0.8349 +/- 0.0943
+         IoU: 0.7248 +/- 0.1054
+     AUC_ROC: 0.9845 +/- 0.0202
+      AUC_PR: 0.9151 +/- 0.0934
+      clDice: 0.8571 +/- 0.1016
+Per-disease Dice: AMD 0.8620, DR 0.8538, Glaucoma 0.7948, Normal 0.8288
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_seed1
+[eval_only] car_unet_seed2 01:24:50
+======================================================================
+CAR-UNet on FIVES | run: car_unet_seed2 | device: cuda
+{
+  "model": "car_unet",
+  "seed": 2,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "meca",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,435,132
+Loaded best checkpoint: epoch 22, val Dice 0.8686
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet (seed 2) on 200 FIVES test images ---
+    Accuracy: 0.9735 +/- 0.0084
+ Sensitivity: 0.8168 +/- 0.1182
+ Specificity: 0.9875 +/- 0.0055
+   Precision: 0.8729 +/- 0.0409
+     F1_Dice: 0.8385 +/- 0.0989
+         IoU: 0.7307 +/- 0.1062
+     AUC_ROC: 0.9865 +/- 0.0181
+      AUC_PR: 0.9220 +/- 0.0890
+      clDice: 0.8620 +/- 0.1057
+Per-disease Dice: AMD 0.8658, DR 0.8558, Glaucoma 0.7918, Normal 0.8405
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_seed2
+
+[run] car_unet_da_seed0
+======================================================================
+CAR-UNet + DA on FIVES | run: car_unet_da_seed0 | device: cuda
+{
+  "model": "car_unet_da",
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  250.3s | lr 1.00e-03 | train loss 0.2719 | val Dice 0.7571 Sens 0.7221 Spec 0.9814  <- best
+Epoch [02/30]  241.6s | lr 9.97e-04 | train loss 0.1862 | val Dice 0.7900 Sens 0.7473 Spec 0.9854  <- best
+Epoch [03/30]  241.1s | lr 9.89e-04 | train loss 0.1687 | val Dice 0.7943 Sens 0.7279 Spec 0.9893  <- best
+Epoch [04/30]  240.4s | lr 9.76e-04 | train loss 0.1619 | val Dice 0.7978 Sens 0.7741 Spec 0.9823  <- best
+Epoch [05/30]  240.2s | lr 9.57e-04 | train loss 0.1566 | val Dice 0.8148 Sens 0.7729 Spec 0.9867  <- best
+Epoch [06/30]  240.4s | lr 9.33e-04 | train loss 0.1524 | val Dice 0.8314 Sens 0.8573 Spec 0.9780  <- best
+Epoch [07/30]  241.9s | lr 9.05e-04 | train loss 0.1499 | val Dice 0.8462 Sens 0.8231 Spec 0.9873  <- best
+Epoch [08/30]  242.9s | lr 8.72e-04 | train loss 0.1477 | val Dice 0.8450 Sens 0.8622 Spec 0.9809
+Epoch [09/30]  241.5s | lr 8.35e-04 | train loss 0.1471 | val Dice 0.8431 Sens 0.8781 Spec 0.9782
+Epoch [10/30]  239.0s | lr 7.94e-04 | train loss 0.1428 | val Dice 0.8443 Sens 0.8084 Spec 0.9886
+Epoch [11/30]  240.8s | lr 7.50e-04 | train loss 0.1418 | val Dice 0.8413 Sens 0.8350 Spec 0.9841
+Epoch [12/30]  240.0s | lr 7.03e-04 | train loss 0.1385 | val Dice 0.8276 Sens 0.7851 Spec 0.9880
+Epoch [13/30]  239.5s | lr 6.55e-04 | train loss 0.1401 | val Dice 0.8490 Sens 0.8483 Spec 0.9840  <- best
+Epoch [14/30]  239.9s | lr 6.04e-04 | train loss 0.1360 | val Dice 0.8493 Sens 0.8301 Spec 0.9865  <- best
+Epoch [15/30]  240.5s | lr 5.52e-04 | train loss 0.1374 | val Dice 0.8544 Sens 0.8527 Spec 0.9846  <- best
+Epoch [16/30]  241.8s | lr 5.00e-04 | train loss 0.1357 | val Dice 0.8448 Sens 0.8280 Spec 0.9858
+Epoch [17/30]  240.3s | lr 4.48e-04 | train loss 0.1335 | val Dice 0.8497 Sens 0.8391 Spec 0.9857
+Epoch [18/30]  241.7s | lr 3.96e-04 | train loss 0.1334 | val Dice 0.8686 Sens 0.8685 Spec 0.9859  <- best
+Epoch [19/30]  239.5s | lr 3.45e-04 | train loss 0.1330 | val Dice 0.8578 Sens 0.8601 Spec 0.9843
+Epoch [20/30]  240.4s | lr 2.97e-04 | train loss 0.1291 | val Dice 0.8570 Sens 0.8720 Spec 0.9825
+Epoch [21/30]  240.0s | lr 2.50e-04 | train loss 0.1301 | val Dice 0.8611 Sens 0.8647 Spec 0.9846
+Epoch [22/30]  240.3s | lr 2.06e-04 | train loss 0.1301 | val Dice 0.8579 Sens 0.8398 Spec 0.9873
+Epoch [23/30]  241.4s | lr 1.65e-04 | train loss 0.1273 | val Dice 0.8500 Sens 0.8410 Spec 0.9852
+Epoch [24/30]  240.3s | lr 1.28e-04 | train loss 0.1278 | val Dice 0.8689 Sens 0.8707 Spec 0.9858  <- best
+Epoch [25/30]  241.0s | lr 9.55e-05 | train loss 0.1271 | val Dice 0.8665 Sens 0.8756 Spec 0.9845
+Epoch [26/30]  240.7s | lr 6.70e-05 | train loss 0.1275 | val Dice 0.8591 Sens 0.8595 Spec 0.9850
+Epoch [27/30]  241.3s | lr 4.32e-05 | train loss 0.1264 | val Dice 0.8651 Sens 0.8723 Spec 0.9845
+Epoch [28/30]  240.1s | lr 2.45e-05 | train loss 0.1261 | val Dice 0.8636 Sens 0.8580 Spec 0.9862
+Epoch [29/30]  240.2s | lr 1.09e-05 | train loss 0.1249 | val Dice 0.8630 Sens 0.8637 Spec 0.9853
+Epoch [30/30]  240.2s | lr 2.74e-06 | train loss 0.1254 | val Dice 0.8657 Sens 0.8671 Spec 0.9855
+Training finished in 120.5 min. Best val Dice 0.8689 at epoch 24.
+Loaded best checkpoint: epoch 24, val Dice 0.8689
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA (seed 0) on 200 FIVES test images ---
+    Accuracy: 0.9729 +/- 0.0086
+ Sensitivity: 0.8307 +/- 0.1167
+ Specificity: 0.9856 +/- 0.0056
+   Precision: 0.8563 +/- 0.0371
+     F1_Dice: 0.8384 +/- 0.0962
+         IoU: 0.7301 +/- 0.1037
+     AUC_ROC: 0.9860 +/- 0.0196
+      AUC_PR: 0.9205 +/- 0.0889
+      clDice: 0.8636 +/- 0.1031
+Per-disease Dice: AMD 0.8646, DR 0.8585, Glaucoma 0.7938, Normal 0.8367
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_seed0
+
+[run] car_unet_da_cldice_seed0
+======================================================================
+CAR-UNet + DA + clDice on FIVES | run: car_unet_da_cldice_seed0 | device: cuda
+{
+  "model": "car_unet_da_cldice",
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice)",
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  254.7s | lr 1.00e-03 | train loss 0.2549 | val Dice 0.7723 Sens 0.7365 Spec 0.9820  <- best
+Epoch [02/30]  247.8s | lr 9.97e-04 | train loss 0.1727 | val Dice 0.8026 Sens 0.7650 Spec 0.9852  <- best
+Epoch [03/30]  247.0s | lr 9.89e-04 | train loss 0.1560 | val Dice 0.8144 Sens 0.7773 Spec 0.9861  <- best
+Epoch [04/30]  246.3s | lr 9.76e-04 | train loss 0.1520 | val Dice 0.8188 Sens 0.8412 Spec 0.9768  <- best
+Epoch [05/30]  245.8s | lr 9.57e-04 | train loss 0.1480 | val Dice 0.8196 Sens 0.8521 Spec 0.9758  <- best
+Epoch [06/30]  246.2s | lr 9.33e-04 | train loss 0.1436 | val Dice 0.8317 Sens 0.8657 Spec 0.9766  <- best
+Epoch [07/30]  246.5s | lr 9.05e-04 | train loss 0.1422 | val Dice 0.8467 Sens 0.8393 Spec 0.9848  <- best
+Epoch [08/30]  246.8s | lr 8.72e-04 | train loss 0.1392 | val Dice 0.8409 Sens 0.8763 Spec 0.9774
+Epoch [09/30]  246.3s | lr 8.35e-04 | train loss 0.1373 | val Dice 0.8475 Sens 0.8635 Spec 0.9816  <- best
+Epoch [10/30]  245.8s | lr 7.94e-04 | train loss 0.1345 | val Dice 0.8428 Sens 0.8175 Spec 0.9870
+Epoch [11/30]  246.7s | lr 7.50e-04 | train loss 0.1330 | val Dice 0.8426 Sens 0.8462 Spec 0.9826
+Epoch [12/30]  267.3s | lr 7.03e-04 | train loss 0.1296 | val Dice 0.8445 Sens 0.8819 Spec 0.9778
+Epoch [13/30]  246.5s | lr 6.55e-04 | train loss 0.1303 | val Dice 0.8480 Sens 0.8566 Spec 0.9823  <- best
+Epoch [14/30]  245.7s | lr 6.04e-04 | train loss 0.1274 | val Dice 0.8539 Sens 0.8776 Spec 0.9809  <- best
+Epoch [15/30]  246.2s | lr 5.52e-04 | train loss 0.1284 | val Dice 0.8496 Sens 0.8531 Spec 0.9833
+Epoch [16/30]  247.4s | lr 5.00e-04 | train loss 0.1258 | val Dice 0.8454 Sens 0.8553 Spec 0.9819
+Epoch [17/30]  246.9s | lr 4.48e-04 | train loss 0.1246 | val Dice 0.8466 Sens 0.8497 Spec 0.9835
+Epoch [18/30]  247.9s | lr 3.96e-04 | train loss 0.1244 | val Dice 0.8630 Sens 0.8835 Spec 0.9824  <- best
+Epoch [19/30]  245.5s | lr 3.45e-04 | train loss 0.1238 | val Dice 0.8532 Sens 0.8739 Spec 0.9811
+Epoch [20/30]  246.4s | lr 2.97e-04 | train loss 0.1196 | val Dice 0.8539 Sens 0.8781 Spec 0.9809
+Epoch [21/30]  246.3s | lr 2.50e-04 | train loss 0.1206 | val Dice 0.8585 Sens 0.8823 Spec 0.9814
+Epoch [22/30]  246.4s | lr 2.06e-04 | train loss 0.1206 | val Dice 0.8536 Sens 0.8546 Spec 0.9840
+Epoch [23/30]  247.1s | lr 1.65e-04 | train loss 0.1182 | val Dice 0.8484 Sens 0.8633 Spec 0.9815
+Epoch [24/30]  247.6s | lr 1.28e-04 | train loss 0.1189 | val Dice 0.8630 Sens 0.8758 Spec 0.9835  <- best
+Epoch [25/30]  247.2s | lr 9.55e-05 | train loss 0.1174 | val Dice 0.8602 Sens 0.8871 Spec 0.9813
+Epoch [26/30]  246.1s | lr 6.70e-05 | train loss 0.1178 | val Dice 0.8547 Sens 0.8765 Spec 0.9814
+Epoch [27/30]  247.7s | lr 4.32e-05 | train loss 0.1166 | val Dice 0.8606 Sens 0.8857 Spec 0.9815
+Epoch [28/30]  246.1s | lr 2.45e-05 | train loss 0.1169 | val Dice 0.8616 Sens 0.8765 Spec 0.9831
+Epoch [29/30]  245.7s | lr 1.09e-05 | train loss 0.1154 | val Dice 0.8595 Sens 0.8796 Spec 0.9821
+Epoch [30/30]  245.8s | lr 2.74e-06 | train loss 0.1156 | val Dice 0.8621 Sens 0.8815 Spec 0.9826
+Training finished in 123.8 min. Best val Dice 0.8630 at epoch 24.
+Loaded best checkpoint: epoch 24, val Dice 0.8630
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA + clDice (seed 0) on 200 FIVES test images ---
+    Accuracy: 0.9716 +/- 0.0089
+ Sensitivity: 0.8355 +/- 0.1177
+ Specificity: 0.9835 +/- 0.0069
+   Precision: 0.8414 +/- 0.0393
+     F1_Dice: 0.8335 +/- 0.0939
+         IoU: 0.7224 +/- 0.1013
+     AUC_ROC: 0.9860 +/- 0.0178
+      AUC_PR: 0.9171 +/- 0.0885
+      clDice: 0.8679 +/- 0.1013
+Per-disease Dice: AMD 0.8579, DR 0.8530, Glaucoma 0.7896, Normal 0.8334
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_cldice_seed0
+
+[run] car_unet_da_seed1
+======================================================================
+CAR-UNet + DA on FIVES | run: car_unet_da_seed1 | device: cuda
+{
+  "model": "car_unet_da",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  247.2s | lr 1.00e-03 | train loss 0.2927 | val Dice 0.6402 Sens 0.5228 Spec 0.9918  <- best
+Epoch [02/30]  241.6s | lr 9.97e-04 | train loss 0.2093 | val Dice 0.7812 Sens 0.7492 Spec 0.9827  <- best
+Epoch [03/30]  241.1s | lr 9.89e-04 | train loss 0.1821 | val Dice 0.7879 Sens 0.7525 Spec 0.9834  <- best
+Epoch [04/30]  240.5s | lr 9.76e-04 | train loss 0.1682 | val Dice 0.8129 Sens 0.7883 Spec 0.9840  <- best
+Epoch [05/30]  240.5s | lr 9.57e-04 | train loss 0.1592 | val Dice 0.8389 Sens 0.8350 Spec 0.9834  <- best
+Epoch [06/30]  240.1s | lr 9.33e-04 | train loss 0.1523 | val Dice 0.8056 Sens 0.7390 Spec 0.9901
+Epoch [07/30]  242.1s | lr 9.05e-04 | train loss 0.1493 | val Dice 0.8391 Sens 0.8077 Spec 0.9875  <- best
+Epoch [08/30]  241.1s | lr 8.72e-04 | train loss 0.1495 | val Dice 0.8377 Sens 0.8395 Spec 0.9822
+Epoch [09/30]  239.6s | lr 8.35e-04 | train loss 0.1459 | val Dice 0.8489 Sens 0.8298 Spec 0.9867  <- best
+Epoch [10/30]  239.6s | lr 7.94e-04 | train loss 0.1433 | val Dice 0.8309 Sens 0.7998 Spec 0.9866
+Epoch [11/30]  239.7s | lr 7.50e-04 | train loss 0.1424 | val Dice 0.8382 Sens 0.8438 Spec 0.9821
+Epoch [12/30]  240.1s | lr 7.03e-04 | train loss 0.1415 | val Dice 0.8279 Sens 0.8090 Spec 0.9846
+Epoch [13/30]  240.1s | lr 6.55e-04 | train loss 0.1383 | val Dice 0.8601 Sens 0.8447 Spec 0.9873  <- best
+Epoch [14/30]  240.3s | lr 6.04e-04 | train loss 0.1390 | val Dice 0.8344 Sens 0.8399 Spec 0.9816
+Epoch [15/30]  240.7s | lr 5.52e-04 | train loss 0.1349 | val Dice 0.8458 Sens 0.8327 Spec 0.9854
+Epoch [16/30]  240.2s | lr 5.00e-04 | train loss 0.1354 | val Dice 0.8448 Sens 0.8365 Spec 0.9847
+Epoch [17/30]  239.8s | lr 4.48e-04 | train loss 0.1327 | val Dice 0.8467 Sens 0.8399 Spec 0.9846
+Epoch [18/30]  240.6s | lr 3.96e-04 | train loss 0.1340 | val Dice 0.8610 Sens 0.8658 Spec 0.9845  <- best
+Epoch [19/30]  241.4s | lr 3.45e-04 | train loss 0.1322 | val Dice 0.8459 Sens 0.8670 Spec 0.9804
+Epoch [20/30]  239.4s | lr 2.97e-04 | train loss 0.1298 | val Dice 0.8719 Sens 0.8660 Spec 0.9873  <- best
+Epoch [21/30]  241.2s | lr 2.50e-04 | train loss 0.1300 | val Dice 0.8622 Sens 0.8639 Spec 0.9849
+Epoch [22/30]  240.2s | lr 2.06e-04 | train loss 0.1294 | val Dice 0.8566 Sens 0.8529 Spec 0.9851
+Epoch [23/30]  241.3s | lr 1.65e-04 | train loss 0.1270 | val Dice 0.8533 Sens 0.8498 Spec 0.9848
+Epoch [24/30]  239.1s | lr 1.28e-04 | train loss 0.1271 | val Dice 0.8679 Sens 0.8732 Spec 0.9851
+Epoch [25/30]  240.7s | lr 9.55e-05 | train loss 0.1271 | val Dice 0.8664 Sens 0.8640 Spec 0.9861
+Epoch [26/30]  243.0s | lr 6.70e-05 | train loss 0.1270 | val Dice 0.8474 Sens 0.8524 Spec 0.9830
+Epoch [27/30]  243.4s | lr 4.32e-05 | train loss 0.1255 | val Dice 0.8658 Sens 0.8722 Spec 0.9848
+Epoch [28/30]  302.7s | lr 2.45e-05 | train loss 0.1265 | val Dice 0.8669 Sens 0.8736 Spec 0.9850
+Epoch [29/30]  242.3s | lr 1.09e-05 | train loss 0.1254 | val Dice 0.8620 Sens 0.8634 Spec 0.9851
+Epoch [30/30]  240.3s | lr 2.74e-06 | train loss 0.1269 | val Dice 0.8642 Sens 0.8651 Spec 0.9854
+Training finished in 121.5 min. Best val Dice 0.8719 at epoch 20.
+Loaded best checkpoint: epoch 20, val Dice 0.8719
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA (seed 1) on 200 FIVES test images ---
+    Accuracy: 0.9738 +/- 0.0085
+ Sensitivity: 0.8314 +/- 0.1130
+ Specificity: 0.9866 +/- 0.0057
+   Precision: 0.8649 +/- 0.0429
+     F1_Dice: 0.8424 +/- 0.0983
+         IoU: 0.7364 +/- 0.1049
+     AUC_ROC: 0.9860 +/- 0.0208
+      AUC_PR: 0.9224 +/- 0.0902
+      clDice: 0.8608 +/- 0.1051
+Per-disease Dice: AMD 0.8696, DR 0.8599, Glaucoma 0.7969, Normal 0.8431
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_seed1
+
+[run] car_unet_da_cldice_seed1
+======================================================================
+CAR-UNet + DA + clDice on FIVES | run: car_unet_da_cldice_seed1 | device: cuda
+{
+  "model": "car_unet_da_cldice",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice)",
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  253.5s | lr 1.00e-03 | train loss 0.2791 | val Dice 0.5998 Sens 0.4745 Spec 0.9927  <- best
+Epoch [02/30]  246.8s | lr 9.97e-04 | train loss 0.1892 | val Dice 0.7962 Sens 0.7359 Spec 0.9883  <- best
+Epoch [03/30]  246.5s | lr 9.89e-04 | train loss 0.1622 | val Dice 0.8053 Sens 0.7825 Spec 0.9827  <- best
+Epoch [04/30]  246.5s | lr 9.76e-04 | train loss 0.1529 | val Dice 0.8244 Sens 0.8165 Spec 0.9821  <- best
+Epoch [05/30]  245.7s | lr 9.57e-04 | train loss 0.1479 | val Dice 0.8394 Sens 0.8327 Spec 0.9838  <- best
+Epoch [06/30]  244.5s | lr 9.33e-04 | train loss 0.1431 | val Dice 0.7842 Sens 0.7209 Spec 0.9883
+Epoch [07/30]  250.0s | lr 9.05e-04 | train loss 0.1416 | val Dice 0.8404 Sens 0.8253 Spec 0.9853  <- best
+Epoch [08/30]  246.9s | lr 8.72e-04 | train loss 0.1407 | val Dice 0.8284 Sens 0.8140 Spec 0.9837
+Epoch [09/30]  245.7s | lr 8.35e-04 | train loss 0.1367 | val Dice 0.8443 Sens 0.8185 Spec 0.9870  <- best
+Epoch [10/30]  245.9s | lr 7.94e-04 | train loss 0.1333 | val Dice 0.8284 Sens 0.8230 Spec 0.9826
+Epoch [11/30]  246.1s | lr 7.50e-04 | train loss 0.1320 | val Dice 0.8406 Sens 0.8650 Spec 0.9796
+Epoch [12/30]  246.1s | lr 7.03e-04 | train loss 0.1310 | val Dice 0.8313 Sens 0.8178 Spec 0.9840
+Epoch [13/30]  246.2s | lr 6.55e-04 | train loss 0.1284 | val Dice 0.8521 Sens 0.8379 Spec 0.9863  <- best
+Epoch [14/30]  246.5s | lr 6.04e-04 | train loss 0.1300 | val Dice 0.8389 Sens 0.8458 Spec 0.9818
+Epoch [15/30]  254.5s | lr 5.52e-04 | train loss 0.1258 | val Dice 0.8385 Sens 0.8232 Spec 0.9850
+Epoch [16/30]  246.5s | lr 5.00e-04 | train loss 0.1256 | val Dice 0.8403 Sens 0.8347 Spec 0.9837
+Epoch [17/30]  247.6s | lr 4.48e-04 | train loss 0.1233 | val Dice 0.8452 Sens 0.8664 Spec 0.9801
+Epoch [18/30]  246.4s | lr 3.96e-04 | train loss 0.1239 | val Dice 0.8590 Sens 0.8794 Spec 0.9820  <- best
+Epoch [19/30]  247.4s | lr 3.45e-04 | train loss 0.1224 | val Dice 0.8417 Sens 0.8762 Spec 0.9779
+Epoch [20/30]  246.1s | lr 2.97e-04 | train loss 0.1191 | val Dice 0.8718 Sens 0.8827 Spec 0.9848  <- best
+Epoch [21/30]  248.1s | lr 2.50e-04 | train loss 0.1197 | val Dice 0.8583 Sens 0.8796 Spec 0.9817
+Epoch [22/30]  246.4s | lr 2.06e-04 | train loss 0.1194 | val Dice 0.8547 Sens 0.8763 Spec 0.9812
+Epoch [23/30]  247.1s | lr 1.65e-04 | train loss 0.1172 | val Dice 0.8551 Sens 0.8671 Spec 0.9829
+Epoch [24/30]  245.9s | lr 1.28e-04 | train loss 0.1169 | val Dice 0.8654 Sens 0.8852 Spec 0.9829
+Epoch [25/30]  247.0s | lr 9.55e-05 | train loss 0.1174 | val Dice 0.8646 Sens 0.8831 Spec 0.9830
+Epoch [26/30]  247.0s | lr 6.70e-05 | train loss 0.1162 | val Dice 0.8474 Sens 0.8672 Spec 0.9808
+Epoch [27/30]  246.3s | lr 4.32e-05 | train loss 0.1149 | val Dice 0.8636 Sens 0.8923 Spec 0.9815
+Epoch [28/30]  248.7s | lr 2.45e-05 | train loss 0.1163 | val Dice 0.8638 Sens 0.8870 Spec 0.9823
+Epoch [29/30]  247.2s | lr 1.09e-05 | train loss 0.1149 | val Dice 0.8596 Sens 0.8830 Spec 0.9817
+Epoch [30/30]  247.1s | lr 2.74e-06 | train loss 0.1168 | val Dice 0.8617 Sens 0.8843 Spec 0.9821
+Training finished in 123.6 min. Best val Dice 0.8718 at epoch 20.
+Loaded best checkpoint: epoch 20, val Dice 0.8718
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+queue finished 2026-10-06 09:50:29 exit=0
+[auto-stop] 2026-10-06 09:50:30 training stopped for the day; resume with: python scripts/run_baselines.py --models car_unet_da car_unet_da_cldice --seeds 0 1
+[resume-eval] car_unet_da_cldice_seed1 2026-10-06 23:25:49
+Traceback (most recent call last):
+  File "D:\sem 7\medical\Medical-Image-processing-Project-main\scripts\train_fives.py", line 19, in <module>
+    import torch  # must be imported before numpy on this environment (DLL load order)
+    ^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'torch'
+======================================================================
+CAR-UNet + DA + clDice on FIVES | run: car_unet_da_cldice_seed1 | device: cuda
+{
+  "model": "car_unet_da_cldice",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice)",
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Resumed from epoch 30 (best val Dice 0.8718 at epoch 20)
+Loaded best checkpoint: epoch 20, val Dice 0.8718
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA + clDice (seed 1) on 200 FIVES test images ---
+    Accuracy: 0.9733 +/- 0.0086
+ Sensitivity: 0.8495 +/- 0.1143
+ Specificity: 0.9840 +/- 0.0070
+   Precision: 0.8483 +/- 0.0450
+     F1_Dice: 0.8435 +/- 0.0958
+         IoU: 0.7376 +/- 0.1030
+     AUC_ROC: 0.9866 +/- 0.0184
+      AUC_PR: 0.9230 +/- 0.0867
+      clDice: 0.8716 +/- 0.1028
+Per-disease Dice: AMD 0.8694, DR 0.8587, Glaucoma 0.7990, Normal 0.8468
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_cldice_seed1
+[queue] seed 2 improvements start 2026-10-06 23:29:31
+
+[run] car_unet_da_seed2
+======================================================================
+CAR-UNet + DA on FIVES | run: car_unet_da_seed2 | device: cuda
+{
+  "model": "car_unet_da",
+  "seed": 2,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*Dice",
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  235.8s | lr 1.00e-03 | train loss 0.2896 | val Dice 0.6894 Sens 0.6513 Spec 0.9768  <- best
+Epoch [02/30]  242.2s | lr 9.97e-04 | train loss 0.2003 | val Dice 0.7999 Sens 0.7728 Spec 0.9831  <- best
+Epoch [03/30]  259.2s | lr 9.89e-04 | train loss 0.1725 | val Dice 0.8104 Sens 0.7948 Spec 0.9823  <- best
+Epoch [04/30]  278.6s | lr 9.76e-04 | train loss 0.1582 | val Dice 0.8082 Sens 0.7897 Spec 0.9827
+Epoch [05/30]  265.2s | lr 9.57e-04 | train loss 0.1589 | val Dice 0.8300 Sens 0.8164 Spec 0.9836  <- best
+Epoch [06/30]  242.1s | lr 9.33e-04 | train loss 0.1515 | val Dice 0.8436 Sens 0.8463 Spec 0.9828  <- best
+Epoch [07/30]  229.8s | lr 9.05e-04 | train loss 0.1508 | val Dice 0.8392 Sens 0.7954 Spec 0.9893
+Epoch [08/30]  229.4s | lr 8.72e-04 | train loss 0.1456 | val Dice 0.8359 Sens 0.8072 Spec 0.9866

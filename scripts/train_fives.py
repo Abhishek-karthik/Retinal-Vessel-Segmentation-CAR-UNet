@@ -30,14 +30,43 @@ import cv2
 from src.data_loader_fives import FIVESPatchDataset, load_fives_image_pairs, get_disease_code, DISEASE_NAMES
 from src.unet_model import UNet
 from src.car_unet import CARUNet
-from src.losses import CombinedBCEDiceLoss
-from src.metrics import compute_fov_metrics
-from src.preprocessing_fives import preprocess_image, generate_fov_mask
+from src.losses import CombinedBCEDiceLoss, BCEDiceClDiceLoss
+from src.metrics import compute_fov_metrics, compute_cldice
+from src.preprocessing_fives import preprocess_image, preprocess_image_uint8, generate_fov_mask
 from src.utils import predict_full_image, save_prediction_figure
 
-MODELS = {"unet": UNet, "car_unet": CARUNet}
-MODEL_LABELS = {"unet": "U-Net", "car_unet": "CAR-UNet"}
-METRIC_COLS = ["Accuracy", "Sensitivity", "Specificity", "Precision", "F1_Dice", "IoU", "AUC_ROC", "AUC_PR"]
+# name -> (label, model class, model kwargs, loss)
+MODEL_SPECS = {
+    "unet":               ("U-Net",                     UNet,    {},                     "bce_dice"),
+    "car_unet":           ("CAR-UNet",                  CARUNet, {"attention": "meca"},  "bce_dice"),
+    "car_unet_da":        ("CAR-UNet + DA",             CARUNet, {"attention": "dual"},  "bce_dice"),          # Improvement 1
+    "car_unet_da_cldice": ("CAR-UNet + DA + clDice",    CARUNet, {"attention": "dual"},  "bce_dice_cldice"),   # Improvements 1 + 2
+    "car_unet_da_cldice_1024": ("CAR-UNet + DA + clDice @1024", CARUNet, {"attention": "dual"}, "bce_dice_cldice_1024"),  # + Improvement 3
+}
+# Working resolution of each model (default 512). Every model is SCORED on the same 512x512 ground truth;
+# higher-resolution predictions are downsampled first, and additionally scored against their own ground truth (hires_*).
+MODEL_RESOLUTION = {"car_unet_da_cldice_1024": 1024}
+EVAL_RESOLUTION = 512
+MODELS = {k: v[1] for k, v in MODEL_SPECS.items()}
+MODEL_LABELS = {k: v[0] for k, v in MODEL_SPECS.items()}
+LOSS_NAMES = {"bce_dice": "0.5*BCE + 0.5*Dice", "bce_dice_cldice": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice)",
+              "bce_dice_cldice_1024": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice), 20 skeleton iterations (vessels are 2x wider at 1024)"}
+HIRES_COLS = ["hires_F1_Dice", "hires_Sensitivity", "hires_Precision", "hires_clDice"]
+METRIC_COLS = ["Accuracy", "Sensitivity", "Specificity", "Precision", "F1_Dice", "IoU", "AUC_ROC", "AUC_PR", "clDice"]
+
+
+def make_loss(name):
+    if name == "bce_dice":
+        return CombinedBCEDiceLoss(bce_weight=0.5, dice_weight=0.5)
+    if name == "bce_dice_cldice":
+        return BCEDiceClDiceLoss(alpha=0.5)
+    if name == "bce_dice_cldice_1024":
+        return BCEDiceClDiceLoss(alpha=0.5, iterations=20)
+    raise ValueError(name)
+
+
+def data_dir_for(base_dir, resolution):
+    return os.path.join(base_dir, "data", "FIVES_resized" if resolution == 512 else f"FIVES_{resolution}")
 IN_PATCH_SIZE = 284
 
 
@@ -55,6 +84,59 @@ def load_eval_image(img_path, mask_path):
     return raw_rgb, preprocess_image(raw_rgb), gt_mask, generate_fov_mask(raw_rgb)
 
 
+def prepare_eval_item(img_path, mask_path, model_res=512, keep_raw=False):
+    """
+    Loads one evaluation image (paths point to the 512x512 copy) in a compact uint8 form:
+      prep / fov_in : model input + FOV at the model's working resolution
+      gt / fov      : 512x512 ground truth + FOV used for the official metrics
+      gt_hi / fov_hi: ground truth + FOV at the model resolution (only when model_res != 512)
+    """
+    raw = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
+    gt = (cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE) > 128).astype(np.uint8)
+    fov = generate_fov_mask(raw).astype(np.uint8)
+    item = {"gt": gt, "fov": fov}
+    if model_res == EVAL_RESOLUTION:
+        item.update(prep=preprocess_image_uint8(raw), fov_in=fov)
+    else:
+        hi_dir = f"FIVES_{model_res}"
+        hi_img = img_path.replace("FIVES_resized", hi_dir)
+        hi_raw = cv2.cvtColor(cv2.imread(hi_img), cv2.COLOR_BGR2RGB)
+        fov_hi = generate_fov_mask(hi_raw).astype(np.uint8)
+        gt_hi = (cv2.imread(mask_path.replace("FIVES_resized", hi_dir), cv2.IMREAD_GRAYSCALE) > 128).astype(np.uint8)
+        item.update(prep=preprocess_image_uint8(hi_raw), fov_in=fov_hi, gt_hi=gt_hi, fov_hi=fov_hi)
+    if keep_raw:
+        item["raw"] = raw
+    return item
+
+
+def predict_item(model, item, device, inference_batch, flip_axes=()):
+    """
+    Overlap-Tile prediction at the model resolution (optionally on a flipped copy, flipped back afterwards).
+    Returns (probability map at 512x512 masked by the 512 FOV, probability map at model resolution).
+    """
+    prep = item["prep"].astype(np.float32) / 255.0   # identical to preprocess_image()
+    fov_in = item["fov_in"].astype(np.float32)
+    if flip_axes:
+        prep, fov_in = np.flip(prep, axis=flip_axes).copy(), np.flip(fov_in, axis=flip_axes).copy()
+    prob = predict_full_image(model, prep, fov_in, in_patch_size=IN_PATCH_SIZE, device=device, batch_size=inference_batch)
+    if flip_axes:
+        prob = np.flip(prob, axis=flip_axes).copy()
+    if prob.shape == item["gt"].shape:
+        return prob, prob
+    prob_eval = cv2.resize(prob, item["gt"].shape[::-1], interpolation=cv2.INTER_AREA) * item["fov"]
+    return prob_eval, prob
+
+
+def hires_metrics(prob, gt, fov, threshold=0.5):
+    """Dice / Sensitivity / Precision / clDice against a higher-resolution ground truth (no AUC: too slow at 1024)."""
+    inside = fov > 0.5
+    pred, g = prob[inside] >= threshold, gt[inside] > 0.5
+    tp, fp, fn = np.sum(pred & g), np.sum(pred & ~g), np.sum(~pred & g)
+    return {"hires_F1_Dice": float(2 * tp / (2 * tp + fp + fn + 1e-8)), "hires_Sensitivity": float(tp / (tp + fn + 1e-8)),
+            "hires_Precision": float(tp / (tp + fp + 1e-8)),
+            "hires_clDice": compute_cldice((prob >= threshold).astype(np.float32), gt, fov)}
+
+
 def train_epoch(model, dataloader, criterion, optimizer, device):
     model.train()
     running_loss = 0.0
@@ -68,14 +150,15 @@ def train_epoch(model, dataloader, criterion, optimizer, device):
     return running_loss / len(dataloader.dataset)
 
 
-def validate_full_images(model, val_images, device, inference_batch):
+def validate_full_images(model, val_items, device, inference_batch):
     """
-    Validation with the same full-image Overlap-Tile protocol as the test set.
+    Validation with the same full-image Overlap-Tile protocol as the test set (scored at 512x512).
     Returns the mean per-image Dice, Sensitivity and Specificity inside the FOV (threshold 0.5).
     """
     dices, sens, specs = [], [], []
-    for prep_img, gt_mask, fov_mask in val_images:
-        prob = predict_full_image(model, prep_img, fov_mask, in_patch_size=IN_PATCH_SIZE, device=device, batch_size=inference_batch)
+    for item in val_items:
+        prob, _ = predict_item(model, item, device, inference_batch)
+        gt_mask, fov_mask = item["gt"], item["fov"]
         inside = fov_mask > 0.5
         pred = prob[inside] >= 0.5
         gt = gt_mask[inside] > 0.5
@@ -89,7 +172,7 @@ def validate_full_images(model, val_images, device, inference_batch):
     return float(np.mean(dices)), float(np.mean(sens)), float(np.mean(specs))
 
 
-def evaluate_test_set(model, test_pairs, device, viz_dir, inference_batch, viz_per_disease=1):
+def evaluate_test_set(model, test_pairs, device, viz_dir, inference_batch, viz_per_disease=1, model_res=512):
     """Scores EVERY test image with Overlap-Tile inference; metrics are computed inside the FOV only."""
     os.makedirs(viz_dir, exist_ok=True)
     model.eval()
@@ -99,11 +182,15 @@ def evaluate_test_set(model, test_pairs, device, viz_dir, inference_batch, viz_p
     for i, (img_path, mask_path) in enumerate(test_pairs):
         fname = os.path.basename(img_path)
         code = get_disease_code(fname)
-        raw_rgb, prep_img, gt_mask, fov_mask = load_eval_image(img_path, mask_path)
-        prob = predict_full_image(model, prep_img, fov_mask, in_patch_size=IN_PATCH_SIZE, device=device, batch_size=inference_batch)
+        item = prepare_eval_item(img_path, mask_path, model_res, keep_raw=True)
+        raw_rgb, gt_mask, fov_mask = item["raw"], item["gt"].astype(np.float32), item["fov"].astype(np.float32)
+        prob, prob_model = predict_item(model, item, device, inference_batch)
 
         metrics = compute_fov_metrics(prob, gt_mask, fov_mask)
+        if model_res != EVAL_RESOLUTION:
+            metrics.update(hires_metrics(prob_model, item["gt_hi"], item["fov_hi"]))
         metrics["filename"] = fname
+        metrics["clDice"] = compute_cldice((prob >= 0.5).astype(np.float32), gt_mask, fov_mask)
         metrics["disease"] = DISEASE_NAMES[code]
         rows.append(metrics)
 
@@ -115,10 +202,11 @@ def evaluate_test_set(model, test_pairs, device, viz_dir, inference_batch, viz_p
             print(f"  Test progress: [{i+1}/{len(test_pairs)}]", flush=True)
 
     df = pd.DataFrame(rows)
+    cols = METRIC_COLS + [c for c in HIRES_COLS if c in df]
     summary = {
-        "overall": df[METRIC_COLS].mean().to_dict(),
-        "overall_std": df[METRIC_COLS].std().to_dict(),
-        "per_disease": {d: g[METRIC_COLS].mean().to_dict() for d, g in df.groupby("disease")},
+        "overall": df[cols].mean().to_dict(),
+        "overall_std": df[cols].std().to_dict(),
+        "per_disease": {d: g[cols].mean().to_dict() for d, g in df.groupby("disease")},
         "num_test_images": int(len(df)),
         "images_per_disease": df["disease"].value_counts().sort_index().to_dict(),
     }
@@ -140,10 +228,13 @@ def main():
     parser.add_argument("--eval_only", action="store_true", help="Skip training; evaluate the saved best checkpoint")
     parser.add_argument("--limit_images", type=int, default=0, help="Smoke test only: use N images per split (0 = all)")
     parser.add_argument("--tag", type=str, default="", help="Optional suffix for the run name (e.g. 'timing')")
+    parser.add_argument("--cpu", action="store_true", help="Force CPU (smoke tests while the GPU is busy)")
     args = parser.parse_args()
 
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    data_dir = os.path.join(base_dir, "data", "FIVES_resized")
+    data_dir = data_dir_for(base_dir, EVAL_RESOLUTION)          # 512 copy: validation / test scoring
+    model_res = MODEL_RESOLUTION.get(args.model, EVAL_RESOLUTION)
+    train_dir = data_dir_for(base_dir, model_res)               # training images at the model resolution
     run_name = f"{args.model}_seed{args.seed}" + ("_smoke" if args.limit_images else "") + (f"_{args.tag}" if args.tag else "")
     ckpt_dir = os.path.join(base_dir, "outputs", "saved_models")
     run_dir = os.path.join(base_dir, "results", "runs", run_name)
@@ -155,10 +246,10 @@ def main():
 
     set_seed(args.seed)
     torch.backends.cudnn.benchmark = True
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() and not args.cpu else "cpu")
 
     config = {k: v for k, v in vars(args).items() if k not in ("resume", "eval_only")}
-    config.update({"in_patch_size": IN_PATCH_SIZE, "out_patch_size": IN_PATCH_SIZE - 184, "loss": "0.5*BCE + 0.5*Dice",
+    config.update({"in_patch_size": IN_PATCH_SIZE, "out_patch_size": IN_PATCH_SIZE - 184, "loss": LOSS_NAMES[MODEL_SPECS[args.model][3]], "resolution": model_res, "scored_at": EVAL_RESOLUTION, "attention": MODEL_SPECS[args.model][2].get("attention", "none"),
                    "optimizer": "Adam", "scheduler": "CosineAnnealingLR(T_max=epochs)", "split": "disease-stratified 480/120, split_seed=42",
                    "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)", "device": str(device)})
 
@@ -167,14 +258,16 @@ def main():
     print(json.dumps(config, indent=2), flush=True)
     print("=" * 70, flush=True)
 
-    model = MODELS[args.model](in_channels=1, out_channels=1, base_filters=args.base_filters).to(device)
+    model = MODELS[args.model](in_channels=1, out_channels=1, base_filters=args.base_filters, **MODEL_SPECS[args.model][2]).to(device)
     num_params = sum(p.numel() for p in model.parameters())
     print(f"Parameters: {num_params:,}", flush=True)
-    criterion = CombinedBCEDiceLoss(bce_weight=0.5, dice_weight=0.5)
+    criterion = make_loss(MODEL_SPECS[args.model][3])
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
 
-    train_pairs = load_fives_image_pairs(data_dir, mode="train")
+    train_pairs = load_fives_image_pairs(train_dir, mode="train")
+    assert [os.path.basename(p[0]) for p in train_pairs] == [os.path.basename(p[0]) for p in load_fives_image_pairs(data_dir, mode="train")], \
+        "Train split differs between resolutions"
     val_pairs = load_fives_image_pairs(data_dir, mode="val")
     test_pairs = load_fives_image_pairs(data_dir, mode="test")
     if args.limit_images:
@@ -199,8 +292,8 @@ def main():
         print(f"Resumed from epoch {ckpt['epoch']} (best val Dice {best_val_dice:.4f} at epoch {best_epoch})", flush=True)
 
     if not args.eval_only and start_epoch <= args.epochs:
-        train_dataset = FIVESPatchDataset(data_dir, mode="train", in_patch_size=IN_PATCH_SIZE, patches_per_img=args.patches_per_img, augment=True, image_pairs=train_pairs)
-        val_images = [load_eval_image(i, m)[1:] for i, m in val_pairs]
+        train_dataset = FIVESPatchDataset(train_dir, mode="train", in_patch_size=IN_PATCH_SIZE, patches_per_img=args.patches_per_img, augment=True, image_pairs=train_pairs)
+        val_images = [prepare_eval_item(i, m, model_res) for i, m in val_pairs]
         print(f"Train images: {len(train_pairs)} ({len(train_dataset)} patches/epoch) | Val images: {len(val_pairs)} | Test images: {len(test_pairs)}", flush=True)
 
         for epoch in range(start_epoch, args.epochs + 1):
@@ -240,10 +333,12 @@ def main():
     model.load_state_dict(ckpt["model_state_dict"])
     history = ckpt.get("history", history) if args.eval_only else history
     best_epoch, best_val_dice = ckpt["epoch"], ckpt["best_val_dice"]
+    if args.eval_only and os.path.exists(last_ckpt):
+        train_seconds = torch.load(last_ckpt, map_location="cpu", weights_only=False).get("train_seconds", train_seconds)
     print(f"Loaded best checkpoint: epoch {best_epoch}, val Dice {best_val_dice:.4f}", flush=True)
 
     t0 = time.time()
-    summary, df = evaluate_test_set(model, test_pairs, device, viz_dir, args.inference_batch)
+    summary, df = evaluate_test_set(model, test_pairs, device, viz_dir, args.inference_batch, model_res=model_res)
     summary.update({"model": MODEL_LABELS[args.model], "run": run_name, "seed": args.seed, "parameters": num_params,
                     "best_epoch": best_epoch, "best_val_dice": best_val_dice, "train_minutes": round(train_seconds / 60, 2),
                     "test_seconds_per_image": round((time.time() - t0) / len(test_pairs), 3), "config": config})

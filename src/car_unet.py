@@ -1,11 +1,15 @@
 """
-Guo, C. et al. "Channel Attention Residual U-Net for Retinal Vessel Segmentation." IEEE, 2021. https://arxiv.org/abs/2004.03702
+Guo, C. et al. "Channel Attention Residual U-Net for Retinal Vessel Segmentation." IEEE ICASSP, 2021. https://arxiv.org/abs/2004.03702
 Official CAR-UNet Reference: https://github.com/clguo/CAR-UNet
 
 PyTorch Implementation of CAR-UNet (Channel Attention Residual U-Net):
 1. MECA (Modified Efficient Channel Attention): Channel attention mechanism using 1D convolution across channels.
 2. CADRB (Channel Attention Double Residual Block): Residual convolutional block enhanced with MECA channel attention.
 3. Bridge Attention: Skip connections filtered by MECA modules before concatenation with decoder features.
+
+Improvement (attention="dual"): every attention module becomes DualAttention =
+channel attention from average- AND max-pooled descriptors (paper Eq. 3) followed by
+CBAM-style spatial attention, so the network also learns WHERE thin vessels are.
 """
 
 import os
@@ -40,6 +44,54 @@ class MECA(nn.Module):
         y = self.sigmoid(y)
         return x * y
 
+class DualPoolChannelAttention(nn.Module):
+    """
+    Channel attention from both average-pooled and max-pooled descriptors passed through a
+    shared 1D convolution and added (Guo et al. 2021, Eq. 3). Kernel size follows the same
+    adaptive rule as MECA above so that only the pooling changes.
+    """
+    def __init__(self, channels: int, gamma: int = 2, b: int = 1):
+        super().__init__()
+        t = int(abs((math.log2(max(channels, 2)) + b) / gamma))
+        k_size = max(3, t if t % 2 == 1 else t + 1)
+        self.conv = nn.Conv1d(1, 1, kernel_size=k_size, padding=(k_size - 1) // 2, bias=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        avg = x.mean(dim=(2, 3)).unsqueeze(1)    # (B, 1, C)
+        mx = x.amax(dim=(2, 3)).unsqueeze(1)     # (B, 1, C)
+        w = torch.sigmoid(self.conv(avg) + self.conv(mx))  # shared conv, channel-wise addition
+        return x * w.squeeze(1)[:, :, None, None]
+
+class SpatialAttention(nn.Module):
+    """
+    Spatial attention (Woo et al., CBAM 2018): channel-wise average and max maps ->
+    7x7 convolution -> sigmoid weight per pixel. Highlights where vessels are.
+    """
+    def __init__(self, kernel_size: int = 7):
+        super().__init__()
+        self.conv = nn.Conv2d(2, 1, kernel_size=kernel_size, padding=kernel_size // 2, bias=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        desc = torch.cat([x.mean(dim=1, keepdim=True), x.amax(dim=1, keepdim=True)], dim=1)
+        return x * torch.sigmoid(self.conv(desc))
+
+class DualAttention(nn.Module):
+    """Channel attention (avg + max pooling) followed by spatial attention."""
+    def __init__(self, channels: int):
+        super().__init__()
+        self.channel = DualPoolChannelAttention(channels)
+        self.spatial = SpatialAttention()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.spatial(self.channel(x))
+
+def make_attention(kind: str, channels: int) -> nn.Module:
+    if kind == "meca":
+        return MECA(channels)
+    if kind == "dual":
+        return DualAttention(channels)
+    raise ValueError(f"Unknown attention type: {kind}")
+
 def crop_tensor(enc_tensor: torch.Tensor, target_tensor: torch.Tensor) -> torch.Tensor:
     """
     Crops encoder feature map to match spatial dimensions of upsampled decoder tensor for skip connection concatenation.
@@ -56,7 +108,7 @@ class CADRB(nn.Module):
     Combines two convolutions, BatchNorm, MECA channel attention, and a residual skip connection.
     Supports valid convolutions (padding=0) matching Ronneberger U-Net geometry.
     """
-    def __init__(self, in_channels: int, out_channels: int, padding: int = 0):
+    def __init__(self, in_channels: int, out_channels: int, padding: int = 0, attention: str = "meca"):
         super().__init__()
         self.padding = padding
         
@@ -67,7 +119,7 @@ class CADRB(nn.Module):
         self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=padding, bias=False)
         self.bn2 = nn.BatchNorm2d(out_channels)
         
-        self.meca = MECA(out_channels)
+        self.meca = make_attention(attention, out_channels)
         
         # Shortcut / Residual path
         self.need_proj = (in_channels != out_channels)
@@ -103,42 +155,43 @@ class CARUNet(nn.Module):
     2. Modified Efficient Channel Attention (MECA) on skip connections before concatenation.
     3. Residual learning prevents vanishing gradients and enhances vessel edge feature propagation.
     """
-    def __init__(self, in_channels: int = 1, out_channels: int = 1, base_filters: int = 64):
+    def __init__(self, in_channels: int = 1, out_channels: int = 1, base_filters: int = 64, attention: str = "meca"):
         super().__init__()
+        att = attention  # "meca" = original CAR-UNet, "dual" = channel (avg+max) + spatial attention
         
         # Contracting Path (Encoder with CADRB)
-        self.enc1 = CADRB(in_channels, base_filters, padding=0)               # 1 -> 64 (572 -> 568)
+        self.enc1 = CADRB(in_channels, base_filters, padding=0, attention=att)               # 1 -> 64 (572 -> 568)
         self.pool1 = nn.MaxPool2d(2, 2)                                      # 568 -> 284
-        self.skip_att1 = MECA(base_filters)                                  # Skip Connection Attention 1
+        self.skip_att1 = make_attention(att, base_filters)                                  # Skip Connection Attention 1
         
-        self.enc2 = CADRB(base_filters, base_filters * 2, padding=0)         # 64 -> 128 (284 -> 280)
+        self.enc2 = CADRB(base_filters, base_filters * 2, padding=0, attention=att)         # 64 -> 128 (284 -> 280)
         self.pool2 = nn.MaxPool2d(2, 2)                                      # 280 -> 140
-        self.skip_att2 = MECA(base_filters * 2)                              # Skip Connection Attention 2
+        self.skip_att2 = make_attention(att, base_filters * 2)                              # Skip Connection Attention 2
         
-        self.enc3 = CADRB(base_filters * 2, base_filters * 4, padding=0)     # 128 -> 256 (140 -> 136)
+        self.enc3 = CADRB(base_filters * 2, base_filters * 4, padding=0, attention=att)     # 128 -> 256 (140 -> 136)
         self.pool3 = nn.MaxPool2d(2, 2)                                      # 136 -> 68
-        self.skip_att3 = MECA(base_filters * 4)                              # Skip Connection Attention 3
+        self.skip_att3 = make_attention(att, base_filters * 4)                              # Skip Connection Attention 3
         
-        self.enc4 = CADRB(base_filters * 4, base_filters * 8, padding=0)     # 256 -> 512 (68 -> 64)
+        self.enc4 = CADRB(base_filters * 4, base_filters * 8, padding=0, attention=att)     # 256 -> 512 (68 -> 64)
         self.pool4 = nn.MaxPool2d(2, 2)                                      # 64 -> 32
-        self.skip_att4 = MECA(base_filters * 8)                              # Skip Connection Attention 4
+        self.skip_att4 = make_attention(att, base_filters * 8)                              # Skip Connection Attention 4
         
         # Bottleneck
-        self.bottleneck = CADRB(base_filters * 8, base_filters * 16, padding=0) # 512 -> 1024 (32 -> 28)
+        self.bottleneck = CADRB(base_filters * 8, base_filters * 16, padding=0, attention=att) # 512 -> 1024 (32 -> 28)
         self.dropout = nn.Dropout(0.5)
         
         # Expansive Path (Decoder with CADRB)
         self.up4 = nn.ConvTranspose2d(base_filters * 16, base_filters * 8, kernel_size=2, stride=2) # 28 -> 56
-        self.dec4 = CADRB(base_filters * 16, base_filters * 8, padding=0) # (512+512) -> 512 (56 -> 52)
+        self.dec4 = CADRB(base_filters * 16, base_filters * 8, padding=0, attention=att) # (512+512) -> 512 (56 -> 52)
         
         self.up3 = nn.ConvTranspose2d(base_filters * 8, base_filters * 4, kernel_size=2, stride=2)  # 52 -> 104
-        self.dec3 = CADRB(base_filters * 8, base_filters * 4, padding=0)  # (256+256) -> 256 (104 -> 100)
+        self.dec3 = CADRB(base_filters * 8, base_filters * 4, padding=0, attention=att)  # (256+256) -> 256 (104 -> 100)
         
         self.up2 = nn.ConvTranspose2d(base_filters * 4, base_filters * 2, kernel_size=2, stride=2)  # 100 -> 200
-        self.dec2 = CADRB(base_filters * 4, base_filters * 2, padding=0)  # (128+128) -> 128 (200 -> 196)
+        self.dec2 = CADRB(base_filters * 4, base_filters * 2, padding=0, attention=att)  # (128+128) -> 128 (200 -> 196)
         
         self.up1 = nn.ConvTranspose2d(base_filters * 2, base_filters, kernel_size=2, stride=2)      # 196 -> 392
-        self.dec1 = CADRB(base_filters * 2, base_filters, padding=0)      # (64+64) -> 64 (392 -> 388)
+        self.dec1 = CADRB(base_filters * 2, base_filters, padding=0, attention=att)      # (64+64) -> 64 (392 -> 388)
         
         # Final Output Layer
         self.out_conv = nn.Conv2d(base_filters, out_channels, kernel_size=1)
