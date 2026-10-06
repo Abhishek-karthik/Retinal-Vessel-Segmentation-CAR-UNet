@@ -1,0 +1,107 @@
+{
+  "overall": {
+    "Accuracy": 0.973782748379588,
+    "Sensitivity": 0.8313578873507865,
+    "Specificity": 0.9865611199494174,
+    "Precision": 0.8649040710449301,
+    "F1_Dice": 0.8423898550616739,
+    "IoU": 0.7363546816956713,
+    "AUC_ROC": 0.9859803458366264,
+    "AUC_PR": 0.9224366124834867,
+    "clDice": 0.8608462827689738
+  },
+  "overall_std": {
+    "Accuracy": 0.008469161550203753,
+    "Sensitivity": 0.112979157496408,
+    "Specificity": 0.005696521242593044,
+    "Precision": 0.04293281273114082,
+    "F1_Dice": 0.09833567848446698,
+    "IoU": 0.10492015825879872,
+    "AUC_ROC": 0.020819083105970675,
+    "AUC_PR": 0.0901907340302914,
+    "clDice": 0.10507790851463536
+  },
+  "per_disease": {
+    "AMD": {
+      "Accuracy": 0.9742427102284694,
+      "Sensitivity": 0.8672472763820884,
+      "Specificity": 0.9858119623468994,
+      "Precision": 0.8734294383859144,
+      "F1_Dice": 0.8696280074560032,
+      "IoU": 0.7709091384804814,
+      "AUC_ROC": 0.9899673443757743,
+      "AUC_PR": 0.9455851729098811,
+      "clDice": 0.8878418072414351
+    },
+    "DR": {
+      "Accuracy": 0.9771689119225371,
+      "Sensitivity": 0.8522750281150167,
+      "Specificity": 0.9884799420930475,
+      "Precision": 0.8704124201983412,
+      "F1_Dice": 0.8599145667337059,
+      "IoU": 0.7568625528809478,
+      "AUC_ROC": 0.9902039696999618,
+      "AUC_PR": 0.9366551141619647,
+      "clDice": 0.8795154539255132
+    },
+    "Glaucoma": {
+      "Accuracy": 0.9776954752269097,
+      "Sensitivity": 0.7724696045957208,
+      "Specificity": 0.9896877207814064,
+      "Precision": 0.8606663105142467,
+      "F1_Dice": 0.7969325153026545,
+      "IoU": 0.6866292060829511,
+      "AUC_ROC": 0.9773017912637795,
+      "AUC_PR": 0.8790963105836288,
+      "clDice": 0.8111190327863987
+    },
+    "Normal": {
+      "Accuracy": 0.966023896140436,
+      "Sensitivity": 0.8334396403103201,
+      "Specificity": 0.9822648545763164,
+      "Precision": 0.8551081150812178,
+      "F1_Dice": 0.8430843307543319,
+      "IoU": 0.7310178293383047,
+      "AUC_ROC": 0.9864482780069898,
+      "AUC_PR": 0.928409852278473,
+      "clDice": 0.8649088371225484
+    }
+  },
+  "num_test_images": 200,
+  "images_per_disease": {
+    "AMD": 50,
+    "DR": 50,
+    "Glaucoma": 50,
+    "Normal": 50
+  },
+  "model": "CAR-UNet + DA",
+  "run": "car_unet_da_seed1",
+  "seed": 1,
+  "parameters": 32436406,
+  "best_epoch": 20,
+  "best_val_dice": 0.8718852496996512,
+  "train_minutes": 121.49,
+  "test_seconds_per_image": 0.752,
+  "config": {
+    "model": "car_unet_da",
+    "seed": 1,
+    "epochs": 30,
+    "batch_size": 8,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "patches_per_img": 6,
+    "base_filters": 64,
+    "inference_batch": 16,
+    "limit_images": 0,
+    "tag": "",
+    "in_patch_size": 284,
+    "out_patch_size": 100,
+    "loss": "0.5*BCE + 0.5*Dice",
+    "attention": "dual",
+    "optimizer": "Adam",
+    "scheduler": "CosineAnnealingLR(T_max=epochs)",
+    "split": "disease-stratified 480/120, split_seed=42",
+    "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+    "device": "cuda"
+  }
+}

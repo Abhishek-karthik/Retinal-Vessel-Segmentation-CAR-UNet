@@ -87,11 +87,17 @@ def preprocess_image(image: np.ndarray, clip_limit: float = 2.0, tile_grid_size:
     Returns:
         np.ndarray: Preprocessed float32 image with shape (H, W) and values in [0.0, 1.0]
     """
+    return normalize_image(preprocess_image_uint8(image, clip_limit=clip_limit, tile_grid_size=tile_grid_size))
+
+def preprocess_image_uint8(image: np.ndarray, clip_limit: float = 2.0, tile_grid_size: tuple = (8, 8)) -> np.ndarray:
+    """
+    Steps 1-3 of preprocess_image (green channel, CLAHE, bilateral filter) WITHOUT the final
+    normalisation, as uint8. normalize_image() of this output equals preprocess_image() exactly;
+    caching the uint8 version uses 4x less memory (important for 1024x1024 images).
+    """
     green = extract_green_channel(image)
     clahe = apply_clahe(green, clip_limit=clip_limit, tile_grid_size=tile_grid_size)
-    denoised = apply_noise_reduction(clahe, method='bilateral')
-    normalized = normalize_image(denoised)
-    return normalized
+    return apply_noise_reduction(clahe, method='bilateral')
 
 def generate_fov_mask(image: np.ndarray, threshold: int = 10) -> np.ndarray:
     """

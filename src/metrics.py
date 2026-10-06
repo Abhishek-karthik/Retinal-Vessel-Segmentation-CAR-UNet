@@ -58,3 +58,21 @@ def compute_fov_metrics(pred_prob: np.ndarray, ground_truth: np.ndarray, fov_mas
         "FP": int(fp),
         "FN": int(fn)
     }
+
+
+def compute_cldice(pred_bin: np.ndarray, ground_truth: np.ndarray, fov_mask: np.ndarray) -> float:
+    """
+    Centerline Dice (clDice, Shit et al. 2021) on binary masks inside the FOV: measures how well
+    vessel CONNECTIVITY / centrelines are preserved (thin vessels count as much as thick ones).
+    """
+    from skimage.morphology import skeletonize
+    inside = fov_mask > 0.5
+    pred = (pred_bin > 0.5) & inside
+    gt = (ground_truth > 0.5) & inside
+    if pred.sum() == 0 or gt.sum() == 0:
+        return 0.0
+    skel_pred = skeletonize(pred)
+    skel_gt = skeletonize(gt)
+    tprec = (skel_pred & gt).sum() / max(skel_pred.sum(), 1)
+    tsens = (skel_gt & pred).sum() / max(skel_gt.sum(), 1)
+    return float(2 * tprec * tsens / (tprec + tsens + 1e-8))

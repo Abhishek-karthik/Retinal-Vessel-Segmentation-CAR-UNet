@@ -32,16 +32,20 @@ def process_single_pair(args):
     return True
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Prepare FIVES: copy originals and resize to a working resolution")
+    parser.add_argument("--size", type=int, default=512, help="Output size (512 -> data/FIVES_resized, otherwise data/FIVES_<size>)")
+    args = parser.parse_args()
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     
     raw_root = os.path.join(base_dir, "data", "FIVES A Fundus Image Dataset for AI-based Vessel Segmentation", "FIVES A Fundus Image Dataset for AI-based Vessel Segmentation")
     
     fives_dir = os.path.join(base_dir, "data", "FIVES")
-    resized_dir = os.path.join(base_dir, "data", "FIVES_resized")
+    resized_dir = os.path.join(base_dir, "data", "FIVES_resized" if args.size == 512 else f"FIVES_{args.size}")
     outputs_dir = os.path.join(base_dir, "outputs")
     os.makedirs(outputs_dir, exist_ok=True)
-    
-    target_size = (512, 512) # (width, height)
+
+    target_size = (args.size, args.size) # (width, height)
     num_workers = min(16, (os.cpu_count() or 4) * 2)
     
     print("=" * 60)
@@ -128,11 +132,11 @@ def main():
         overlay[mask_bool] = [0, 255, 0] # Green vessels
         
         axes[i, 0].imshow(rgb)
-        axes[i, 0].set_title(f"Train Image: {fname}\n(512x512 RGB)", fontsize=11)
+        axes[i, 0].set_title(f"Train Image: {fname}\n({args.size}x{args.size} RGB)", fontsize=11)
         axes[i, 0].axis('off')
-        
+
         axes[i, 1].imshow(mask, cmap='gray')
-        axes[i, 1].set_title(f"Ground Truth Mask: {fname}\n(512x512 Binary)", fontsize=11)
+        axes[i, 1].set_title(f"Ground Truth Mask: {fname}\n({args.size}x{args.size} Binary)", fontsize=11)
         axes[i, 1].axis('off')
         
         axes[i, 2].imshow(overlay)
@@ -140,7 +144,7 @@ def main():
         axes[i, 2].axis('off')
         
     plt.tight_layout()
-    check_fig_path = os.path.join(outputs_dir, "fives_dataset_check.png")
+    check_fig_path = os.path.join(outputs_dir, "fives_dataset_check.png" if args.size == 512 else f"fives_dataset_check_{args.size}.png")
     plt.savefig(check_fig_path, dpi=200, bbox_inches='tight')
     plt.close()
     print(f"Saved dataset verification figure to: {check_fig_path}")

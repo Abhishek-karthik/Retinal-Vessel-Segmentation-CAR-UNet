@@ -10,7 +10,7 @@ import numpy as np
 from PIL import Image
 import cv2
 
-from src.preprocessing_fives import preprocess_image, apply_elastic_transform, generate_fov_mask
+from src.preprocessing_fives import preprocess_image, preprocess_image_uint8, apply_elastic_transform, generate_fov_mask
 
 DISEASE_NAMES = {"A": "AMD", "D": "DR", "G": "Glaucoma", "N": "Normal"}
 
@@ -132,11 +132,11 @@ class FIVESPatchDataset(Dataset):
         for img_path, mask_path in image_pairs:
             raw_rgb = cv2.imread(img_path)
             raw_rgb = cv2.cvtColor(raw_rgb, cv2.COLOR_BGR2RGB)
-            self.prep_imgs.append(preprocess_image(raw_rgb))
+            self.prep_imgs.append(preprocess_image_uint8(raw_rgb))  # cached as uint8 (4x less memory)
 
             raw_mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-            self.gt_masks.append((raw_mask > 128).astype(np.float32))
-            self.fov_masks.append(generate_fov_mask(raw_rgb))
+            self.gt_masks.append((raw_mask > 128).astype(np.uint8))
+            self.fov_masks.append(generate_fov_mask(raw_rgb).astype(np.uint8))
 
         self.resample()
 
@@ -149,8 +149,9 @@ class FIVESPatchDataset(Dataset):
             all_img_patches.append(imgs)
             all_mask_patches.append(masks)
 
-        self.images = np.concatenate(all_img_patches, axis=0) # Shape: (N, in_patch_size, in_patch_size)
-        self.masks = np.concatenate(all_mask_patches, axis=0)   # Shape: (N, out_patch_size, out_patch_size)
+        # Convert to float32 exactly as preprocess_image / the float masks would give
+        self.images = np.concatenate(all_img_patches, axis=0).astype(np.float32) / 255.0 # (N, in_patch_size, in_patch_size)
+        self.masks = np.concatenate(all_mask_patches, axis=0).astype(np.float32)          # (N, out_patch_size, out_patch_size)
 
     def __len__(self):
         return len(self.images)
@@ -161,7 +162,7 @@ class FIVESPatchDataset(Dataset):
         
         if self.augment and self.mode == 'train':
             if np.random.rand() < 0.35:
-                img_p, mask_p = apply_elastic_transform(img_p, mask_p, alpha=25.0, sigma=4.0)
+                img_p, mask_p = apply_elastic_transform(img_p, mask_p, alpha=25.0, sigma=4.0, random_state=np.random)  # seeded global RNG
             if np.random.rand() > 0.5:
                 img_p = np.fliplr(img_p)
                 mask_p = np.fliplr(mask_p)
