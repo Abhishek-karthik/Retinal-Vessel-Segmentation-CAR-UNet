@@ -725,3 +725,572 @@ Epoch [05/30]  265.2s | lr 9.57e-04 | train loss 0.1589 | val Dice 0.8300 Sens 0
 Epoch [06/30]  242.1s | lr 9.33e-04 | train loss 0.1515 | val Dice 0.8436 Sens 0.8463 Spec 0.9828  <- best
 Epoch [07/30]  229.8s | lr 9.05e-04 | train loss 0.1508 | val Dice 0.8392 Sens 0.7954 Spec 0.9893
 Epoch [08/30]  229.4s | lr 8.72e-04 | train loss 0.1456 | val Dice 0.8359 Sens 0.8072 Spec 0.9866
+Epoch [09/30]  229.5s | lr 8.35e-04 | train loss 0.1435 | val Dice 0.8530 Sens 0.8339 Spec 0.9870  <- best
+Epoch [10/30]  242.5s | lr 7.94e-04 | train loss 0.1416 | val Dice 0.8356 Sens 0.8328 Spec 0.9827
+Epoch [11/30]  242.3s | lr 7.50e-04 | train loss 0.1418 | val Dice 0.8406 Sens 0.8267 Spec 0.9850
+Epoch [12/30]  241.8s | lr 7.03e-04 | train loss 0.1394 | val Dice 0.8457 Sens 0.8119 Spec 0.9884
+Epoch [13/30]  242.4s | lr 6.55e-04 | train loss 0.1375 | val Dice 0.8525 Sens 0.8808 Spec 0.9804
+Epoch [14/30]  243.4s | lr 6.04e-04 | train loss 0.1369 | val Dice 0.8316 Sens 0.8221 Spec 0.9834
+Epoch [15/30]  240.6s | lr 5.52e-04 | train loss 0.1368 | val Dice 0.8430 Sens 0.8272 Spec 0.9855
+Epoch [16/30]  241.7s | lr 5.00e-04 | train loss 0.1338 | val Dice 0.8553 Sens 0.8416 Spec 0.9865  <- best
+Epoch [17/30]  242.0s | lr 4.48e-04 | train loss 0.1353 | val Dice 0.8717 Sens 0.8695 Spec 0.9867  <- best
+Epoch [18/30]  239.7s | lr 3.96e-04 | train loss 0.1299 | val Dice 0.8615 Sens 0.8396 Spec 0.9882
+Epoch [19/30]  241.5s | lr 3.45e-04 | train loss 0.1303 | val Dice 0.8490 Sens 0.8467 Spec 0.9844
+Epoch [20/30]  240.0s | lr 2.97e-04 | train loss 0.1296 | val Dice 0.8604 Sens 0.8560 Spec 0.9859
+Epoch [21/30]  247.3s | lr 2.50e-04 | train loss 0.1294 | val Dice 0.8458 Sens 0.8305 Spec 0.9856
+Epoch [22/30]  248.1s | lr 2.06e-04 | train loss 0.1293 | val Dice 0.8599 Sens 0.8864 Spec 0.9814
+Epoch [23/30]  242.4s | lr 1.65e-04 | train loss 0.1264 | val Dice 0.8546 Sens 0.8485 Spec 0.9854
+Epoch [24/30]  239.1s | lr 1.28e-04 | train loss 0.1274 | val Dice 0.8570 Sens 0.8463 Spec 0.9861
+Epoch [25/30]  240.9s | lr 9.55e-05 | train loss 0.1276 | val Dice 0.8682 Sens 0.8770 Spec 0.9849
+Epoch [26/30]  238.9s | lr 6.70e-05 | train loss 0.1240 | val Dice 0.8684 Sens 0.8744 Spec 0.9854
+Epoch [27/30]  240.3s | lr 4.32e-05 | train loss 0.1253 | val Dice 0.8650 Sens 0.8709 Spec 0.9850
+Epoch [28/30]  240.2s | lr 2.45e-05 | train loss 0.1260 | val Dice 0.8635 Sens 0.8669 Spec 0.9851
+Epoch [29/30]  240.9s | lr 1.09e-05 | train loss 0.1225 | val Dice 0.8648 Sens 0.8673 Spec 0.9853
+Epoch [30/30]  241.4s | lr 2.74e-06 | train loss 0.1233 | val Dice 0.8652 Sens 0.8683 Spec 0.9853
+Training finished in 121.5 min. Best val Dice 0.8717 at epoch 17.
+Loaded best checkpoint: epoch 17, val Dice 0.8717
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA (seed 2) on 200 FIVES test images ---
+    Accuracy: 0.9737 +/- 0.0084
+ Sensitivity: 0.8304 +/- 0.1186
+ Specificity: 0.9864 +/- 0.0057
+   Precision: 0.8647 +/- 0.0388
+     F1_Dice: 0.8416 +/- 0.0985
+         IoU: 0.7353 +/- 0.1059
+     AUC_ROC: 0.9858 +/- 0.0210
+      AUC_PR: 0.9226 +/- 0.0903
+      clDice: 0.8648 +/- 0.1063
+Per-disease Dice: AMD 0.8694, DR 0.8591, Glaucoma 0.7960, Normal 0.8418
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_seed2
+
+[run] car_unet_da_cldice_seed2
+======================================================================
+CAR-UNet + DA + clDice on FIVES | run: car_unet_da_cldice_seed2 | device: cuda
+{
+  "model": "car_unet_da_cldice",
+  "seed": 2,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "cpu": false,
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice)",
+  "resolution": 512,
+  "scored_at": 512,
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  256.4s | lr 1.00e-03 | train loss 0.2736 | val Dice 0.7339 Sens 0.7747 Spec 0.9645  <- best
+Epoch [02/30]  246.3s | lr 9.97e-04 | train loss 0.1861 | val Dice 0.8005 Sens 0.7445 Spec 0.9878  <- best
+Epoch [03/30]  245.4s | lr 9.89e-04 | train loss 0.1627 | val Dice 0.8062 Sens 0.7879 Spec 0.9821  <- best
+Epoch [04/30]  244.5s | lr 9.76e-04 | train loss 0.1508 | val Dice 0.8275 Sens 0.8211 Spec 0.9825  <- best
+Epoch [05/30]  246.4s | lr 9.57e-04 | train loss 0.1459 | val Dice 0.8498 Sens 0.8076 Spec 0.9903  <- best
+Epoch [06/30]  244.8s | lr 9.33e-04 | train loss 0.1411 | val Dice 0.8213 Sens 0.7940 Spec 0.9850
+Epoch [07/30]  244.8s | lr 9.05e-04 | train loss 0.1420 | val Dice 0.8494 Sens 0.8490 Spec 0.9837
+Epoch [08/30]  245.5s | lr 8.72e-04 | train loss 0.1360 | val Dice 0.8083 Sens 0.7703 Spec 0.9857
+Epoch [09/30]  245.5s | lr 8.35e-04 | train loss 0.1348 | val Dice 0.8212 Sens 0.7942 Spec 0.9849
+Epoch [10/30]  244.8s | lr 7.94e-04 | train loss 0.1329 | val Dice 0.8415 Sens 0.8411 Spec 0.9830
+Epoch [11/30]  244.2s | lr 7.50e-04 | train loss 0.1311 | val Dice 0.8507 Sens 0.8376 Spec 0.9858  <- best
+Epoch [12/30]  246.3s | lr 7.03e-04 | train loss 0.1329 | val Dice 0.8499 Sens 0.8451 Spec 0.9846
+Epoch [13/30]  245.9s | lr 6.55e-04 | train loss 0.1276 | val Dice 0.8304 Sens 0.8559 Spec 0.9780
+Epoch [14/30]  245.7s | lr 6.04e-04 | train loss 0.1291 | val Dice 0.8538 Sens 0.8576 Spec 0.9840  <- best
+Epoch [15/30]  246.0s | lr 5.52e-04 | train loss 0.1261 | val Dice 0.8415 Sens 0.8349 Spec 0.9840
+Epoch [16/30]  245.8s | lr 5.00e-04 | train loss 0.1236 | val Dice 0.8397 Sens 0.8573 Spec 0.9804
+Epoch [17/30]  245.2s | lr 4.48e-04 | train loss 0.1233 | val Dice 0.8576 Sens 0.8874 Spec 0.9806  <- best
+Epoch [18/30]  245.6s | lr 3.96e-04 | train loss 0.1220 | val Dice 0.8508 Sens 0.8505 Spec 0.9840
+Epoch [19/30]  245.7s | lr 3.45e-04 | train loss 0.1209 | val Dice 0.8625 Sens 0.8927 Spec 0.9810  <- best
+Epoch [20/30]  245.8s | lr 2.97e-04 | train loss 0.1204 | val Dice 0.8583 Sens 0.8735 Spec 0.9827
+Epoch [21/30]  245.3s | lr 2.50e-04 | train loss 0.1196 | val Dice 0.8506 Sens 0.8625 Spec 0.9823
+Epoch [22/30]  244.9s | lr 2.06e-04 | train loss 0.1197 | val Dice 0.8609 Sens 0.8664 Spec 0.9842
+Epoch [23/30]  245.8s | lr 1.65e-04 | train loss 0.1179 | val Dice 0.8626 Sens 0.8956 Spec 0.9808  <- best
+Epoch [24/30]  245.2s | lr 1.28e-04 | train loss 0.1177 | val Dice 0.8484 Sens 0.8774 Spec 0.9798
+Epoch [25/30]  245.5s | lr 9.55e-05 | train loss 0.1167 | val Dice 0.8568 Sens 0.8808 Spec 0.9814
+Epoch [26/30]  244.4s | lr 6.70e-05 | train loss 0.1153 | val Dice 0.8600 Sens 0.8860 Spec 0.9813
+Epoch [27/30]  245.9s | lr 4.32e-05 | train loss 0.1145 | val Dice 0.8637 Sens 0.8809 Spec 0.9831  <- best
+Epoch [28/30]  245.7s | lr 2.45e-05 | train loss 0.1150 | val Dice 0.8560 Sens 0.8810 Spec 0.9812
+Epoch [29/30]  245.6s | lr 1.09e-05 | train loss 0.1130 | val Dice 0.8628 Sens 0.8858 Spec 0.9822
+Epoch [30/30]  243.7s | lr 2.74e-06 | train loss 0.1145 | val Dice 0.8614 Sens 0.8833 Spec 0.9822
+Training finished in 122.9 min. Best val Dice 0.8637 at epoch 27.
+Loaded best checkpoint: epoch 27, val Dice 0.8637
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA + clDice (seed 2) on 200 FIVES test images ---
+    Accuracy: 0.9720 +/- 0.0084
+ Sensitivity: 0.8447 +/- 0.1103
+ Specificity: 0.9832 +/- 0.0065
+   Precision: 0.8392 +/- 0.0394
+     F1_Dice: 0.8375 +/- 0.0900
+         IoU: 0.7277 +/- 0.0957
+     AUC_ROC: 0.9873 +/- 0.0146
+      AUC_PR: 0.9219 +/- 0.0836
+      clDice: 0.8761 +/- 0.0979
+Per-disease Dice: AMD 0.8604, DR 0.8538, Glaucoma 0.7956, Normal 0.8404
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_cldice_seed2
+# FIVES Test Results (all models trained with identical settings)
+
+Metrics are computed per image inside the field of view (threshold 0.5) and averaged over all test images.
+With more than one seed, values are mean ± standard deviation across seeds.
+
+## Overall
+
+| Model | Dataset | Seeds | Test images | Parameters | Accuracy | Sensitivity | Specificity | Precision | F1_Dice | IoU | AUC_ROC | AUC_PR | clDice |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| U-Net | FIVES | 3 | 200 | 31036481 | 0.9723 ± 0.0005 | 0.8247 ± 0.0078 | 0.9852 ± 0.0008 | 0.8573 ± 0.0047 | 0.8344 ± 0.0034 | 0.7246 ± 0.0050 | 0.9847 ± 0.0008 | 0.9174 ± 0.0024 | 0.8593 ± 0.0026 |
+| CAR-UNet | FIVES | 3 | 200 | 32435132 | 0.9728 ± 0.0007 | 0.8310 ± 0.0126 | 0.9855 ± 0.0018 | 0.8557 ± 0.0151 | 0.8382 ± 0.0031 | 0.7295 ± 0.0043 | 0.9860 ± 0.0014 | 0.9202 ± 0.0044 | 0.8626 ± 0.0057 |
+| CAR-UNet + DA | FIVES | 3 | 200 | 32436406 | 0.9735 ± 0.0005 | 0.8308 ± 0.0005 | 0.9862 ± 0.0005 | 0.8620 ± 0.0049 | 0.8408 ± 0.0021 | 0.7339 ± 0.0034 | 0.9860 ± 0.0001 | 0.9218 ± 0.0012 | 0.8631 ± 0.0020 |
+| CAR-UNet + DA + clDice | FIVES | 3 | 200 | 32436406 | 0.9723 ± 0.0009 | 0.8432 ± 0.0071 | 0.9835 ± 0.0004 | 0.8430 ± 0.0048 | 0.8382 ± 0.0050 | 0.7293 ± 0.0077 | 0.9866 ± 0.0007 | 0.9207 ± 0.0032 | 0.8718 ± 0.0041 |
+
+## Per disease
+
+| Model | Disease | Images | F1_Dice | Sensitivity | Specificity | AUC_ROC | clDice |
+|---|---|---|---|---|---|---|---|
+| U-Net | AMD | 50 | 0.8630 | 0.8653 | 0.9840 | 0.9890 | 0.8876 |
+| CAR-UNet | AMD | 50 | 0.8643 | 0.8710 | 0.9838 | 0.9895 | 0.8884 |
+| CAR-UNet + DA | AMD | 50 | 0.8679 | 0.8702 | 0.9849 | 0.9898 | 0.8901 |
+| CAR-UNet + DA + clDice | AMD | 50 | 0.8626 | 0.8791 | 0.9820 | 0.9896 | 0.8956 |
+| U-Net | DR | 50 | 0.8550 | 0.8475 | 0.9876 | 0.9894 | 0.8805 |
+| CAR-UNet | DR | 50 | 0.8562 | 0.8544 | 0.9872 | 0.9901 | 0.8807 |
+| CAR-UNet + DA | DR | 50 | 0.8592 | 0.8522 | 0.9881 | 0.9902 | 0.8819 |
+| CAR-UNet + DA + clDice | DR | 50 | 0.8552 | 0.8590 | 0.9863 | 0.9903 | 0.8899 |
+| U-Net | Glaucoma | 50 | 0.7887 | 0.7604 | 0.9889 | 0.9761 | 0.8097 |
+| CAR-UNet | Glaucoma | 50 | 0.7958 | 0.7764 | 0.9885 | 0.9786 | 0.8178 |
+| CAR-UNet + DA | Glaucoma | 50 | 0.7956 | 0.7721 | 0.9892 | 0.9775 | 0.8142 |
+| CAR-UNet + DA + clDice | Glaucoma | 50 | 0.7947 | 0.7877 | 0.9868 | 0.9801 | 0.8252 |
+| U-Net | Normal | 50 | 0.8309 | 0.8257 | 0.9802 | 0.9842 | 0.8594 |
+| CAR-UNet | Normal | 50 | 0.8363 | 0.8222 | 0.9826 | 0.9860 | 0.8635 |
+| CAR-UNet + DA | Normal | 50 | 0.8405 | 0.8286 | 0.9825 | 0.9863 | 0.8662 |
+| CAR-UNet + DA + clDice | Normal | 50 | 0.8402 | 0.8471 | 0.9792 | 0.9865 | 0.8767 |
+
+## Is the difference real?
+
+### CAR-UNet vs U-Net
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet − U-Net = +0.0038
+- CAR-UNet better on 154 / 200 images
+- p = 2.308e-14 (significant at 0.05)
+- clDice: mean CAR-UNet − U-Net = +0.0033, better on 114 / 200 images, p = 9.44e-05
+- Sensitivity: mean CAR-UNet − U-Net = +0.0063, better on 125 / 200 images, p = 2.045e-06
+
+Per-seed Dice difference (CAR-UNet − U-Net), same seed for both models:
+- seed 0: +0.0106, seed 1: -0.0007, seed 2: +0.0014
+- mean +0.0038 ± 0.0060; CAR-UNet better in 2 / 3 seeds
+- seed-to-seed std of Dice: U-Net 0.0034, CAR-UNet 0.0031
+
+### CAR-UNet + DA vs CAR-UNet
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet + DA − CAR-UNet = +0.0026
+- CAR-UNet + DA better on 167 / 200 images
+- p = 2.136e-19 (significant at 0.05)
+- clDice: mean CAR-UNet + DA − CAR-UNet = +0.0005, better on 126 / 200 images, p = 1.662e-05
+- Sensitivity: mean CAR-UNet + DA − CAR-UNet = -0.0002, better on 85 / 200 images, p = 0.3468
+
+Per-seed Dice difference (CAR-UNet + DA − CAR-UNet), same seed for both models:
+- seed 0: -0.0028, seed 1: +0.0075, seed 2: +0.0031
+- mean +0.0026 ± 0.0052; CAR-UNet + DA better in 2 / 3 seeds
+- seed-to-seed std of Dice: CAR-UNet 0.0031, CAR-UNet + DA 0.0021
+
+### CAR-UNet + DA + clDice vs CAR-UNet
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet + DA + clDice − CAR-UNet = +0.0000
+- CAR-UNet + DA + clDice better on 65 / 200 images
+- p = 0.01443 (significant at 0.05)
+- clDice: mean CAR-UNet + DA + clDice − CAR-UNet = +0.0093, better on 186 / 200 images, p = 8.449e-29
+- Sensitivity: mean CAR-UNet + DA + clDice − CAR-UNet = +0.0122, better on 162 / 200 images, p = 6.785e-24
+
+Per-seed Dice difference (CAR-UNet + DA + clDice − CAR-UNet), same seed for both models:
+- seed 0: -0.0076, seed 1: +0.0086, seed 2: -0.0009
+- mean +0.0000 ± 0.0082; CAR-UNet + DA + clDice better in 1 / 3 seeds
+- seed-to-seed std of Dice: CAR-UNet 0.0031, CAR-UNet + DA + clDice 0.0050
+
+### CAR-UNet + DA + clDice vs CAR-UNet + DA
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet + DA + clDice − CAR-UNet + DA = -0.0026
+- CAR-UNet + DA + clDice better on 40 / 200 images
+- p = 1.617e-13 (significant at 0.05)
+- clDice: mean CAR-UNet + DA + clDice − CAR-UNet + DA = +0.0088, better on 191 / 200 images, p = 1.602e-32
+- Sensitivity: mean CAR-UNet + DA + clDice − CAR-UNet + DA = +0.0124, better on 177 / 200 images, p = 2.054e-27
+
+Per-seed Dice difference (CAR-UNet + DA + clDice − CAR-UNet + DA), same seed for both models:
+- seed 0: -0.0049, seed 1: +0.0011, seed 2: -0.0041
+- mean -0.0026 ± 0.0032; CAR-UNet + DA + clDice better in 1 / 3 seeds
+- seed-to-seed std of Dice: CAR-UNet + DA 0.0021, CAR-UNet + DA + clDice 0.0050
+
+
+## Individual runs
+
+| model | seed | num_test_images | best_epoch | parameters | epochs | train_minutes | Accuracy | Sensitivity | Specificity | Precision | F1_Dice | IoU | AUC_ROC | AUC_PR | clDice |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| CAR-UNet | 0 | 200 | 28 | 32435132 | 30 | 96.3200 | 0.9729 | 0.8411 | 0.9847 | 0.8493 | 0.8411 | 0.7331 | 0.9871 | 0.9233 | 0.8685 |
+| CAR-UNet | 1 | 200 | 13 | 32435132 | 30 | 89.1500 | 0.9721 | 0.8352 | 0.9843 | 0.8448 | 0.8349 | 0.7248 | 0.9845 | 0.9151 | 0.8571 |
+| CAR-UNet | 2 | 200 | 22 | 32435132 | 30 | 87.2000 | 0.9735 | 0.8168 | 0.9875 | 0.8729 | 0.8385 | 0.7307 | 0.9865 | 0.9220 | 0.8620 |
+| CAR-UNet + DA | 0 | 200 | 24 | 32436406 | 30 | 120.4900 | 0.9729 | 0.8307 | 0.9856 | 0.8563 | 0.8384 | 0.7301 | 0.9860 | 0.9205 | 0.8636 |
+| CAR-UNet + DA | 1 | 200 | 20 | 32436406 | 30 | 121.4900 | 0.9738 | 0.8314 | 0.9866 | 0.8649 | 0.8424 | 0.7364 | 0.9860 | 0.9224 | 0.8608 |
+| CAR-UNet + DA | 2 | 200 | 17 | 32436406 | 30 | 121.4800 | 0.9737 | 0.8304 | 0.9864 | 0.8647 | 0.8416 | 0.7353 | 0.9858 | 0.9226 | 0.8648 |
+| CAR-UNet + DA + clDice | 0 | 200 | 24 | 32436406 | 30 | 123.7600 | 0.9716 | 0.8355 | 0.9835 | 0.8414 | 0.8335 | 0.7224 | 0.9860 | 0.9171 | 0.8679 |
+| CAR-UNet + DA + clDice | 1 | 200 | 20 | 32436406 | 30 | 123.6000 | 0.9733 | 0.8495 | 0.9840 | 0.8483 | 0.8435 | 0.7376 | 0.9866 | 0.9230 | 0.8716 |
+| CAR-UNet + DA + clDice | 2 | 200 | 27 | 32436406 | 30 | 122.8800 | 0.9720 | 0.8447 | 0.9832 | 0.8392 | 0.8375 | 0.7277 | 0.9873 | 0.9219 | 0.8761 |
+| U-Net | 0 | 200 | 24 | 31036481 | 30 | 77.9400 | 0.9718 | 0.8166 | 0.9856 | 0.8583 | 0.8305 | 0.7190 | 0.9846 | 0.9160 | 0.8580 |
+| U-Net | 1 | 200 | 13 | 31036481 | 30 | 73.7200 | 0.9723 | 0.8321 | 0.9843 | 0.8522 | 0.8356 | 0.7262 | 0.9840 | 0.9161 | 0.8576 |
+| U-Net | 2 | 200 | 22 | 31036481 | 30 | 62.6100 | 0.9728 | 0.8254 | 0.9857 | 0.8614 | 0.8370 | 0.7286 | 0.9855 | 0.9201 | 0.8623 |
+
+[queue] seed 2 improvements end 2026-10-07 03:42:06 exit=0
+[queue2] start post_dacldice 2026-10-07 03:42:19
+[post] car_unet_da_cldice_seed0 (cuda)
+  validation: best threshold single 0.52 (Dice 0.8630 vs 0.8630 at 0.5) | TTA 0.50 (Dice 0.8612) [239s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 1.45e-04 -> OK
+  base     thr 0.50: Dice 0.8335 | Sens 0.8355 | Prec 0.8414 | clDice 0.8679 | hi-res Dice 0.8584 clDice 0.8876
+  thr      thr 0.52: Dice 0.8334 | Sens 0.8322 | Prec 0.8446 | clDice 0.8673
+  tta      thr 0.50: Dice 0.8326 | Sens 0.8328 | Prec 0.8427 | clDice 0.8681
+  tta_thr  thr 0.50: Dice 0.8326 | Sens 0.8328 | Prec 0.8427 | clDice 0.8681 | hi-res Dice 0.8604 clDice 0.8888
+[post] car_unet_da_cldice_seed1 (cuda)
+  validation: best threshold single 0.54 (Dice 0.8719 vs 0.8718 at 0.5) | TTA 0.50 (Dice 0.8597) [239s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 1.69e-04 -> OK
+  base     thr 0.50: Dice 0.8435 | Sens 0.8495 | Prec 0.8483 | clDice 0.8715 | hi-res Dice 0.8580 clDice 0.8864
+  thr      thr 0.54: Dice 0.8435 | Sens 0.8434 | Prec 0.8550 | clDice 0.8704
+  tta      thr 0.50: Dice 0.8334 | Sens 0.8354 | Prec 0.8413 | clDice 0.8686
+  tta_thr  thr 0.50: Dice 0.8334 | Sens 0.8354 | Prec 0.8413 | clDice 0.8686 | hi-res Dice 0.8620 clDice 0.8890
+[post] car_unet_da_cldice_seed2 (cuda)
+  validation: best threshold single 0.52 (Dice 0.8638 vs 0.8637 at 0.5) | TTA 0.54 (Dice 0.8630) [234s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 2.11e-04 -> OK
+  base     thr 0.50: Dice 0.8375 | Sens 0.8447 | Prec 0.8392 | clDice 0.8761 | hi-res Dice 0.8633 clDice 0.8944
+  thr      thr 0.52: Dice 0.8375 | Sens 0.8418 | Prec 0.8422 | clDice 0.8757
+  tta      thr 0.50: Dice 0.8371 | Sens 0.8429 | Prec 0.8398 | clDice 0.8742
+  tta_thr  thr 0.54: Dice 0.8367 | Sens 0.8358 | Prec 0.8465 | clDice 0.8726 | hi-res Dice 0.8663 clDice 0.8938
+[queue2] end post_dacldice 2026-10-07 04:26:45 rc=0
+[queue2] start train_1024 2026-10-07 04:26:45
+
+[run] car_unet_da_cldice_1024_seed0
+======================================================================
+CAR-UNet + DA + clDice @1024 on FIVES | run: car_unet_da_cldice_1024_seed0 | device: cuda
+{
+  "model": "car_unet_da_cldice_1024",
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "cpu": false,
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice), 20 skeleton iterations (vessels are 2x wider at 1024)",
+  "resolution": 1024,
+  "scored_at": 512,
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  402.8s | lr 1.00e-03 | train loss 0.2816 | val Dice 0.7153 Sens 0.6805 Spec 0.9794  <- best
+Epoch [02/30]  395.8s | lr 9.97e-04 | train loss 0.1704 | val Dice 0.7669 Sens 0.7194 Spec 0.9848  <- best
+Epoch [03/30]  405.3s | lr 9.89e-04 | train loss 0.1531 | val Dice 0.8206 Sens 0.7797 Spec 0.9876  <- best
+Epoch [04/30]  393.7s | lr 9.76e-04 | train loss 0.1394 | val Dice 0.7988 Sens 0.7871 Spec 0.9808
+Epoch [05/30]  392.8s | lr 9.57e-04 | train loss 0.1247 | val Dice 0.7528 Sens 0.6404 Spec 0.9949
+Epoch [06/30]  393.2s | lr 9.33e-04 | train loss 0.1245 | val Dice 0.8270 Sens 0.7727 Spec 0.9903  <- best
+Epoch [07/30]  392.1s | lr 9.05e-04 | train loss 0.1197 | val Dice 0.8077 Sens 0.7408 Spec 0.9908
+Epoch [08/30]  392.3s | lr 8.72e-04 | train loss 0.1186 | val Dice 0.8264 Sens 0.8465 Spec 0.9784
+Epoch [09/30]  392.9s | lr 8.35e-04 | train loss 0.1156 | val Dice 0.8302 Sens 0.7989 Spec 0.9872  <- best
+Epoch [10/30]  392.3s | lr 7.94e-04 | train loss 0.1070 | val Dice 0.8253 Sens 0.8018 Spec 0.9852
+Epoch [11/30]  392.4s | lr 7.50e-04 | train loss 0.1114 | val Dice 0.8154 Sens 0.7863 Spec 0.9857
+Epoch [12/30]  391.5s | lr 7.03e-04 | train loss 0.1052 | val Dice 0.8497 Sens 0.8360 Spec 0.9861  <- best
+Epoch [13/30]  392.1s | lr 6.55e-04 | train loss 0.1022 | val Dice 0.8505 Sens 0.8454 Spec 0.9849  <- best
+Epoch [14/30]  394.3s | lr 6.04e-04 | train loss 0.1035 | val Dice 0.8384 Sens 0.8172 Spec 0.9861
+Epoch [15/30]  392.1s | lr 5.52e-04 | train loss 0.1003 | val Dice 0.8510 Sens 0.8464 Spec 0.9849  <- best
+Epoch [16/30]  393.5s | lr 5.00e-04 | train loss 0.0982 | val Dice 0.8534 Sens 0.8435 Spec 0.9860  <- best
+Epoch [17/30]  391.4s | lr 4.48e-04 | train loss 0.0966 | val Dice 0.8502 Sens 0.8245 Spec 0.9879
+Epoch [18/30]  392.7s | lr 3.96e-04 | train loss 0.0936 | val Dice 0.8606 Sens 0.8293 Spec 0.9897  <- best
+Epoch [19/30]  393.6s | lr 3.45e-04 | train loss 0.0927 | val Dice 0.8502 Sens 0.8296 Spec 0.9870
+Epoch [20/30]  393.8s | lr 2.97e-04 | train loss 0.0920 | val Dice 0.8499 Sens 0.8449 Spec 0.9846
+Epoch [21/30]  392.7s | lr 2.50e-04 | train loss 0.0922 | val Dice 0.8521 Sens 0.8343 Spec 0.9870
+Epoch [22/30]  392.5s | lr 2.06e-04 | train loss 0.0891 | val Dice 0.8576 Sens 0.8291 Spec 0.9890
+Epoch [23/30]  393.6s | lr 1.65e-04 | train loss 0.0902 | val Dice 0.8648 Sens 0.8732 Spec 0.9846  <- best
+Epoch [24/30]  393.2s | lr 1.28e-04 | train loss 0.0862 | val Dice 0.8718 Sens 0.8598 Spec 0.9882  <- best
+Epoch [25/30]  392.7s | lr 9.55e-05 | train loss 0.0823 | val Dice 0.8594 Sens 0.8456 Spec 0.9871
+Epoch [26/30]  392.7s | lr 6.70e-05 | train loss 0.0833 | val Dice 0.8670 Sens 0.8639 Spec 0.9863
+Epoch [27/30]  392.8s | lr 4.32e-05 | train loss 0.0847 | val Dice 0.8647 Sens 0.8564 Spec 0.9867
+Epoch [28/30]  394.4s | lr 2.45e-05 | train loss 0.0814 | val Dice 0.8678 Sens 0.8584 Spec 0.9873
+Epoch [29/30]  393.5s | lr 1.09e-05 | train loss 0.0836 | val Dice 0.8671 Sens 0.8617 Spec 0.9866
+Epoch [30/30]  393.6s | lr 2.74e-06 | train loss 0.0790 | val Dice 0.8662 Sens 0.8630 Spec 0.9863
+Training finished in 196.9 min. Best val Dice 0.8718 at epoch 24.
+Loaded best checkpoint: epoch 24, val Dice 0.8718
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA + clDice @1024 (seed 0) on 200 FIVES test images ---
+    Accuracy: 0.9747 +/- 0.0071
+ Sensitivity: 0.8272 +/- 0.1132
+ Specificity: 0.9878 +/- 0.0050
+   Precision: 0.8746 +/- 0.0442
+     F1_Dice: 0.8453 +/- 0.0963
+         IoU: 0.7404 +/- 0.1036
+     AUC_ROC: 0.9875 +/- 0.0169
+      AUC_PR: 0.9263 +/- 0.0916
+      clDice: 0.8751 +/- 0.1021
+Per-disease Dice: AMD 0.8701, DR 0.8591, Glaucoma 0.7958, Normal 0.8561
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_cldice_1024_seed0
+# FIVES Test Results (all models trained with identical settings)
+
+Metrics are computed per image inside the field of view (threshold 0.5) and averaged over all test images.
+With more than one seed, values are mean ± standard deviation across seeds.
+
+## Overall
+
+| Model | Dataset | Seeds | Test images | Parameters | Accuracy | Sensitivity | Specificity | Precision | F1_Dice | IoU | AUC_ROC | AUC_PR | clDice |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| U-Net | FIVES | 3 | 200 | 31036481 | 0.9723 ± 0.0005 | 0.8247 ± 0.0078 | 0.9852 ± 0.0008 | 0.8573 ± 0.0047 | 0.8344 ± 0.0034 | 0.7246 ± 0.0050 | 0.9847 ± 0.0008 | 0.9174 ± 0.0024 | 0.8593 ± 0.0026 |
+| CAR-UNet | FIVES | 3 | 200 | 32435132 | 0.9728 ± 0.0007 | 0.8310 ± 0.0126 | 0.9855 ± 0.0018 | 0.8557 ± 0.0151 | 0.8382 ± 0.0031 | 0.7295 ± 0.0043 | 0.9860 ± 0.0014 | 0.9202 ± 0.0044 | 0.8626 ± 0.0057 |
+| CAR-UNet + DA | FIVES | 3 | 200 | 32436406 | 0.9735 ± 0.0005 | 0.8308 ± 0.0005 | 0.9862 ± 0.0005 | 0.8620 ± 0.0049 | 0.8408 ± 0.0021 | 0.7339 ± 0.0034 | 0.9860 ± 0.0001 | 0.9218 ± 0.0012 | 0.8631 ± 0.0020 |
+| CAR-UNet + DA + clDice | FIVES | 3 | 200 | 32436406 | 0.9723 ± 0.0009 | 0.8432 ± 0.0071 | 0.9835 ± 0.0004 | 0.8430 ± 0.0048 | 0.8382 ± 0.0050 | 0.7293 ± 0.0077 | 0.9866 ± 0.0007 | 0.9207 ± 0.0032 | 0.8718 ± 0.0041 |
+
+## Per disease
+
+| Model | Disease | Images | F1_Dice | Sensitivity | Specificity | AUC_ROC | clDice |
+|---|---|---|---|---|---|---|---|
+| U-Net | AMD | 50 | 0.8630 | 0.8653 | 0.9840 | 0.9890 | 0.8876 |
+| CAR-UNet | AMD | 50 | 0.8643 | 0.8710 | 0.9838 | 0.9895 | 0.8884 |
+| CAR-UNet + DA | AMD | 50 | 0.8679 | 0.8702 | 0.9849 | 0.9898 | 0.8901 |
+| CAR-UNet + DA + clDice | AMD | 50 | 0.8626 | 0.8791 | 0.9820 | 0.9896 | 0.8956 |
+| U-Net | DR | 50 | 0.8550 | 0.8475 | 0.9876 | 0.9894 | 0.8805 |
+| CAR-UNet | DR | 50 | 0.8562 | 0.8544 | 0.9872 | 0.9901 | 0.8807 |
+| CAR-UNet + DA | DR | 50 | 0.8592 | 0.8522 | 0.9881 | 0.9902 | 0.8819 |
+| CAR-UNet + DA + clDice | DR | 50 | 0.8552 | 0.8590 | 0.9863 | 0.9903 | 0.8899 |
+| U-Net | Glaucoma | 50 | 0.7887 | 0.7604 | 0.9889 | 0.9761 | 0.8097 |
+| CAR-UNet | Glaucoma | 50 | 0.7958 | 0.7764 | 0.9885 | 0.9786 | 0.8178 |
+| CAR-UNet + DA | Glaucoma | 50 | 0.7956 | 0.7721 | 0.9892 | 0.9775 | 0.8142 |
+| CAR-UNet + DA + clDice | Glaucoma | 50 | 0.7947 | 0.7877 | 0.9868 | 0.9801 | 0.8252 |
+| U-Net | Normal | 50 | 0.8309 | 0.8257 | 0.9802 | 0.9842 | 0.8594 |
+| CAR-UNet | Normal | 50 | 0.8363 | 0.8222 | 0.9826 | 0.9860 | 0.8635 |
+| CAR-UNet + DA | Normal | 50 | 0.8405 | 0.8286 | 0.9825 | 0.9863 | 0.8662 |
+| CAR-UNet + DA + clDice | Normal | 50 | 0.8402 | 0.8471 | 0.9792 | 0.9865 | 0.8767 |
+
+## Is the difference real?
+
+### CAR-UNet vs U-Net
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet − U-Net = +0.0038
+- CAR-UNet better on 154 / 200 images
+- p = 2.308e-14 (significant at 0.05)
+- clDice: mean CAR-UNet − U-Net = +0.0033, better on 114 / 200 images, p = 9.44e-05
+- Sensitivity: mean CAR-UNet − U-Net = +0.0063, better on 125 / 200 images, p = 2.045e-06
+
+Per-seed Dice difference (CAR-UNet − U-Net), same seed for both models:
+- seed 0: +0.0106, seed 1: -0.0007, seed 2: +0.0014
+- mean +0.0038 ± 0.0060; CAR-UNet better in 2 / 3 seeds
+- seed-to-seed std of Dice: U-Net 0.0034, CAR-UNet 0.0031
+
+### CAR-UNet + DA vs CAR-UNet
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet + DA − CAR-UNet = +0.0026
+- CAR-UNet + DA better on 167 / 200 images
+- p = 2.136e-19 (significant at 0.05)
+- clDice: mean CAR-UNet + DA − CAR-UNet = +0.0005, better on 126 / 200 images, p = 1.662e-05
+- Sensitivity: mean CAR-UNet + DA − CAR-UNet = -0.0002, better on 85 / 200 images, p = 0.3468
+
+Per-seed Dice difference (CAR-UNet + DA − CAR-UNet), same seed for both models:
+- seed 0: -0.0028, seed 1: +0.0075, seed 2: +0.0031
+- mean +0.0026 ± 0.0052; CAR-UNet + DA better in 2 / 3 seeds
+- seed-to-seed std of Dice: CAR-UNet 0.0031, CAR-UNet + DA 0.0021
+
+### CAR-UNet + DA + clDice vs CAR-UNet
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet + DA + clDice − CAR-UNet = +0.0000
+- CAR-UNet + DA + clDice better on 65 / 200 images
+- p = 0.01443 (significant at 0.05)
+- clDice: mean CAR-UNet + DA + clDice − CAR-UNet = +0.0093, better on 186 / 200 images, p = 8.449e-29
+- Sensitivity: mean CAR-UNet + DA + clDice − CAR-UNet = +0.0122, better on 162 / 200 images, p = 6.785e-24
+
+Per-seed Dice difference (CAR-UNet + DA + clDice − CAR-UNet), same seed for both models:
+- seed 0: -0.0076, seed 1: +0.0086, seed 2: -0.0009
+- mean +0.0000 ± 0.0082; CAR-UNet + DA + clDice better in 1 / 3 seeds
+- seed-to-seed std of Dice: CAR-UNet 0.0031, CAR-UNet + DA + clDice 0.0050
+
+### CAR-UNet + DA + clDice vs CAR-UNet + DA
+
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1, 2]):
+- mean Dice CAR-UNet + DA + clDice − CAR-UNet + DA = -0.0026
+- CAR-UNet + DA + clDice better on 40 / 200 images
+- p = 1.617e-13 (significant at 0.05)
+- clDice: mean CAR-UNet + DA + clDice − CAR-UNet + DA = +0.0088, better on 191 / 200 images, p = 1.602e-32
+- Sensitivity: mean CAR-UNet + DA + clDice − CAR-UNet + DA = +0.0124, better on 177 / 200 images, p = 2.054e-27
+
+Per-seed Dice difference (CAR-UNet + DA + clDice − CAR-UNet + DA), same seed for both models:
+- seed 0: -0.0049, seed 1: +0.0011, seed 2: -0.0041
+- mean -0.0026 ± 0.0032; CAR-UNet + DA + clDice better in 1 / 3 seeds
+- seed-to-seed std of Dice: CAR-UNet + DA 0.0021, CAR-UNet + DA + clDice 0.0050
+
+
+## Individual runs
+
+| model | seed | num_test_images | best_epoch | parameters | epochs | train_minutes | Accuracy | Sensitivity | Specificity | Precision | F1_Dice | IoU | AUC_ROC | AUC_PR | clDice |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| CAR-UNet | 0 | 200 | 28 | 32435132 | 30 | 96.3200 | 0.9729 | 0.8411 | 0.9847 | 0.8493 | 0.8411 | 0.7331 | 0.9871 | 0.9233 | 0.8685 |
+| CAR-UNet | 1 | 200 | 13 | 32435132 | 30 | 89.1500 | 0.9721 | 0.8352 | 0.9843 | 0.8448 | 0.8349 | 0.7248 | 0.9845 | 0.9151 | 0.8571 |
+| CAR-UNet | 2 | 200 | 22 | 32435132 | 30 | 87.2000 | 0.9735 | 0.8168 | 0.9875 | 0.8729 | 0.8385 | 0.7307 | 0.9865 | 0.9220 | 0.8620 |
+| CAR-UNet + DA | 0 | 200 | 24 | 32436406 | 30 | 120.4900 | 0.9729 | 0.8307 | 0.9856 | 0.8563 | 0.8384 | 0.7301 | 0.9860 | 0.9205 | 0.8636 |
+| CAR-UNet + DA | 1 | 200 | 20 | 32436406 | 30 | 121.4900 | 0.9738 | 0.8314 | 0.9866 | 0.8649 | 0.8424 | 0.7364 | 0.9860 | 0.9224 | 0.8608 |
+| CAR-UNet + DA | 2 | 200 | 17 | 32436406 | 30 | 121.4800 | 0.9737 | 0.8304 | 0.9864 | 0.8647 | 0.8416 | 0.7353 | 0.9858 | 0.9226 | 0.8648 |
+| CAR-UNet + DA + clDice | 0 | 200 | 24 | 32436406 | 30 | 123.7600 | 0.9716 | 0.8355 | 0.9835 | 0.8414 | 0.8335 | 0.7224 | 0.9860 | 0.9171 | 0.8679 |
+| CAR-UNet + DA + clDice | 1 | 200 | 20 | 32436406 | 30 | 123.6000 | 0.9733 | 0.8495 | 0.9840 | 0.8483 | 0.8435 | 0.7376 | 0.9866 | 0.9230 | 0.8716 |
+| CAR-UNet + DA + clDice | 2 | 200 | 27 | 32436406 | 30 | 122.8800 | 0.9720 | 0.8447 | 0.9832 | 0.8392 | 0.8375 | 0.7277 | 0.9873 | 0.9219 | 0.8761 |
+| U-Net | 0 | 200 | 24 | 31036481 | 30 | 77.9400 | 0.9718 | 0.8166 | 0.9856 | 0.8583 | 0.8305 | 0.7190 | 0.9846 | 0.9160 | 0.8580 |
+| U-Net | 1 | 200 | 13 | 31036481 | 30 | 73.7200 | 0.9723 | 0.8321 | 0.9843 | 0.8522 | 0.8356 | 0.7262 | 0.9840 | 0.9161 | 0.8576 |
+| U-Net | 2 | 200 | 22 | 31036481 | 30 | 62.6100 | 0.9728 | 0.8254 | 0.9857 | 0.8614 | 0.8370 | 0.7286 | 0.9855 | 0.9201 | 0.8623 |
+
+[queue2] end train_1024 2026-10-07 07:52:50 rc=0
+[queue2] start post_1024 2026-10-07 07:52:50
+[post] car_unet_da_cldice_1024_seed0 (cuda)
+  validation: best threshold single 0.44 (Dice 0.8731 vs 0.8718 at 0.5) | TTA 0.40 (Dice 0.8667) [763s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 2.82e-04 -> OK
+  base     thr 0.50: Dice 0.8453 | Sens 0.8272 | Prec 0.8746 | clDice 0.8751 | hi-res Dice 0.8809 clDice 0.8959
+  thr      thr 0.44: Dice 0.8467 | Sens 0.8453 | Prec 0.8579 | clDice 0.8754
+  tta      thr 0.50: Dice 0.8389 | Sens 0.8191 | Prec 0.8698 | clDice 0.8737
+  tta_thr  thr 0.40: Dice 0.8415 | Sens 0.8489 | Prec 0.8433 | clDice 0.8748 | hi-res Dice 0.8815 clDice 0.9014
+[queue2] end post_1024 2026-10-07 08:30:26 rc=0
+[queue2] start post_carunet 2026-10-07 08:30:26
+[post] car_unet_seed0 (cuda)
+  validation: best threshold single 0.50 (Dice 0.8681 vs 0.8681 at 0.5) | TTA 0.46 (Dice 0.8654) [198s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 1.44e-04 -> OK
+  base     thr 0.50: Dice 0.8411 | Sens 0.8411 | Prec 0.8493 | clDice 0.8685 | hi-res Dice 0.8675 clDice 0.8900
+  thr      thr 0.50: Dice 0.8411 | Sens 0.8411 | Prec 0.8493 | clDice 0.8685
+  tta      thr 0.50: Dice 0.8386 | Sens 0.8377 | Prec 0.8481 | clDice 0.8678
+  tta_thr  thr 0.46: Dice 0.8389 | Sens 0.8441 | Prec 0.8420 | clDice 0.8686 | hi-res Dice 0.8664 clDice 0.8925
+[post] car_unet_seed1 (cuda)
+  validation: best threshold single 0.56 (Dice 0.8683 vs 0.8679 at 0.5) | TTA 0.48 (Dice 0.8549) [196s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 1.40e-04 -> OK
+  base     thr 0.50: Dice 0.8349 | Sens 0.8352 | Prec 0.8448 | clDice 0.8571 | hi-res Dice 0.8433 clDice 0.8700
+  thr      thr 0.56: Dice 0.8347 | Sens 0.8264 | Prec 0.8540 | clDice 0.8560
+  tta      thr 0.50: Dice 0.8237 | Sens 0.8179 | Prec 0.8402 | clDice 0.8524
+  tta_thr  thr 0.48: Dice 0.8240 | Sens 0.8238 | Prec 0.8346 | clDice 0.8532 | hi-res Dice 0.8506 clDice 0.8744
+[post] car_unet_seed2 (cuda)
+  validation: best threshold single 0.38 (Dice 0.8695 vs 0.8686 at 0.5) | TTA 0.36 (Dice 0.8626) [197s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 1.81e-04 -> OK
+  base     thr 0.50: Dice 0.8385 | Sens 0.8168 | Prec 0.8729 | clDice 0.8621 | hi-res Dice 0.8608 clDice 0.8773
+  thr      thr 0.38: Dice 0.8404 | Sens 0.8354 | Prec 0.8558 | clDice 0.8652
+  tta      thr 0.50: Dice 0.8318 | Sens 0.8087 | Prec 0.8679 | clDice 0.8602
+  tta_thr  thr 0.36: Dice 0.8350 | Sens 0.8365 | Prec 0.8436 | clDice 0.8649 | hi-res Dice 0.8588 clDice 0.8878
+[queue2] end post_carunet 2026-10-07 09:09:03 rc=0
+[queue2] start post_da 2026-10-07 09:09:03
+[post] car_unet_da_seed0 (cuda)
+  validation: best threshold single 0.48 (Dice 0.8689 vs 0.8689 at 0.5) | TTA 0.46 (Dice 0.8645) [240s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 2.42e-04 -> OK
+  base     thr 0.50: Dice 0.8384 | Sens 0.8307 | Prec 0.8563 | clDice 0.8636 | hi-res Dice 0.8631 clDice 0.8829
+  thr      thr 0.48: Dice 0.8386 | Sens 0.8338 | Prec 0.8532 | clDice 0.8640
+  tta      thr 0.50: Dice 0.8353 | Sens 0.8260 | Prec 0.8549 | clDice 0.8636
+  tta_thr  thr 0.46: Dice 0.8358 | Sens 0.8334 | Prec 0.8480 | clDice 0.8646 | hi-res Dice 0.8636 clDice 0.8869
+[post] car_unet_da_seed1 (cuda)
+  validation: best threshold single 0.46 (Dice 0.8720 vs 0.8719 at 0.5) | TTA 0.40 (Dice 0.8608) [235s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 1.02e-03 -> MISMATCH
+  base     thr 0.50: Dice 0.8424 | Sens 0.8314 | Prec 0.8649 | clDice 0.8609 | hi-res Dice 0.8609 clDice 0.8778
+  thr      thr 0.46: Dice 0.8426 | Sens 0.8374 | Prec 0.8585 | clDice 0.8615
+  tta      thr 0.50: Dice 0.8324 | Sens 0.8188 | Prec 0.8561 | clDice 0.8594
+  tta_thr  thr 0.40: Dice 0.8334 | Sens 0.8399 | Prec 0.8358 | clDice 0.8613 | hi-res Dice 0.8600 clDice 0.8855
+[post] car_unet_da_seed2 (cuda)
+  validation: best threshold single 0.48 (Dice 0.8717 vs 0.8717 at 0.5) | TTA 0.46 (Dice 0.8613) [221s]
+  test progress [50/200]
+  test progress [100/200]
+  test progress [150/200]
+  test progress [200/200]
+  sanity check vs original evaluation: max |Dice difference| = 1.15e-04 -> OK
+  base     thr 0.50: Dice 0.8416 | Sens 0.8304 | Prec 0.8647 | clDice 0.8648 | hi-res Dice 0.8600 clDice 0.8790
+  thr      thr 0.48: Dice 0.8418 | Sens 0.8335 | Prec 0.8614 | clDice 0.8651
+  tta      thr 0.50: Dice 0.8326 | Sens 0.8194 | Prec 0.8570 | clDice 0.8606
+  tta_thr  thr 0.46: Dice 0.8334 | Sens 0.8281 | Prec 0.8492 | clDice 0.8618 | hi-res Dice 0.8624 clDice 0.8846
+Sanity check failed for: ['car_unet_da_seed1']
+[queue2] end post_da 2026-10-07 09:48:34 rc=1
+[queue2] all done 2026-10-07 09:48:34
+[auto-stop] 2026-10-07 09:50:10 GPU work stopped for the day (resumable)
