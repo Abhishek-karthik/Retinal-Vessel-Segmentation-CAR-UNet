@@ -22,7 +22,7 @@ RUNS_DIR = os.environ.get("FIVES_RUNS_DIR", os.path.join(BASE_DIR, "results", "r
 OUT_DIR = os.environ.get("FIVES_OUT_DIR", os.path.join(BASE_DIR, "results"))
 METRICS = ["Accuracy", "Sensitivity", "Specificity", "Precision", "F1_Dice", "IoU", "AUC_ROC", "AUC_PR", "clDice"]
 MODEL_ORDER = ["U-Net", "CAR-UNet", "CAR-UNet + DA", "CAR-UNet + DA + clDice", "CAR-UNet + DA + clDice @1024"]
-RUN_PATTERN = re.compile(r"^[a-z_]+?_seed\d+$")   # tagged / smoke runs (e.g. *_seed0_smoke) are excluded
+RUN_PATTERN = re.compile(r"^[a-z0-9_]+?_seed\d+$")   # tagged / smoke runs (e.g. *_seed0_smoke) are excluded
 # (baseline, candidate) pairs tested for significance; pairs with a missing model are skipped
 COMPARISONS = [("U-Net", "CAR-UNet"), ("CAR-UNet", "CAR-UNet + DA"), ("CAR-UNet", "CAR-UNet + DA + clDice"),
                ("CAR-UNet + DA", "CAR-UNet + DA + clDice"), ("CAR-UNet + DA + clDice", "CAR-UNet + DA + clDice @1024"),

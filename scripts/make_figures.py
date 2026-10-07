@@ -116,7 +116,7 @@ def comparison_figures(keys, seed, setting, select_key, output, zoom_output, dev
             if col == 0:  # mark the zoom window on the full image
                 axes[row, 0].add_patch(plt.Rectangle((x, y), ZOOM, ZOOM, fill=False, edgecolor="yellow", linewidth=1.5))
 
-    set_name = "threshold 0.5" if setting == "base" else "TTA + tuned threshold" if setting == "tta_thr" else setting
+    set_name = {"base": "threshold 0.5", "thr": "tuned threshold", "tta": "TTA", "tta_thr": "TTA + tuned threshold"}[setting]
     title = f"FIVES test set — typical case per disease (median {labels[select_key]} Dice), seed {seed}, {set_name}"
     for f, out, extra in [(fig, output, ""), (zfig, zoom_output, f" — zoom on the {ZOOM}x{ZOOM} region with most thin vessels (yellow box)")]:
         f.suptitle(title + extra, fontsize=14, fontweight="bold", y=0.995)
