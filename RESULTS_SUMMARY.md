@@ -38,4 +38,4 @@ The first FIVES results (U-Net Dice 0.7744, CAR-UNet 0.7916) are superseded: the
 
 ## 6. Improvements over the paper
 
-Four improvements were added on top of CAR-UNet (dual attention, clDice loss, 1024×1024 resolution, validation-chosen threshold). Final pipeline (2 seeds so far): **Dice 0.8446 ± 0.0028, clDice 0.8754** vs CAR-UNet 0.8382 / 0.8626 (+0.0066 Dice, p = 2×10⁻¹³; clDice better on 175 / 200 images). Full ablation and tests: [`IMPROVEMENTS.md`](IMPROVEMENTS.md) and `results/POST_RESULTS.md`.
+Four improvements were added on top of CAR-UNet (dual attention, clDice loss, 1024×1024 resolution, validation-chosen threshold). Final pipeline (3 seeds): **Dice 0.8436 ± 0.0027, clDice 0.8751** vs CAR-UNet 0.8382 / 0.8626 (+0.0054 Dice, p = 5×10⁻¹⁰; clDice better on 175 / 200 images, p = 5×10⁻²⁵). Full ablation and tests: [`IMPROVEMENTS.md`](IMPROVEMENTS.md) and `results/POST_RESULTS.md`.
