@@ -42,5 +42,5 @@ Thresholds are tuned on the 120 validation images only. `hires_*` = scored again
 | CAR-UNet + DA + Improvement 4 (setting chosen on validation) | 3 | 0.8410 ± 0.0021 | 0.8349 ± 0.0022 | 0.8577 ± 0.0042 | 0.9860 ± 0.0001 | 0.8635 ± 0.0019 | n/a |
 | CAR-UNet + DA + clDice | 3 | 0.8382 ± 0.0050 | 0.8432 ± 0.0071 | 0.8430 ± 0.0048 | 0.9866 ± 0.0007 | 0.8718 ± 0.0041 | 0.8599 ± 0.0030 |
 | CAR-UNet + DA + clDice + Improvement 4 (setting chosen on validation) | 3 | 0.8381 ± 0.0051 | 0.8391 ± 0.0061 | 0.8473 ± 0.0068 | 0.9866 ± 0.0007 | 0.8711 ± 0.0043 | n/a |
-| CAR-UNet + DA + clDice @1024 | 1 | 0.8453 | 0.8272 | 0.8746 | 0.9875 | 0.8751 | 0.8809 |
+| CAR-UNet + DA + clDice @1024 | 2 | 0.8425 ± 0.0039 | 0.8286 ± 0.0020 | 0.8678 ± 0.0096 | 0.9876 ± 0.0000 | 0.8740 ± 0.0015 | 0.8809 |
 | CAR-UNet + DA + clDice @1024 + Improvement 4 (setting chosen on validation) | 1 | 0.8467 | 0.8453 | 0.8579 | 0.9875 | 0.8754 | n/a |

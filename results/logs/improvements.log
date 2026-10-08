@@ -1294,3 +1294,179 @@ Sanity check failed for: ['car_unet_da_seed1']
 [queue2] end post_da 2026-10-07 09:48:34 rc=1
 [queue2] all done 2026-10-07 09:48:34
 [auto-stop] 2026-10-07 09:50:10 GPU work stopped for the day (resumable)
+[queue3] 1024 seed 1 start 2026-10-07 16:45:15
+
+[run] car_unet_da_cldice_1024_seed1
+======================================================================
+CAR-UNet + DA + clDice @1024 on FIVES | run: car_unet_da_cldice_1024_seed1 | device: cuda
+{
+  "model": "car_unet_da_cldice_1024",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "cpu": false,
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice), 20 skeleton iterations (vessels are 2x wider at 1024)",
+  "resolution": 1024,
+  "scored_at": 512,
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  402.5s | lr 1.00e-03 | train loss 0.3073 | val Dice 0.5139 Sens 0.3704 Spec 0.9968  <- best
+Epoch [02/30]  370.1s | lr 9.97e-04 | train loss 0.2053 | val Dice 0.7237 Sens 0.6733 Spec 0.9821  <- best
+Epoch [03/30]  364.5s | lr 9.89e-04 | train loss 0.1658 | val Dice 0.7986 Sens 0.7901 Spec 0.9803  <- best
+Epoch [04/30]  363.3s | lr 9.76e-04 | train loss 0.1487 | val Dice 0.7934 Sens 0.7433 Spec 0.9874
+Epoch [05/30]  362.2s | lr 9.57e-04 | train loss 0.1361 | val Dice 0.7953 Sens 0.7685 Spec 0.9837
+Epoch [06/30]  368.2s | lr 9.33e-04 | train loss 0.1265 | val Dice 0.8099 Sens 0.8643 Spec 0.9714  <- best
+Epoch [07/30]  363.6s | lr 9.05e-04 | train loss 0.1286 | val Dice 0.7878 Sens 0.7136 Spec 0.9908
+Epoch [08/30]  362.1s | lr 8.72e-04 | train loss 0.1212 | val Dice 0.8096 Sens 0.7921 Spec 0.9832
+Epoch [09/30]  361.6s | lr 8.35e-04 | train loss 0.1164 | val Dice 0.8202 Sens 0.7829 Spec 0.9873  <- best
+Epoch [10/30]  362.2s | lr 7.94e-04 | train loss 0.1156 | val Dice 0.8282 Sens 0.8193 Spec 0.9832  <- best
+[queue3] 1024 seed 1 end 2026-10-07 17:50:11
+[auto-stop] 2026-10-07 17:50:11 GPU work stopped (resumable)
+[queue4] start train_1024_s1_s2 2026-10-07 23:06:31
+
+[run] car_unet_da_cldice_1024_seed1
+======================================================================
+CAR-UNet + DA + clDice @1024 on FIVES | run: car_unet_da_cldice_1024_seed1 | device: cuda
+{
+  "model": "car_unet_da_cldice_1024",
+  "seed": 1,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "cpu": false,
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice), 20 skeleton iterations (vessels are 2x wider at 1024)",
+  "resolution": 1024,
+  "scored_at": 512,
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+Resumed from epoch 10 (best val Dice 0.8282 at epoch 10)
+Loading TRAIN dataset (480 images, 6 patches/image)...
+Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [11/30]  616.1s | lr 7.50e-04 | train loss 0.1091 | val Dice 0.8337 Sens 0.8213 Spec 0.9842  <- best
+Epoch [12/30]  502.4s | lr 7.03e-04 | train loss 0.1049 | val Dice 0.8398 Sens 0.8022 Spec 0.9888  <- best
+Epoch [13/30]  429.6s | lr 6.55e-04 | train loss 0.1059 | val Dice 0.8433 Sens 0.8167 Spec 0.9876  <- best
+Epoch [14/30]  429.5s | lr 6.04e-04 | train loss 0.1005 | val Dice 0.8327 Sens 0.7871 Spec 0.9892
+Epoch [15/30]  405.4s | lr 5.52e-04 | train loss 0.0985 | val Dice 0.8341 Sens 0.8104 Spec 0.9865
+Epoch [16/30]  368.3s | lr 5.00e-04 | train loss 0.0933 | val Dice 0.8526 Sens 0.8502 Spec 0.9846  <- best
+Epoch [17/30]  448.6s | lr 4.48e-04 | train loss 0.0979 | val Dice 0.8417 Sens 0.8309 Spec 0.9848
+Epoch [18/30] 4852.7s | lr 3.96e-04 | train loss 0.0931 | val Dice 0.8506 Sens 0.8348 Spec 0.9864
+Epoch [19/30] 13592.5s | lr 3.45e-04 | train loss 0.0931 | val Dice 0.8502 Sens 0.8258 Spec 0.9877
+Epoch [20/30]  449.9s | lr 2.97e-04 | train loss 0.0934 | val Dice 0.8545 Sens 0.8533 Spec 0.9847  <- best
+Epoch [21/30]  423.6s | lr 2.50e-04 | train loss 0.0898 | val Dice 0.8568 Sens 0.8361 Spec 0.9877  <- best
+Epoch [22/30]  422.4s | lr 2.06e-04 | train loss 0.0858 | val Dice 0.8492 Sens 0.8293 Spec 0.9868
+Epoch [23/30]  423.0s | lr 1.65e-04 | train loss 0.0892 | val Dice 0.8621 Sens 0.8573 Spec 0.9859  <- best
+Epoch [24/30]  424.5s | lr 1.28e-04 | train loss 0.0885 | val Dice 0.8581 Sens 0.8508 Spec 0.9858
+Epoch [25/30]  422.6s | lr 9.55e-05 | train loss 0.0800 | val Dice 0.8633 Sens 0.8571 Spec 0.9863  <- best
+Epoch [26/30]  422.8s | lr 6.70e-05 | train loss 0.0800 | val Dice 0.8662 Sens 0.8649 Spec 0.9859  <- best
+Epoch [27/30]  420.9s | lr 4.32e-05 | train loss 0.0805 | val Dice 0.8611 Sens 0.8576 Spec 0.9856
+Epoch [28/30]  422.8s | lr 2.45e-05 | train loss 0.0816 | val Dice 0.8653 Sens 0.8619 Spec 0.9862
+Epoch [29/30]  422.5s | lr 1.09e-05 | train loss 0.0834 | val Dice 0.8635 Sens 0.8620 Spec 0.9857
+Epoch [30/30]  421.4s | lr 2.74e-06 | train loss 0.0831 | val Dice 0.8665 Sens 0.8621 Spec 0.9864  <- best
+Training finished in 500.0 min. Best val Dice 0.8665 at epoch 30.
+Loaded best checkpoint: epoch 30, val Dice 0.8665
+
+Evaluating on 200 held-out test images...
+  Test progress: [25/200]
+  Test progress: [50/200]
+  Test progress: [75/200]
+  Test progress: [100/200]
+  Test progress: [125/200]
+  Test progress: [150/200]
+  Test progress: [175/200]
+  Test progress: [200/200]
+
+--- CAR-UNet + DA + clDice @1024 (seed 1) on 200 FIVES test images ---
+    Accuracy: 0.9734 +/- 0.0076
+ Sensitivity: 0.8300 +/- 0.1146
+ Specificity: 0.9860 +/- 0.0056
+   Precision: 0.8609 +/- 0.0384
+     F1_Dice: 0.8398 +/- 0.0972
+         IoU: 0.7322 +/- 0.1023
+     AUC_ROC: 0.9876 +/- 0.0175
+      AUC_PR: 0.9242 +/- 0.0908
+      clDice: 0.8729 +/- 0.1043
+Per-disease Dice: AMD 0.8637, DR 0.8561, Glaucoma 0.7898, Normal 0.8495
+Saved results to D:\sem 7\medical\Medical-Image-processing-Project-main\results\runs\car_unet_da_cldice_1024_seed1
+
+[run] car_unet_da_cldice_1024_seed2
+======================================================================
+CAR-UNet + DA + clDice @1024 on FIVES | run: car_unet_da_cldice_1024_seed2 | device: cuda
+{
+  "model": "car_unet_da_cldice_1024",
+  "seed": 2,
+  "epochs": 30,
+  "batch_size": 8,
+  "lr": 0.001,
+  "weight_decay": 1e-05,
+  "patches_per_img": 6,
+  "base_filters": 64,
+  "inference_batch": 16,
+  "limit_images": 0,
+  "tag": "",
+  "cpu": false,
+  "in_patch_size": 284,
+  "out_patch_size": 100,
+  "loss": "0.5*BCE + 0.5*(0.5*Dice + 0.5*clDice), 20 skeleton iterations (vessels are 2x wider at 1024)",
+  "resolution": 1024,
+  "scored_at": 512,
+  "attention": "dual",
+  "optimizer": "Adam",
+  "scheduler": "CosineAnnealingLR(T_max=epochs)",
+  "split": "disease-stratified 480/120, split_seed=42",
+  "selection": "best mean per-image validation Dice (full images, FOV, threshold 0.5)",
+  "device": "cuda"
+}
+======================================================================
+Parameters: 32,436,406
+[manual] 2026-10-08 06:35:51 stopped 1024 seed 2 (just started) to run Improvement 4 on seed 1 before the 07:30 stop; seed 2 will be trained in the next session
+[queue4] end train_1024_s1_s2 2026-10-08 06:35:51 rc=0
+[queue4] start post_1024_s1_s2 2026-10-08 06:35:51
+[post] car_unet_da_cldice_1024_seed1 (cuda)
+[queue5] start 2026-10-08 06:36:03
+[post] car_unet_da_cldice_1024_seed1 (cuda)
+[auto-stop] 2026-10-08 07:30:20 GPU work stopped (resumable)
+[queue4] end post_1024_s1_s2 2026-10-08 07:30:20 rc=0
+[queue4] skip summarize (stopped)
+[queue4] skip summarize_post (stopped)
+[queue4] skip fig_final (stopped)
+[queue4] skip fig_ablation (stopped)
+[queue5] post rc=127
+[queue4] all done 2026-10-08 07:30:20
+Saved D:\sem 7\medical\Medical-Image-processing-Project-main\outputs\improvement_curves.png
+Saved D:\sem 7\medical\Medical-Image-processing-Project-main\outputs\final_model_comparison.png
+Saved D:\sem 7\medical\Medical-Image-processing-Project-main\outputs\thin_vessel_zoom.png
+Examples: [('AMD', '31_A.png'), ('DR', '72_D.png'), ('Glaucoma', '104_G.png'), ('Normal', '156_N.png')]
+[queue5] all done 2026-10-08 07:31:17
