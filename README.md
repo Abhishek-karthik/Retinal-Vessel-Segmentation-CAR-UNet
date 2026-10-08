@@ -46,13 +46,12 @@ Each improvement fixes one weakness of the paper; they are added one at a time (
 | CAR-UNet (paper) | – | 3 | 0.8382 ± 0.0031 | 0.8310 | 0.8557 | 0.8626 |
 | + **Dual attention** (channel avg+max pooling + spatial) | channel attention only | 3 | 0.8408 ± 0.0021 | 0.8308 | 0.8620 | 0.8631 |
 | + **clDice loss** (vessel-skeleton overlap) | pixel-wise loss ignores connectivity | 3 | 0.8382 ± 0.0050 | 0.8432 | 0.8430 | 0.8718 |
-| + **1024×1024 resolution** | thin vessels lost at low resolution | 2* | 0.8425 ± 0.0039 | 0.8286 | 0.8678 | 0.8740 |
-| + **threshold chosen on validation** = final pipeline | fixed 0.5 threshold | 2* | **0.8446 ± 0.0028** | **0.8464** | 0.8534 | **0.8754** |
+| + **1024×1024 resolution** | thin vessels lost at low resolution | 3 | 0.8421 ± 0.0028 | 0.8326 | **0.8632** | 0.8742 |
+| + **threshold chosen on validation** = final pipeline | fixed 0.5 threshold | 3 | **0.8436 ± 0.0027** | **0.8465** | 0.8516 | **0.8751** |
 
-\*3rd seed in progress.
-
-- **Final pipeline vs CAR-UNet** (same seeds, same images): Dice **+0.0066** (p = 2×10⁻¹³), connectivity (clDice) **+0.0125**, better on 175 / 200 images (p = 2×10⁻²⁴).
-- Against the **1024×1024 ground truth** (thin vessels visible): Dice **0.8805** vs 0.8554 for CAR-UNet.
+- **Final pipeline vs CAR-UNet** (same seeds, same images): Dice **+0.0054** (p = 5×10⁻¹⁰), sensitivity **+0.0155**, connectivity (clDice) **+0.0125**, better on 175 / 200 images (p = 5×10⁻²⁵).
+- Against the **1024×1024 ground truth** (thin vessels visible): Dice **0.8796** vs 0.8572 for CAR-UNet.
+- Not improved: Glaucoma images (Dice 0.7947 vs 0.7958) and two very low-quality test images that every model fails on.
 - Honest negative result: flip test-time augmentation lowered Dice for most models, so it is only used when the validation set selects it.
 
 ![Final model vs CAR-UNet — zoom on thin vessels](outputs/thin_vessel_zoom.png)
