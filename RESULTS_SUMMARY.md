@@ -35,3 +35,7 @@ All results: **200 FIVES test images** (50 each AMD, DR, Glaucoma, Normal), metr
 ## 5. Earlier results
 
 The first FIVES results (U-Net Dice 0.7744, CAR-UNet 0.7916) are superseded: they were measured on only 50 test images (45 Glaucoma), with a validation set lacking DR and Glaucoma images and with different training settings per model. See `results/legacy_v1/README.md` and REVIEW2.md Section 11.
+
+## 6. Improvements over the paper
+
+Four improvements were added on top of CAR-UNet (dual attention, clDice loss, 1024×1024 resolution, validation-chosen threshold). Final pipeline (2 seeds so far): **Dice 0.8446 ± 0.0028, clDice 0.8754** vs CAR-UNet 0.8382 / 0.8626 (+0.0066 Dice, p = 2×10⁻¹³; clDice better on 175 / 200 images). Full ablation and tests: [`IMPROVEMENTS.md`](IMPROVEMENTS.md) and `results/POST_RESULTS.md`.

@@ -1,6 +1,6 @@
 # Review Slides — Content Outline
 
-*Slide-by-slide content for the improvement review. Numbers come from `results/RESULTS_TABLE.md` and `results/POST_RESULTS.md`. Rows marked (1 seed) will be updated when the remaining 1024 runs finish.*
+*Slide-by-slide content for the improvement review. Numbers come from `results/RESULTS_TABLE.md` and `results/POST_RESULTS.md`. Rows marked (2 seeds) will be updated when the third 1024 run finishes.*
 
 ---
 
@@ -38,15 +38,15 @@ Dataset: FIVES (Jin et al., Scientific Data 2022) — 800 fundus images, 4 disea
 ### Slide 6 — Improvement 3: 1024×1024 resolution (fixes W3)
 - Train and predict at 1024×1024 (from the 2048×2048 originals) instead of 512×512
 - Scored on the **same 512 ground truth** as all other models (fair comparison)
-- **Result (1 seed): Dice 0.8335 → 0.8453** vs the same model at 512, better on **178 / 200** images
-- Against the 1024 ground truth: **Dice 0.8584 → 0.8809** — thin vessels recovered
+- **Result (2 seeds): Dice +0.0040** vs the same model at 512 (better on **145 / 200** images, p = 5×10⁻¹⁰), precision +0.023
+- Against the 1024 ground truth: **Dice 0.8582 → 0.8805** — thin vessels recovered
 - Cost: ~1.6× training time
 
 ### Slide 7 — Improvement 4: smarter prediction (fixes W4)
 - Threshold tuned on the **validation set only**; flip test-time augmentation (TTA)
-- Tuned threshold: small gain (1024 model: threshold 0.44, **Dice 0.8467**, sensitivity +1.8 points)
-- **TTA did not help** — diagnostic: models segment flipped images up to ~2% worse, so averaging hurts
-- Final choice (made on validation): tuned threshold, no TTA
+- Tuned threshold: 0.44 for the 1024 models → **Dice +0.0021**, sensitivity +1.8 points (2 seeds)
+- **Flip TTA lowered Dice for most models** — diagnostic: they segment flipped images up to ~2% worse, so averaging hurts
+- The setting is always chosen **on validation**, so TTA is used only where it helps (1 of 2 final models)
 
 ### Slide 8 — Stronger evaluation (fixes W5)
 - 200 test images, 50 per disease; Dice, IoU, sensitivity, specificity, precision, AUC, **clDice**
@@ -60,8 +60,8 @@ Dataset: FIVES (Jin et al., Scientific Data 2022) — 800 fundus images, 4 disea
 | CAR-UNet (paper) | 0.8382 | 0.8310 | 0.8557 | 0.8626 |
 | + Dual Attention | 0.8408 | 0.8308 | 0.8620 | 0.8631 |
 | + clDice loss | 0.8382 | 0.8432 | 0.8430 | 0.8718 |
-| + 1024 resolution (1 seed) | 0.8453 | 0.8272 | 0.8746 | 0.8751 |
-| + tuned threshold (1 seed) | **0.8467** | 0.8453 | 0.8579 | **0.8754** |
+| + 1024 resolution (2 seeds) | 0.8425 | 0.8286 | 0.8678 | 0.8740 |
+| + tuned threshold = final (2 seeds) | **0.8446** | **0.8464** | 0.8534 | **0.8754** |
 
 ### Slide 10 — Visual results
 - `outputs/final_model_comparison.png` — CAR-UNet vs final model, typical image per disease, error maps
@@ -69,15 +69,15 @@ Dataset: FIVES (Jin et al., Scientific Data 2022) — 800 fundus images, 4 disea
 - `outputs/ablation_curves.png` — validation Dice / sensitivity during training
 
 ### Slide 11 — Per disease
-| Disease | CAR-UNet | Final (1024, 1 seed) |
+| Disease | CAR-UNet | Final pipeline (2 seeds) |
 |---|---|---|
-| AMD | 0.8643 | 0.8701 |
+| AMD | 0.8643 | 0.8677 |
 | DR | 0.8562 | 0.8591 |
-| Glaucoma | 0.7958 | 0.7958 |
-| Normal | 0.8363 | 0.8561 |
+| Glaucoma | 0.7958 | 0.7967 |
+| Normal | 0.8363 | 0.8551 |
 
 ### Slide 12 — Conclusions & limitations
-- Every weakness addressed; final model: **Dice 0.8467, clDice 0.8754** vs paper's CAR-UNet 0.8382 / 0.8626
-- Largest gain from higher resolution; clDice gives the best connectivity; dual attention the most consistent gain
-- Honest negative result: flip TTA does not help these models
+- Every weakness addressed; final pipeline: **Dice 0.8446, clDice 0.8754** vs paper's CAR-UNet 0.8382 / 0.8626 (+0.0066 Dice, +0.0125 clDice; clDice better on 175 / 200 images)
+- clDice gives the best connectivity; higher resolution the best precision and thin-vessel recovery; dual attention the most consistent gain
+- Honest negative result: flip TTA does not help most models
 - Limitations: two very low-quality images still fail; Glaucoma remains hardest; 1024 model costs ~1.6× training time
