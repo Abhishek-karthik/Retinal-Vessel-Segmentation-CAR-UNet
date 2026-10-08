@@ -1714,3 +1714,19 @@ CAR-UNet + DA + clDice @1024 on FIVES | run: car_unet_da_cldice_1024_seed2 | dev
 Parameters: 32,436,406
 Loading TRAIN dataset (480 images, 6 patches/image)...
 Train images: 480 (2880 patches/epoch) | Val images: 120 | Test images: 200
+Epoch [01/30]  366.5s | lr 1.00e-03 | train loss 0.2831 | val Dice 0.7014 Sens 0.6892 Spec 0.9736  <- best
+Epoch [02/30]  365.2s | lr 9.97e-04 | train loss 0.1735 | val Dice 0.7768 Sens 0.7233 Spec 0.9864  <- best
+Epoch [03/30]  357.5s | lr 9.89e-04 | train loss 0.1476 | val Dice 0.7905 Sens 0.7538 Spec 0.9845  <- best
+Epoch [04/30]  357.5s | lr 9.76e-04 | train loss 0.1337 | val Dice 0.8222 Sens 0.7809 Spec 0.9879  <- best
+Epoch [05/30]  364.3s | lr 9.57e-04 | train loss 0.1371 | val Dice 0.8201 Sens 0.8119 Spec 0.9824
+Epoch [06/30]  358.5s | lr 9.33e-04 | train loss 0.1244 | val Dice 0.8175 Sens 0.7934 Spec 0.9846
+Epoch [07/30]  358.4s | lr 9.05e-04 | train loss 0.1215 | val Dice 0.8156 Sens 0.7832 Spec 0.9858
+Epoch [08/30]  357.8s | lr 8.72e-04 | train loss 0.1161 | val Dice 0.8295 Sens 0.7987 Spec 0.9866  <- best
+Epoch [09/30]  357.7s | lr 8.35e-04 | train loss 0.1140 | val Dice 0.8090 Sens 0.7310 Spec 0.9928
+Epoch [10/30]  356.9s | lr 7.94e-04 | train loss 0.1091 | val Dice 0.8308 Sens 0.8063 Spec 0.9861  <- best
+Epoch [11/30]  357.2s | lr 7.50e-04 | train loss 0.1102 | val Dice 0.8276 Sens 0.7801 Spec 0.9892
+Epoch [12/30]  357.5s | lr 7.03e-04 | train loss 0.1009 | val Dice 0.8562 Sens 0.8438 Spec 0.9865  <- best
+Epoch [13/30]  357.6s | lr 6.55e-04 | train loss 0.1032 | val Dice 0.8330 Sens 0.7942 Spec 0.9882
+[queue6] end train_1024_s2 2026-10-08 13:50:20 rc=127
+[queue6] stopped after train_1024_s2
+[auto-stop] 2026-10-08 13:50:20 GPU work stopped (resumable)
