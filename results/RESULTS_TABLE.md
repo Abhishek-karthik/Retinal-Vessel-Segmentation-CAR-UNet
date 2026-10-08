@@ -11,7 +11,7 @@ With more than one seed, values are mean ± standard deviation across seeds.
 | CAR-UNet | FIVES | 3 | 200 | 32435132 | 0.9728 ± 0.0007 | 0.8310 ± 0.0126 | 0.9855 ± 0.0018 | 0.8557 ± 0.0151 | 0.8382 ± 0.0031 | 0.7295 ± 0.0043 | 0.9860 ± 0.0014 | 0.9202 ± 0.0044 | 0.8626 ± 0.0057 |
 | CAR-UNet + DA | FIVES | 3 | 200 | 32436406 | 0.9735 ± 0.0005 | 0.8308 ± 0.0005 | 0.9862 ± 0.0005 | 0.8620 ± 0.0049 | 0.8408 ± 0.0021 | 0.7339 ± 0.0034 | 0.9860 ± 0.0001 | 0.9218 ± 0.0012 | 0.8631 ± 0.0020 |
 | CAR-UNet + DA + clDice | FIVES | 3 | 200 | 32436406 | 0.9723 ± 0.0009 | 0.8432 ± 0.0071 | 0.9835 ± 0.0004 | 0.8430 ± 0.0048 | 0.8382 ± 0.0050 | 0.7293 ± 0.0077 | 0.9866 ± 0.0007 | 0.9207 ± 0.0032 | 0.8718 ± 0.0041 |
-| CAR-UNet + DA + clDice @1024 | FIVES | 1 | 200 | 32436406 | 0.9747 | 0.8272 | 0.9878 | 0.8746 | 0.8453 | 0.7404 | 0.9875 | 0.9263 | 0.8751 |
+| CAR-UNet + DA + clDice @1024 | FIVES | 2 | 200 | 32436406 | 0.9741 ± 0.0009 | 0.8286 ± 0.0020 | 0.9869 ± 0.0013 | 0.8678 ± 0.0096 | 0.8425 ± 0.0039 | 0.7363 ± 0.0058 | 0.9876 ± 0.0000 | 0.9252 ± 0.0014 | 0.8740 ± 0.0015 |
 
 ## Per disease
 
@@ -21,22 +21,22 @@ With more than one seed, values are mean ± standard deviation across seeds.
 | CAR-UNet | AMD | 50 | 0.8643 | 0.8710 | 0.9838 | 0.9895 | 0.8884 |
 | CAR-UNet + DA | AMD | 50 | 0.8679 | 0.8702 | 0.9849 | 0.9898 | 0.8901 |
 | CAR-UNet + DA + clDice | AMD | 50 | 0.8626 | 0.8791 | 0.9820 | 0.9896 | 0.8956 |
-| CAR-UNet + DA + clDice @1024 | AMD | 50 | 0.8701 | 0.8637 | 0.9865 | 0.9908 | 0.8989 |
+| CAR-UNet + DA + clDice @1024 | AMD | 50 | 0.8669 | 0.8642 | 0.9855 | 0.9908 | 0.8976 |
 | U-Net | DR | 50 | 0.8550 | 0.8475 | 0.9876 | 0.9894 | 0.8805 |
 | CAR-UNet | DR | 50 | 0.8562 | 0.8544 | 0.9872 | 0.9901 | 0.8807 |
 | CAR-UNet + DA | DR | 50 | 0.8592 | 0.8522 | 0.9881 | 0.9902 | 0.8819 |
 | CAR-UNet + DA + clDice | DR | 50 | 0.8552 | 0.8590 | 0.9863 | 0.9903 | 0.8899 |
-| CAR-UNet + DA + clDice @1024 | DR | 50 | 0.8591 | 0.8497 | 0.9885 | 0.9908 | 0.8879 |
+| CAR-UNet + DA + clDice @1024 | DR | 50 | 0.8576 | 0.8502 | 0.9880 | 0.9910 | 0.8881 |
 | U-Net | Glaucoma | 50 | 0.7887 | 0.7604 | 0.9889 | 0.9761 | 0.8097 |
 | CAR-UNet | Glaucoma | 50 | 0.7958 | 0.7764 | 0.9885 | 0.9786 | 0.8178 |
 | CAR-UNet + DA | Glaucoma | 50 | 0.7956 | 0.7721 | 0.9892 | 0.9775 | 0.8142 |
 | CAR-UNet + DA + clDice | Glaucoma | 50 | 0.7947 | 0.7877 | 0.9868 | 0.9801 | 0.8252 |
-| CAR-UNet + DA + clDice @1024 | Glaucoma | 50 | 0.7958 | 0.7577 | 0.9909 | 0.9791 | 0.8236 |
+| CAR-UNet + DA + clDice @1024 | Glaucoma | 50 | 0.7928 | 0.7597 | 0.9901 | 0.9791 | 0.8218 |
 | U-Net | Normal | 50 | 0.8309 | 0.8257 | 0.9802 | 0.9842 | 0.8594 |
 | CAR-UNet | Normal | 50 | 0.8363 | 0.8222 | 0.9826 | 0.9860 | 0.8635 |
 | CAR-UNet + DA | Normal | 50 | 0.8405 | 0.8286 | 0.9825 | 0.9863 | 0.8662 |
 | CAR-UNet + DA + clDice | Normal | 50 | 0.8402 | 0.8471 | 0.9792 | 0.9865 | 0.8767 |
-| CAR-UNet + DA + clDice @1024 | Normal | 50 | 0.8561 | 0.8378 | 0.9855 | 0.9895 | 0.8900 |
+| CAR-UNet + DA + clDice @1024 | Normal | 50 | 0.8528 | 0.8405 | 0.9840 | 0.9893 | 0.8887 |
 
 ## Is the difference real?
 
@@ -98,29 +98,31 @@ Per-seed Dice difference (CAR-UNet + DA + clDice − CAR-UNet + DA), same seed f
 
 ### CAR-UNet + DA + clDice @1024 vs CAR-UNet + DA + clDice
 
-Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0]):
-- mean Dice CAR-UNet + DA + clDice @1024 − CAR-UNet + DA + clDice = +0.0118
-- CAR-UNet + DA + clDice @1024 better on 178 / 200 images
-- p = 1.421e-21 (significant at 0.05)
-- clDice: mean CAR-UNet + DA + clDice @1024 − CAR-UNet + DA + clDice = +0.0072, better on 147 / 200 images, p = 7.972e-12
-- Sensitivity: mean CAR-UNet + DA + clDice @1024 − CAR-UNet + DA + clDice = -0.0082, better on 52 / 200 images, p = 4.347e-08
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1]):
+- mean Dice CAR-UNet + DA + clDice @1024 − CAR-UNet + DA + clDice = +0.0040
+- CAR-UNet + DA + clDice @1024 better on 145 / 200 images
+- p = 4.769e-10 (significant at 0.05)
+- clDice: mean CAR-UNet + DA + clDice @1024 − CAR-UNet + DA + clDice = +0.0043, better on 137 / 200 images, p = 7.875e-08
+- Sensitivity: mean CAR-UNet + DA + clDice @1024 − CAR-UNet + DA + clDice = -0.0138, better on 42 / 200 images, p = 3.47e-18
 
 Per-seed Dice difference (CAR-UNet + DA + clDice @1024 − CAR-UNet + DA + clDice), same seed for both models:
-- seed 0: +0.0118
-- mean +0.0118; CAR-UNet + DA + clDice @1024 better in 1 / 1 seeds
+- seed 0: +0.0118, seed 1: -0.0037
+- mean +0.0040 ± 0.0109; CAR-UNet + DA + clDice @1024 better in 1 / 2 seeds
+- seed-to-seed std of Dice: CAR-UNet + DA + clDice 0.0071, CAR-UNet + DA + clDice @1024 0.0039
 
 ### CAR-UNet + DA + clDice @1024 vs CAR-UNet
 
-Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0]):
-- mean Dice CAR-UNet + DA + clDice @1024 − CAR-UNet = +0.0041
-- CAR-UNet + DA + clDice @1024 better on 147 / 200 images
-- p = 3.005e-10 (significant at 0.05)
-- clDice: mean CAR-UNet + DA + clDice @1024 − CAR-UNet = +0.0066, better on 155 / 200 images, p = 1.764e-11
-- Sensitivity: mean CAR-UNet + DA + clDice @1024 − CAR-UNet = -0.0138, better on 43 / 200 images, p = 6.046e-15
+Paired Wilcoxon signed-rank test on per-image Dice (200 test images, averaged over common seeds [0, 1]):
+- mean Dice CAR-UNet + DA + clDice @1024 − CAR-UNet = +0.0045
+- CAR-UNet + DA + clDice @1024 better on 135 / 200 images
+- p = 9.074e-08 (significant at 0.05)
+- clDice: mean CAR-UNet + DA + clDice @1024 − CAR-UNet = +0.0112, better on 174 / 200 images, p = 6.215e-22
+- Sensitivity: mean CAR-UNet + DA + clDice @1024 − CAR-UNet = -0.0095, better on 50 / 200 images, p = 2.428e-10
 
 Per-seed Dice difference (CAR-UNet + DA + clDice @1024 − CAR-UNet), same seed for both models:
-- seed 0: +0.0041
-- mean +0.0041; CAR-UNet + DA + clDice @1024 better in 1 / 1 seeds
+- seed 0: +0.0041, seed 1: +0.0049
+- mean +0.0045 ± 0.0006; CAR-UNet + DA + clDice @1024 better in 2 / 2 seeds
+- seed-to-seed std of Dice: CAR-UNet 0.0044, CAR-UNet + DA + clDice @1024 0.0039
 
 
 ## Individual runs
@@ -137,6 +139,7 @@ Per-seed Dice difference (CAR-UNet + DA + clDice @1024 − CAR-UNet), same seed 
 | CAR-UNet + DA + clDice | 1 | 200 | 20 | 32436406 | 30 | 123.6000 | 0.9733 | 0.8495 | 0.9840 | 0.8483 | 0.8435 | 0.7376 | 0.9866 | 0.9230 | 0.8716 |
 | CAR-UNet + DA + clDice | 2 | 200 | 27 | 32436406 | 30 | 122.8800 | 0.9720 | 0.8447 | 0.9832 | 0.8392 | 0.8375 | 0.7277 | 0.9873 | 0.9219 | 0.8761 |
 | CAR-UNet + DA + clDice @1024 | 0 | 200 | 24 | 32436406 | 30 | 196.8700 | 0.9747 | 0.8272 | 0.9878 | 0.8746 | 0.8453 | 0.7404 | 0.9875 | 0.9263 | 0.8751 |
+| CAR-UNet + DA + clDice @1024 | 1 | 200 | 30 | 32436406 | 30 | 500.0200 | 0.9734 | 0.8300 | 0.9860 | 0.8609 | 0.8398 | 0.7322 | 0.9876 | 0.9242 | 0.8729 |
 | U-Net | 0 | 200 | 24 | 31036481 | 30 | 77.9400 | 0.9718 | 0.8166 | 0.9856 | 0.8583 | 0.8305 | 0.7190 | 0.9846 | 0.9160 | 0.8580 |
 | U-Net | 1 | 200 | 13 | 31036481 | 30 | 73.7200 | 0.9723 | 0.8321 | 0.9843 | 0.8522 | 0.8356 | 0.7262 | 0.9840 | 0.9161 | 0.8576 |
 | U-Net | 2 | 200 | 22 | 31036481 | 30 | 62.6100 | 0.9728 | 0.8254 | 0.9857 | 0.8614 | 0.8370 | 0.7286 | 0.9855 | 0.9201 | 0.8623 |
