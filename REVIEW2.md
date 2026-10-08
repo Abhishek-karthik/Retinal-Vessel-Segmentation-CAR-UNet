@@ -275,9 +275,7 @@ Observations:
 3. **Thin capillaries remain the main error source** (Section 9) — partly because FIVES images were downsampled from 2048×2048 to 512×512, which erases the finest vessels.
 4. **Very low-quality images fail.** Two hazy, very dark Glaucoma images (122_G, 123_G) score Dice < 0.1 for both models; their expert masks contain only 0.7% and 1.7% vessel pixels (typical ≈ 6%) because few vessels are visible at all. They are **kept** in the test set (excluding hard cases would inflate results). Without them the mean Dice would be 0.8422 (U-Net) and 0.8458 (CAR-UNet); median Dice is 0.8614 vs 0.8630.
 5. **Implementation differs from the original CAR-UNet paper**: we keep the Ronneberger valid-convolution geometry (284→100 patches) and Dropout rather than the paper's own configuration (e.g. DropBlock), so absolute numbers are not directly comparable with the paper.
-6. **Only FIVES** is evaluated; cross-dataset generalisation (e.g. FIVES → DRIVE) has not been tested yet.
-
-These limitations are the starting points for the next upgrade (spatial attention, a connectivity-aware loss such as clDice, higher-resolution training, cross-dataset testing).
+These limitations were the starting points for the improvements — dual (channel + spatial) attention, a connectivity-aware clDice loss, higher-resolution (1024×1024) training and a validation-tuned decision threshold — described and evaluated in [`IMPROVEMENTS.md`](IMPROVEMENTS.md).
 
 ---
 

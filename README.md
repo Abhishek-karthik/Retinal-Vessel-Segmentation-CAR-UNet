@@ -37,6 +37,28 @@ Full tables, significance tests and per-run numbers: [`results/RESULTS_TABLE.md`
 
 ---
 
+## 🚀 Improvements over the CAR-UNet paper
+
+Each improvement fixes one weakness of the paper; they are added one at a time (ablation). Details and all tests: [`IMPROVEMENTS.md`](IMPROVEMENTS.md).
+
+| Step | Paper weakness fixed | Seeds | Dice | Sensitivity | Precision | clDice |
+|---|---|---|---|---|---|---|
+| CAR-UNet (paper) | – | 3 | 0.8382 ± 0.0031 | 0.8310 | 0.8557 | 0.8626 |
+| + **Dual attention** (channel avg+max pooling + spatial) | channel attention only | 3 | 0.8408 ± 0.0021 | 0.8308 | 0.8620 | 0.8631 |
+| + **clDice loss** (vessel-skeleton overlap) | pixel-wise loss ignores connectivity | 3 | 0.8382 ± 0.0050 | 0.8432 | 0.8430 | 0.8718 |
+| + **1024×1024 resolution** | thin vessels lost at low resolution | 2* | 0.8425 ± 0.0039 | 0.8286 | 0.8678 | 0.8740 |
+| + **threshold chosen on validation** = final pipeline | fixed 0.5 threshold | 2* | **0.8446 ± 0.0028** | **0.8464** | 0.8534 | **0.8754** |
+
+\*3rd seed in progress.
+
+- **Final pipeline vs CAR-UNet** (same seeds, same images): Dice **+0.0066** (p = 2×10⁻¹³), connectivity (clDice) **+0.0125**, better on 175 / 200 images (p = 2×10⁻²⁴).
+- Against the **1024×1024 ground truth** (thin vessels visible): Dice **0.8805** vs 0.8554 for CAR-UNet.
+- Honest negative result: flip test-time augmentation lowered Dice for most models, so it is only used when the validation set selects it.
+
+![Final model vs CAR-UNet — zoom on thin vessels](outputs/thin_vessel_zoom.png)
+
+---
+
 ## 🌟 CAR-UNet Architecture
 
 ```
@@ -90,32 +112,40 @@ An earlier version of these results (Dice 0.7744 vs 0.7916) used only 50 test im
 ├── main_notebook.ipynb                       # Review 1 DRIVE baseline notebook
 ├── REVIEW.md / REVIEW2.md                    # Review 1 / current technical reports
 ├── RESULTS_SUMMARY.md                        # Results summary
+├── IMPROVEMENTS.md                           # Paper weaknesses, the 4 improvements, ablation results
+├── SLIDES_OUTLINE.md                         # Slide-by-slide content for the review
 ├── requirements.txt
 │
 ├── src/
-│   ├── car_unet.py                           # CAR-UNet (MECA + CADRB)
+│   ├── car_unet.py                           # CAR-UNet (MECA + CADRB); attention="dual" = Improvement 1
 │   ├── unet_model.py                         # Baseline U-Net
 │   ├── preprocessing_fives.py                # Green channel, CLAHE, bilateral filter, FOV mask
 │   ├── data_loader_fives.py                  # Stratified split, per-epoch patch sampling, augmentation
-│   ├── losses.py                             # 0.5 BCE + 0.5 Dice
-│   ├── metrics.py                            # FOV evaluation metrics
+│   ├── losses.py                             # 0.5 BCE + 0.5 Dice; clDice loss = Improvement 2
+│   ├── metrics.py                            # FOV evaluation metrics + clDice (connectivity)
 │   └── utils.py                              # Overlap-Tile inference
 │
 ├── scripts/
-│   ├── train_fives.py                        # Train + evaluate U-Net or CAR-UNet (identical settings)
-│   ├── run_baselines.py                      # All models x seeds, resumable, then summarise
+│   ├── train_fives.py                        # Train + evaluate any model variant (identical settings; 1024 = Improvement 3)
+│   ├── run_baselines.py                      # Models x seeds, resumable, then summarise
+│   ├── evaluate_post.py                      # Improvement 4: validation-tuned threshold + flip TTA
 │   ├── summarize_results.py                  # Comparison tables + significance tests
-│   ├── make_figures.py                       # Comparison figure + training curves
-│   └── resize_fives.py                       # FIVES preparation (2048 -> 512)
+│   ├── summarize_post.py                     # Improvement 4 tables + final ablation table
+│   ├── make_figures.py                       # Comparison figures, thin-vessel zoom, training curves
+│   └── resize_fives.py                       # FIVES preparation (2048 -> 512, or --size 1024)
 │
 ├── results/
-│   ├── RESULTS_TABLE.md                      # All tables and tests
+│   ├── RESULTS_TABLE.md                      # All training-run tables and tests
+│   ├── POST_RESULTS.md, ablation_table.csv   # Improvement 4 + ablation
 │   ├── comparison_table.csv, per_disease_table.csv
-│   ├── runs/<model>_seed<N>/                 # summary.json, per-image test metrics, training history
+│   ├── runs/<model>_seed<N>/                 # summary.json, per-image metrics, history; post/ = Improvement 4
 │   └── legacy_v1/                            # Superseded first results
 │
 └── outputs/
-    ├── final_comparison_figure.png           # Typical test case per disease + error maps
+    ├── final_comparison_figure.png           # U-Net vs CAR-UNet, typical test case per disease + error maps
+    ├── final_model_comparison.png            # CAR-UNet vs final improved model
+    ├── thin_vessel_zoom.png                  # Zoom on the region with most thin vessels
+    ├── ablation_comparison.png, ablation_curves.png
     ├── training_curves.png                   # Loss and validation Dice, mean ± std over seeds
     └── predictions/<model>_seed<N>/          # Saved test predictions
 ```
@@ -141,9 +171,16 @@ python scripts/train_fives.py --model unet     --seed 0
 # Or the full comparison: 2 models x 3 seeds (~8 h on an RTX 4050 laptop GPU; safe to stop and rerun)
 python scripts/run_baselines.py
 
+# Improvements (model keys: car_unet_da, car_unet_da_cldice, car_unet_da_cldice_1024)
+python scripts/resize_fives.py --size 1024          # data for Improvement 3
+python scripts/run_baselines.py --models car_unet_da car_unet_da_cldice car_unet_da_cldice_1024
+python scripts/evaluate_post.py --models car_unet_da_cldice_1024 --seeds 0 1 2   # Improvement 4
+
 # Tables and figures
 python scripts/summarize_results.py
+python scripts/summarize_post.py
 python scripts/make_figures.py
+python scripts/make_figures.py --models car_unet car_unet_da_cldice_1024 --setting thr --output final_model_comparison.png --zoom_output thin_vessel_zoom.png
 ```
 
 Then open **`Review2_Complete_CAR_UNet_Pipeline.ipynb`** for the results and a live inference demo.

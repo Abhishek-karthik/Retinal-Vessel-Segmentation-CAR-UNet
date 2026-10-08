@@ -64,7 +64,7 @@ The improvements are added **cumulatively** (ablation): CAR-UNet → + Improveme
 
 All numbers: 200 FIVES test images (50 per disease), scored at 512×512 inside the FOV, mean ± std over training seeds. Full tables: `results/RESULTS_TABLE.md` (training runs) and `results/POST_RESULTS.md` (Improvement 4 + ablation).
 
-> **Status (7 Oct 2026):** Improvements 1, 2 and 4 have 3 seeds. Improvement 3 (1024) has **1 seed so far**; seeds 1 and 2 are in progress, and its rows will be updated when they finish.
+> **Status (8 Oct 2026):** Improvements 1 and 2 have 3 seeds. Improvement 3 (1024) and the final pipeline have **2 seeds** (seed 2 is in progress); their rows will be updated when it finishes. Paired comparisons always use only the seeds both models share.
 
 ### 4.1 Ablation
 
@@ -72,33 +72,33 @@ All numbers: 200 FIVES test images (50 per disease), scored at 512×512 inside t
 |---|---|---|---|---|---|---|
 | U-Net (reference) | 3 | 0.8344 ± 0.0034 | 0.8247 | 0.8573 | 0.9847 | 0.8593 |
 | **CAR-UNet (paper, our implementation)** | 3 | 0.8382 ± 0.0031 | 0.8310 | 0.8557 | 0.9860 | 0.8626 |
-| + Improvement 1: Dual Attention | 3 | **0.8408 ± 0.0021** | 0.8308 | **0.8620** | 0.9860 | 0.8631 |
-| + Improvement 2: clDice loss | 3 | 0.8382 ± 0.0050 | **0.8432** | 0.8430 | 0.9866 | **0.8718 ± 0.0041** |
-| + Improvement 3: 1024 resolution | 1 | **0.8453** | 0.8272 | **0.8746** | **0.9875** | **0.8751** |
-| + Improvement 4: tuned threshold (0.44) | 1 | **0.8467** | 0.8453 | 0.8579 | 0.9875 | **0.8754** |
+| + Improvement 1: Dual Attention | 3 | 0.8408 ± 0.0021 | 0.8308 | 0.8620 | 0.9860 | 0.8631 |
+| + Improvement 2: clDice loss | 3 | 0.8382 ± 0.0050 | 0.8432 | 0.8430 | 0.9866 | 0.8718 ± 0.0041 |
+| + Improvement 3: 1024 resolution | 2 | 0.8425 ± 0.0039 | 0.8286 | **0.8678** | 0.9876 | 0.8740 |
+| **+ Improvement 4: tuned threshold (final pipeline)** | 2 | **0.8446 ± 0.0028** | **0.8464** | 0.8534 | **0.9878** | **0.8754** |
 
 ### 4.2 What each improvement achieved (paired tests on the same 200 test images)
 
-| Improvement | Compared with | Dice | clDice | Sensitivity | Images improved (Dice) |
+| Improvement | Compared with (seeds) | Dice | clDice | Sensitivity | Images improved |
 |---|---|---|---|---|---|
-| 1. Dual Attention | CAR-UNet (3 seeds) | **+0.0026** (p = 2×10⁻¹⁹) | +0.0005 | −0.0002 | **167 / 200** |
-| 2. clDice loss | + DA (3 seeds) | −0.0026 | **+0.0088** (p = 2×10⁻³²) | **+0.0124** | clDice better on **191 / 200** |
-| 3. 1024 resolution | same model at 512 (seed 0) | **+0.0118** (p = 1×10⁻²¹) | **+0.0072** | −0.0082 | **178 / 200** |
-| 4. Tuned threshold | same model, threshold 0.5 (seed 0) | +0.0014 (p = 3×10⁻¹³) | +0.0003 | **+0.0181** | 148 / 200 |
-| **All four** | **CAR-UNet** (seed 0) | **+0.0056** | **+0.0069** | +0.0042 | – |
+| 1. Dual Attention | CAR-UNet (0, 1, 2) | **+0.0026** (p = 2×10⁻¹⁹) | +0.0005 | −0.0002 | Dice: **167 / 200** |
+| 2. clDice loss | + DA (0, 1, 2) | −0.0026 | **+0.0088** (p = 2×10⁻³²) | **+0.0124** | clDice: **191 / 200** |
+| 3. 1024 resolution | same model at 512 (0, 1) | **+0.0040** (p = 5×10⁻¹⁰) | **+0.0043** | −0.0138 (precision +0.0229) | Dice: **145 / 200** |
+| 4. Tuned threshold | same 1024 model at 0.5 (0, 1) | **+0.0021** (p = 6×10⁻²⁰) | +0.0014 | **+0.0178** | Dice: 158 / 200 |
+| **All four (final pipeline)** | **CAR-UNet (0, 1)** | **+0.0066** (p = 2×10⁻¹³) | **+0.0125** (p = 2×10⁻²⁴) | +0.0083 | Dice: 147 / 200, clDice: **175 / 200** |
 
-**Against the 1024×1024 ground truth** (where thin vessels are visible), the 1024 model reaches Dice **0.8809** / clDice **0.8959**, versus 0.8584 / 0.8876 for the same model trained at 512 and 0.8675 / 0.8900 for CAR-UNet (seed 0) — the clearest evidence that higher resolution recovers thin vessels.
+**Against the 1024×1024 ground truth** (where thin vessels are visible; seeds 0 and 1): the 1024 model reaches Dice **0.8805** / clDice **0.8971**, versus 0.8582 / 0.8870 for the same model trained at 512 and 0.8554 / 0.8800 for CAR-UNet — **+0.025 Dice over CAR-UNet**, the clearest evidence that higher resolution recovers thin vessels.
 
-### 4.3 Per disease (Dice; 1024 model: seed 0)
+### 4.3 Per disease (Dice)
 
-| Disease | CAR-UNet | + DA | + DA + clDice | + 1024 |
-|---|---|---|---|---|
-| AMD | 0.8643 | **0.8679** | 0.8626 | **0.8701** |
-| DR | 0.8562 | **0.8592** | 0.8552 | **0.8591** |
-| Glaucoma | **0.7958** | 0.7956 | 0.7947 | **0.7958** |
-| Normal | 0.8363 | 0.8405 | 0.8402 | **0.8561** |
+| Disease | CAR-UNet | + DA | + DA + clDice | + 1024 (2 seeds) | Final pipeline (2 seeds) |
+|---|---|---|---|---|---|
+| AMD | 0.8643 | **0.8679** | 0.8626 | 0.8669 | 0.8677 |
+| DR | 0.8562 | 0.8592 | 0.8552 | 0.8576 | **0.8591** |
+| Glaucoma | 0.7958 | 0.7956 | 0.7947 | 0.7928 | **0.7967** |
+| Normal | 0.8363 | 0.8405 | 0.8402 | 0.8528 | **0.8551** |
 
-clDice per disease improves with Improvement 2 in every group (e.g. Glaucoma 0.8178 → 0.8252, Normal 0.8635 → 0.8767).
+clDice per disease improves with Improvement 2 in every group (e.g. Glaucoma 0.8178 → 0.8252, Normal 0.8635 → 0.8767). The largest per-disease gain of the final pipeline is on **Normal** images (+0.019 Dice); Glaucoma remains the hardest group.
 
 ---
 
@@ -106,12 +106,13 @@ clDice per disease improves with Improvement 2 in every group (e.g. Glaucoma 0.8
 
 1. **Dual attention** gives a small but very consistent gain (+0.0026 Dice, better on 167/200 images, and the lowest seed-to-seed variation of all models). It mainly removes false vessel detections (precision +0.006).
 2. **clDice** does exactly what it was designed for: vessel connectivity improves on 191 of 200 images and sensitivity rises by 1.2 percentage points (more vessel pixels found, especially thin ones). The price is more false detections at the 0.5 threshold, so Dice stays level — a sensitivity/precision trade-off, not a loss of quality (AUC rises slightly).
-3. **Higher resolution** gives the largest gain. Thin vessels that disappear at 512×512 are segmented at 1024×1024, and the 1024 model is also much more precise (+0.03). Training takes ~1.6× longer (197 vs ~123 min).
-4. **Improvement 4:** the validation-tuned threshold stays close to 0.5 for the 512 models (they are already well calibrated) and helps the more conservative 1024 model (threshold 0.44: +0.018 sensitivity). **Flip TTA does not help** any model: a diagnostic showed that the models segment flipped images slightly worse (up to ~2% Dice for vertical flips on one seed) despite flip augmentation during training, so averaging the flipped predictions lowers Dice. Because the setting is chosen on the validation set, the final pipeline uses the tuned threshold **without** TTA.
+3. **Higher resolution** improves Dice (+0.004) and connectivity (+0.004) over the same model at 512, and is much more precise (+0.023). Against the 1024 ground truth the gain is large (+0.022 Dice over the same model at 512): thin vessels that disappear at 512×512 are segmented at 1024×1024. The gain varies between seeds (+0.012 on seed 0, −0.004 on seed 1 at threshold 0.5), so seed 2 matters. Training takes ~1.6× longer (≈200 vs ≈123 min).
+4. **Improvement 4:** the validation-tuned threshold stays close to 0.5 for the 512 models (already well calibrated) but drops to 0.44 for the more conservative 1024 models, giving +0.018 sensitivity and +0.002 Dice. **Flip TTA** lowers Dice for most models — a diagnostic showed they segment flipped images up to ~2% worse despite flip augmentation, so averaging hurts — but helped one 1024 model slightly. Because the setting is always **chosen on the validation set**, the pipeline automatically uses TTA only where it helps (1 of the 2 final models so far).
 5. **Remaining failure cases:** two very low-quality Glaucoma images (122_G, 123_G) still fail for every model (Dice < 0.1); Glaucoma remains the hardest group overall.
+6. **Practical note:** one 1024 training run was interrupted by the laptop going to sleep for ~5 h; training resumed correctly afterwards, so its results are valid (recorded in `results/runs/car_unet_da_cldice_1024_seed1/summary.json`).
 
 ## 6. Final pipeline
 
-**CAR-UNet + Dual Attention + clDice loss, trained at 1024×1024, decision threshold tuned on validation.** On the FIVES test set (seed 0): Dice **0.8467**, sensitivity 0.8453, precision 0.8579, AUC 0.9875, clDice **0.8754** — versus the paper's CAR-UNet at Dice 0.8382 / clDice 0.8626 (3-seed mean) and U-Net at 0.8344 / 0.8593.
+**CAR-UNet + Dual Attention + clDice loss, trained at 1024×1024, prediction setting (threshold, TTA) chosen on the validation set.** On the FIVES test set (2 seeds): Dice **0.8446 ± 0.0028**, sensitivity 0.8464, precision 0.8534, AUC 0.9878, clDice **0.8754** — versus the paper's CAR-UNet at Dice 0.8382 / clDice 0.8626 and U-Net at 0.8344 / 0.8593.
 
 Figures: `outputs/final_model_comparison.png` (CAR-UNet vs final model, typical image per disease, error maps), `outputs/thin_vessel_zoom.png` (zoom on the region with most thin vessels), `outputs/ablation_comparison.png`, `outputs/ablation_curves.png`.
