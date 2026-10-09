@@ -645,6 +645,103 @@ print(f"\nNotebook run time: {(time.time() - NOTEBOOK_START) / 60:.1f} min")
 
 md(r'''
 ---
+## 16. Final output: paper model vs improved model
+
+### 16.1 Output images
+
+One typical test image per disease (median paper-model Dice in its group — not hand-picked), shown large: the input fundus image, the expert's vessel tracing, and the vessel maps produced by the **paper model** and by the **improved model** (both run live in Section 7).
+''')
+
+code(r'''
+fig, ax = plt.subplots(4, 4, figsize=(22, 23))
+for r, (d, fname) in enumerate(examples):
+    rgb = cv2.cvtColor(cv2.imread(f"data/FIVES_resized/test/images/{fname}"), cv2.COLOR_BGR2RGB)
+    gt_img = cv2.imread(f"data/FIVES_resized/test/masks/{fname}", 0) > 128
+    pp, ipred = preds[fname]
+    panels = [(rgb, f"INPUT — {d} ({fname})"), (gt_img, "EXPERT GROUND TRUTH"),
+              (pp, f"PAPER MODEL (CAR-UNet)\nDice {pl.loc[fname, 'F1_Dice']:.3f} | Sensitivity {pl.loc[fname, 'Sensitivity']:.3f} | clDice {pl.loc[fname, 'clDice']:.3f}"),
+              (ipred, f"IMPROVED MODEL\nDice {il.loc[fname, 'F1_Dice']:.3f} | Sensitivity {il.loc[fname, 'Sensitivity']:.3f} | clDice {il.loc[fname, 'clDice']:.3f}")]
+    for c, (im, title) in enumerate(panels):
+        ax[r, c].imshow(im, cmap="gray" if im.ndim == 2 else None)
+        color = COLORS[LABEL[IMPROVED]] if c == 3 else (COLORS[LABEL[PAPER]] if c == 2 else "black")
+        ax[r, c].set_title(title, fontsize=12, fontweight="bold", color=color)
+        ax[r, c].axis("off")
+plt.suptitle("Final output — Paper model vs Improved model (white = detected vessel)", fontsize=17, fontweight="bold")
+plt.tight_layout(rect=(0, 0, 1, 0.98)); plt.show()
+
+rows = []
+for d, fname in examples:
+    rows.append({"image": fname, "disease": d, "paper Dice": pl.loc[fname, "F1_Dice"], "improved Dice": il.loc[fname, "F1_Dice"],
+                 "paper clDice": pl.loc[fname, "clDice"], "improved clDice": il.loc[fname, "clDice"]})
+print(pd.DataFrame(rows).round(4).to_string(index=False))
+''')
+
+md(r'''
+### 16.2 Complete metric comparison
+
+All metrics on the 200 test images, mean ± std over the 3 training seeds (thin-vessel recall: live run, seed 0; "Dice vs 1024×1024 ground truth": 3 seeds). *Better on* = number of test images where the improved model scores higher (scores averaged over seeds); p-value from the paired Wilcoxon test.
+''')
+
+code(r'''
+ALL = [("Accuracy", "Accuracy"), ("Sensitivity (recall)", "Sensitivity"), ("Specificity", "Specificity"), ("Precision", "Precision"),
+       ("Dice / F1", "F1_Dice"), ("IoU (Jaccard)", "IoU"), ("AUC-ROC", "AUC_ROC"), ("AUC-PR", "AUC_PR"), ("clDice (connectivity)", "clDice")]
+Pa = pd.DataFrame([paper_results(s)[[m for _, m in ALL]].mean() for s in SEEDS])
+Ia = pd.DataFrame([improved_results(s)[[m for _, m in ALL]].mean() for s in SEEDS])
+final_rows = []
+for name, m in ALL:
+    a = pd.concat([paper_results(s)[m] for s in SEEDS], axis=1).mean(1)
+    b = pd.concat([improved_results(s)[m] for s in SEEDS], axis=1).loc[a.index].mean(1)
+    pv = wilcoxon(b, a).pvalue
+    ch = Ia[m].mean() - Pa[m].mean()
+    final_rows.append({"Metric": name, "Paper model": f"{Pa[m].mean():.4f} ± {Pa[m].std():.4f}", "Improved model": f"{Ia[m].mean():.4f} ± {Ia[m].std():.4f}",
+                       "Change (points)": f"{100 * ch:+.2f}", "Change (%)": f"{100 * ch / Pa[m].mean():+.2f}%",
+                       "Better on": f"{int((b > a).sum())}/200", "p-value": f"{pv:.1e}",
+                       "Winner": ("Improved" if ch > 0 else "Paper") if pv < 0.05 else "no significant difference"})
+tvp, tvi = tv[LABEL[PAPER]], tv[LABEL[IMPROVED]]
+tv_paper = live[live.model == LABEL[PAPER]].set_index("filename")["thin_vessel_recall"]
+tv_impr = live[live.model == LABEL[IMPROVED]].set_index("filename")["thin_vessel_recall"].loc[tv_paper.index]
+final_rows.append({"Metric": "Thin-vessel recall (seed 0)", "Paper model": f"{tvp:.4f}", "Improved model": f"{tvi:.4f}",
+                   "Change (points)": f"{100 * (tvi - tvp):+.2f}", "Change (%)": f"{100 * (tvi - tvp) / tvp:+.2f}%",
+                   "Better on": f"{int((tv_impr > tv_paper).sum())}/200", "p-value": f"{wilcoxon(tv_impr, tv_paper).pvalue:.1e}", "Winner": "Improved"})
+hp, hq = np.mean(hi[LABEL[PAPER]]["Dice"]), np.mean(hi[LABEL[IMPROVED]]["Dice"])
+final_rows.append({"Metric": "Dice vs 1024×1024 ground truth", "Paper model": f"{hp:.4f}", "Improved model": f"{hq:.4f}",
+                   "Change (points)": f"{100 * (hq - hp):+.2f}", "Change (%)": f"{100 * (hq - hp) / hp:+.2f}%", "Better on": "-", "p-value": "-", "Winner": "Improved"})
+final_table = pd.DataFrame(final_rows)
+pd.set_option("display.width", 250)
+print(final_table.to_string(index=False))
+n_win = (final_table["Winner"] == "Improved").sum()
+print(f"\nThe improved model wins on {n_win} of {len(final_table)} metrics; "
+      f"the paper model is better on: {', '.join(final_table.loc[final_table.Winner == 'Paper', 'Metric']) or 'none'}.")
+''')
+
+code(r'''
+keys_m = ["Sensitivity", "Precision", "F1_Dice", "IoU", "AUC_PR", "clDice"]
+labels_m = ["Sensitivity", "Precision", "Dice / F1", "IoU", "AUC-PR", "clDice", "Thin-vessel recall", "Dice vs 1024 GT"]
+pv_vals = [Pa[m].mean() for m in keys_m] + [tvp, hp]
+iv_vals = [Ia[m].mean() for m in keys_m] + [tvi, hq]
+fig, ax = plt.subplots(1, 2, figsize=(22, 6.5), gridspec_kw={"width_ratios": [3, 2]})
+xs = np.arange(len(labels_m))
+ax[0].bar(xs - 0.2, pv_vals, 0.4, label=LABEL[PAPER], color=COLORS[LABEL[PAPER]])
+ax[0].bar(xs + 0.2, iv_vals, 0.4, label=LABEL[IMPROVED], color=COLORS[LABEL[IMPROVED]])
+for x_, a_, b_ in zip(xs, pv_vals, iv_vals):
+    ax[0].text(x_ - 0.2, a_ + 0.004, f"{a_:.3f}", ha="center", fontsize=8)
+    ax[0].text(x_ + 0.2, b_ + 0.004, f"{b_:.3f}", ha="center", fontsize=8)
+ax[0].set_xticks(xs); ax[0].set_xticklabels(labels_m, rotation=20, ha="right"); ax[0].set_ylim(0.7, 0.96)
+ax[0].set_title("All metrics: paper model vs improved model", fontweight="bold"); ax[0].legend()
+all_names = [n for n, _ in ALL] + ["Thin-vessel recall", "Dice vs 1024 GT"]
+changes = [100 * (Ia[m].mean() - Pa[m].mean()) for _, m in ALL] + [100 * (tvi - tvp), 100 * (hq - hp)]
+order = np.argsort(changes)
+ax[1].barh([all_names[k] for k in order], [changes[k] for k in order], color=["#2ca02c" if changes[k] > 0 else "#d62728" for k in order])
+for pos, k in enumerate(order):
+    ax[1].text(changes[k] + (0.04 if changes[k] >= 0 else -0.04), pos, f"{changes[k]:+.2f}", va="center", ha="left" if changes[k] >= 0 else "right", fontsize=9)
+ax[1].axvline(0, color="black", lw=0.8); ax[1].set_xlabel("change (percentage points)")
+lo, hi_x = min(changes), max(changes); ax[1].set_xlim(lo - 0.4, hi_x + 0.5)
+ax[1].set_title("Improvement per metric (green = improved model better)", fontweight="bold")
+plt.tight_layout(); plt.show()
+''')
+
+md(r'''
+---
 ### Where everything is
 
 | What | Where |
