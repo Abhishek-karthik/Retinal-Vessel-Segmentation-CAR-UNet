@@ -273,24 +273,41 @@ scripts/
 
 \begin{frame}{What we changed -- and why}
   \begin{table}
-    \caption{Each modification targets one weakness of the base paper.}
-    \footnotesize
-    \begin{tabular}{@{}p{0.31\textwidth}p{0.34\textwidth}p{0.27\textwidth}@{}}
+    \caption{Each modification targets one weakness of the base paper. Data split, seeds, optimizer, epochs and augmentation stay identical to the baseline.}
+    \scriptsize
+    \begin{tabular}{@{}p{0.30\textwidth}p{0.49\textwidth}p{0.15\textwidth}@{}}
       \toprule
       \textbf{Weakness of CAR-UNet} & \textbf{Our modification} & \textbf{Type} \\
       \midrule
-      Channel attention says \emph{which} features matter, but not \emph{where} the vessels are &
-      \textbf{1. Dual attention:} channel attention (avg + max pooling) + spatial attention (CBAM \cite{woo2018cbam}) in all 13 attention modules & new attention module \\[3pt]
+      Channel attention says \emph{which} features matter, not \emph{where} the vessels are &
+      \textbf{1. Dual attention:} channel (avg + max pooling) + spatial attention (CBAM \cite{woo2018cbam}) in all 13 attention modules & attention module \\
       BCE counts pixels, so a broken thin vessel costs almost nothing &
-      \textbf{2. clDice loss} \cite{shit2021cldice}: compares vessel skeletons, rewards connected vessels & loss function \\[3pt]
+      \textbf{2. clDice loss} \cite{shit2021cldice}: compares vessel skeletons, rewards connected vessels & loss function \\
       At 512$\times$512 the finest capillaries are erased &
-      \textbf{3. 1024$\times$1024 working resolution}, scored on the same 512 ground truth & input resolution \\[3pt]
+      \textbf{3. 1024$\times$1024 working resolution}, scored on the same 512 ground truth & input resolution \\
       Fixed 0.5 decision threshold &
-      \textbf{4. Threshold chosen on validation} (flip TTA tested too) & prediction \\
+      \textbf{4. Threshold chosen on validation} (0.44--0.48); flip TTA tested too & prediction \\
       \bottomrule
     \end{tabular}
   \end{table}
-  {\small Everything else -- data split, seeds, optimizer, epochs, augmentation -- is kept identical to the baseline.}
+  \vspace{1pt}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \centering
+      \includegraphics[width=0.80\linewidth]{ev_attention.png}\\
+      \tiny \textbf{Dual attention:} the spatial attention map traces the vessel tree -- the network knows \emph{where} vessels are.
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \centering
+      \includegraphics[width=0.80\linewidth]{ev_cldice.png}\\
+      \tiny \textbf{clDice:} a cut thin vessel raises the clDice loss \textbf{4.5$\times$} more than the Dice loss.
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \centering
+      \includegraphics[width=0.80\linewidth]{ev_resolution.png}\\
+      \tiny \textbf{1024:} thin vessels broken at 512 are continuous at 1024 -- the model can only learn what it sees.
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Modified architecture}
@@ -306,31 +323,6 @@ scripts/
       {\scriptsize Dual attention: per-channel weights \emph{and} one weight per pixel. Only \textbf{+1,274 parameters}.}
     \end{column}
   \end{columns}
-\end{frame}
-
-\begin{frame}{How each modification works}
-  \begin{columns}[T]
-    \begin{column}{0.325\textwidth}
-      \centering
-      \textbf{Dual attention}\\[2pt]
-      \includegraphics[width=\linewidth]{ev_attention.png}\\
-      \scriptsize The spatial attention map traces the vessel tree, thin vessels included -- the network now knows \emph{where} vessels are.
-    \end{column}
-    \begin{column}{0.325\textwidth}
-      \centering
-      \textbf{clDice loss}\\[2pt]
-      \includegraphics[width=\linewidth]{ev_cldice.png}\\
-      \scriptsize Cutting a thin vessel (20 px) raises the clDice loss \textbf{4.5$\times$} more than the Dice loss; trimming a thick vessel costs less. It punishes exactly the error we care about.
-    \end{column}
-    \begin{column}{0.325\textwidth}
-      \centering
-      \textbf{1024 resolution}\\[2pt]
-      \includegraphics[width=\linewidth]{ev_resolution.png}\\
-      \scriptsize At 512 thin vessels in the ground truth are already broken into pieces; at 1024 they are continuous. The model can only learn what it can see.
-    \end{column}
-  \end{columns}
-  \vspace{6pt}
-  {\scriptsize \textbf{Threshold:} the 1024 models are slightly cautious, so validation picks 0.44--0.48 instead of 0.5, recovering faint vessels.}
 \end{frame}
 
 \begin{frame}{Comparison: baseline vs.\ modified model}
@@ -396,33 +388,16 @@ scripts/
 
 \begin{frame}{Qualitative results: side by side}
   \begin{columns}[c]
-    \begin{column}{0.63\textwidth}
+    \begin{column}{0.72\textwidth}
       \centering
-      \includegraphics[height=0.84\textheight]{compare_full.png}
+      \includegraphics[width=\linewidth]{compare_combined.png}
     \end{column}
-    \begin{column}{0.36\textwidth}
-      \begin{itemize}\setlength\itemsep{6pt}\small
-        \item Same test images, same ground truth, both models run live.
-        \item Picked as the median case of each disease -- not cherry-picked.
+    \begin{column}{0.27\textwidth}
+      \begin{itemize}\setlength\itemsep{4pt}\scriptsize
+        \item Same test images and ground truth; both models run live; median case of each disease (not cherry-picked).
         \item The improved model scores higher on every example (Dice and clDice).
-        \item Differences are small at this scale -- they show up on the thin vessels (next slide).
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Qualitative results: thin vessels up close}
-  \begin{columns}[c]
-    \begin{column}{0.66\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{compare_zoom.png}
-    \end{column}
-    \begin{column}{0.33\textwidth}
-      \begin{itemize}\setlength\itemsep{6pt}\small
-        \item Zoom on the 128$\times$128 region with the most thin vessels (picked from the ground truth).
-        \item \textcolor{blue}{\textbf{Blue}} = missed vessel, \textcolor{red}{\textbf{red}} = false vessel, \textcolor{good}{\textbf{green}} = correct.
-        \item The improved model leaves \textbf{fewer blue gaps}: thin branches are found and stay connected.
-        \item A few extra red pixels -- the precision cost we see in the table.
+        \item Zoom (yellow box = region with most thin vessels): \textcolor{blue}{\textbf{blue}} = missed, \textcolor{red}{\textbf{red}} = false, \textcolor{good}{\textbf{green}} = correct.
+        \item Improved model: \textbf{fewer blue gaps} -- thin branches found and connected; a few extra red pixels (the precision cost).
       \end{itemize}
     \end{column}
   \end{columns}
@@ -470,27 +445,29 @@ scripts/
 % =============================================================================== CLOSING
 \section{Conclusion}
 
-\begin{frame}{Conclusion, future work and contributions}
+\begin{frame}{Conclusion, future work, contributions and references}
   \begin{columns}[T]
-    \begin{column}{0.53\textwidth}
+    \begin{column}{0.49\textwidth}
       \textbf{Conclusion}
-      \begin{itemize}\setlength\itemsep{2pt}\footnotesize
+      \begin{itemize}\setlength\itemsep{1pt}\scriptsize
         \item Replicated CAR-UNet on FIVES under a fair protocol; it beats U-Net, as the paper claims.
         \item Four targeted changes give \textbf{Dice 0.8436}, IoU 0.7379, clDice 0.8751 -- better than the baseline on 9 of 11 metrics, all significant.
         \item Largest gains on thin vessels (+2.2 Dice points at 1024) and connectivity (+1.25).
       \end{itemize}
       \textbf{Future work}
-      \begin{itemize}\setlength\itemsep{2pt}\footnotesize
+      \begin{itemize}\setlength\itemsep{1pt}\scriptsize
         \item Focus on Glaucoma and low-quality images (FIVES quality labels).
         \item Full 2048$\times$2048 training on a larger GPU.
         \item A lighter model (16 filters, as in the paper) for faster screening.
       \end{itemize}
+      \vspace{4pt}
+      {\small\textbf{Thank you -- questions welcome.}}
     \end{column}
-    \begin{column}{0.45\textwidth}
+    \begin{column}{0.49\textwidth}
       \begin{table}
         \caption{Member contributions.}
-        \footnotesize
-        \begin{tabular}{@{}p{0.36\linewidth}p{0.56\linewidth}@{}}
+        \tiny
+        \begin{tabular}{@{}p{0.34\linewidth}p{0.60\linewidth}@{}}
           \toprule
           Member & Contribution \\
           \midrule
@@ -501,56 +478,14 @@ scripts/
           \bottomrule
         \end{tabular}
       \end{table}
+      \vspace{-6pt}
+      \textbf{\small References}\\[-2pt]
+      \tiny
+      \nocite{*}
+      \bibliographystyle{ieeetr}
+      \bibliography{refs}
     \end{column}
   \end{columns}
-\end{frame}
-
-\begin{frame}{References}
-  \scriptsize
-  \nocite{*}
-  \bibliographystyle{ieeetr}
-  \bibliography{refs}
-\end{frame}
-
-\begin{frame}
-  \centering\Large Thank you -- questions?
-\end{frame}
-
-% =============================================================================== BACKUP
-\appendix
-\begin{frame}{Backup: preprocessing pipeline}
-  \centering
-  \includegraphics[width=0.95\textwidth]{preprocessing.png}
-  \begin{itemize}\setlength\itemsep{2pt}\scriptsize
-    \item \textbf{Green channel:} haemoglobin absorbs green light most, so vessels have the highest contrast there.
-    \item \textbf{CLAHE} (clip 2.0, 8$\times$8 tiles): local contrast boost for unevenly lit images, clipped so noise is not amplified.
-    \item \textbf{Bilateral filter} (d = 5, $\sigma$ = 75): removes noise but keeps vessel edges sharp (a Gaussian blur would erase thin vessels).
-    \item \textbf{FOV mask:} metrics are computed only inside the retinal circle.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Backup: complete metric comparison}
-  \begin{table}
-    \caption{All metrics, baseline vs.\ modified (200 test images, 3 seeds; thin-vessel recall from seed 0).}
-    \scriptsize
-    \begin{tabular}{@{}lccccc@{}}
-      \toprule
-      Metric & Baseline & Modified & Change (pts) & Better on & Winner \\
-      \midrule
-      Accuracy & 0.9728 & 0.9737 & +0.09 & 130/200 & modified \\
-      Sensitivity & 0.8310 & 0.8465 & +1.55 & 159/200 & modified \\
-      Specificity & 0.9855 & 0.9846 & $-$0.09 & 51/200 & baseline \\
-      Precision & 0.8557 & 0.8516 & $-$0.40 & 68/200 & baseline \\
-      Dice & 0.8382 & 0.8436 & +0.54 & 140/200 & modified \\
-      IoU & 0.7295 & 0.7379 & +0.83 & 140/200 & modified \\
-      AUC-ROC & 0.9860 & 0.9878 & +0.17 & 168/200 & modified \\
-      AUC-PR & 0.9202 & 0.9260 & +0.58 & 163/200 & modified \\
-      clDice & 0.8626 & 0.8751 & +1.25 & 175/200 & modified \\
-      Thin-vessel recall & 0.7806 & 0.7883 & +0.77 & 139/200 & modified \\
-      Dice vs.\ 1024 ground truth & 0.8572 & 0.8796 & +2.24 & -- & modified \\
-      \bottomrule
-    \end{tabular}
-  \end{table}
 \end{frame}
 
 \end{document}
