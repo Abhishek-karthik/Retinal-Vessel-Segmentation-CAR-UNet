@@ -128,6 +128,28 @@ fig.legend(handles=[Patch(color="#00C800", label="correct vessel"), Patch(color=
 plt.tight_layout(rect=(0, 0.03, 1, 1))
 save("compare_zoom.png")
 
+# 3b. Combined side-by-side figure (full outputs + zoomed error maps) for the single qualitative slide -----------
+fig, ax = plt.subplots(3, 6, figsize=(19, 11.0))
+for row, (disease, f) in enumerate([EXAMPLES[0], EXAMPLES[1], EXAMPLES[3]]):
+    _, r = R[f]
+    y, x = thin_window(r["gt"])
+    s = np.s_[y:y + 128, x:x + 128]
+    panels = [(r["rgb"], f"Input — {disease}", "black"), (r["gt"], "Ground truth", "black"),
+              (r["base"], f"Baseline\nDice {r['base_m']['Dice']:.3f} | clDice {r['base_m']['clDice']:.3f}", BLUE),
+              (r["impr"], f"Improved\nDice {r['impr_m']['Dice']:.3f} | clDice {r['impr_m']['clDice']:.3f}", ORANGE),
+              (error_map(r["base"], r["gt"], r["fov"])[s], "Baseline errors (zoom)", BLUE),
+              (error_map(r["impr"], r["gt"], r["fov"])[s], "Improved errors (zoom)", ORANGE)]
+    for c, (img, title, col) in enumerate(panels):
+        ax[row, c].imshow(img, cmap="gray" if img.ndim == 2 else None, interpolation="nearest" if c >= 4 else "antialiased")
+        ax[row, c].set_title(title, fontsize=14, color=col)
+        ax[row, c].axis("off")
+    ax[row, 0].add_patch(plt.Rectangle((x, y), 128, 128, fill=False, edgecolor="yellow", lw=2))
+fig.legend(handles=[Patch(color="#00C800", label="correct vessel"), Patch(color="#E60000", label="false vessel"),
+                    Patch(color="#006EFF", label="missed vessel"), Patch(fill=False, edgecolor="#D4B000", label="zoom region (yellow box)")],
+           loc="lower center", ncol=4, fontsize=14, frameon=False, bbox_to_anchor=(0.5, -0.02))
+plt.tight_layout(rect=(0, 0.035, 1, 1), h_pad=2.6)
+save("compare_combined.png")
+
 # 4. Evidence for each modification ---------------------------------------------------------------------------
 cap = {}
 h = impr_model.enc1.meca.spatial.register_forward_hook(lambda m, i, o: cap.update(x=i[0].detach()))
