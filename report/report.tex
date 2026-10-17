@@ -18,7 +18,7 @@
 % replace the template's "Preprint submitted to Elsevier" footer with the course details
 \ExplSyntaxOn
 \cs_set:Npn \__first_footerline:
-  { \group_begin: \small \sffamily 22AIE437~Medical~Image~Processing~--~Final~Project~Report \group_end: }
+  { \group_begin: \small \sffamily 22AIE437~Medical~Image~Processing \group_end: }
 \ExplSyntaxOff
 
 \begin{document}
@@ -31,12 +31,12 @@
 
 \title [mode = title]{Improving thin-vessel segmentation in fundus images: dual attention, a topology-aware loss and higher resolution for CAR-UNet on the multi-disease FIVES dataset}
 
-\author[1]{Abhishek Karthik J}
-\author[1]{Abhishek Ramesh}
-\author[1]{Krish S}
-\author[1]{Theerth Krish S}
+\author{Abhishek Karthik J}
+\author{Abhishek Ramesh}
+\author{Krish S}
+\author{Theerth Krish S}
 
-\affiliation[1]{organization={Amrita School of Artificial Intelligence, Amrita Vishwa Vidyapeetham},
+\affiliation{organization={Amrita School of Artificial Intelligence, Amrita Vishwa Vidyapeetham},
     city={Coimbatore},
     state={Tamil Nadu},
     country={India}}
@@ -444,9 +444,6 @@ This study uses only the publicly released, de-identified FIVES dataset \citep{j
 
 \section*{Data and code availability}
 FIVES is publicly available \citep{jin2022fives}. The code, the per-image evaluation results and all scripts needed to reproduce the reported numbers are available at\\ \url{https://github.com/Abhishek-karthik/Retinal-Vessel-Segmentation-CAR-UNet}.
-
-\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
-During the preparation of this work the authors used Claude (Anthropic) to help draft and edit the text and to prepare the LaTeX formatting and figure scripts. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the publication.
 
 \bibliographystyle{cas-model2-names}
 \bibliography{refs}
