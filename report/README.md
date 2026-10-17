@@ -4,22 +4,24 @@ Final project report for 22AIE437 Medical Image Processing, written with the Els
 
 | File | Content |
 |---|---|
-| `report.pdf` | Compiled report (13 pages) |
+| `report.pdf` | Compiled report (14 pages) |
 | `report.tex` | LaTeX source |
 | `refs.bib` | BibTeX references (style `cas-model2-names`, author–year) |
 | `figures/` | All figures used in the report |
-| `make_report_figures.py` | Regenerates the report-only figures (dual attention diagram, four-disease prediction figures) |
+| `make_report_figures.py` | Regenerates the report-only figures (dual attention diagram, preprocessing steps, four-disease prediction figures) |
 
-## Before submission: fill in the group details
+## Authors (group members)
 
-Every red `\fillme{...}` placeholder in `report.tex` must be replaced:
+| Name | Roll number |
+|---|---|
+| Abhishek Karthik J | CB.SC.U4AIE23010 |
+| Abhishek Ramesh | CB.SC.U4AIE23011 |
+| Krish S | CB.SC.U4AIE23040 |
+| Theerth Krish S | CB.SC.U4AIE23071 |
 
-- the group number or name (title-page footnote and running footer `\shortauthors`)
-- the names of members 2–4 (`\author[1]{...}`)
-- the roll numbers of all members (title-page footnote)
-- what each member did (*CRediT authorship contribution statement*, near the end)
+All four members contributed equally (see the CRediT statement in the report).
 
-Search `report.tex` for `fillme` to find all of them. Once they are filled in, the `\newcommand{\fillme}` line can stay as it is.
+The text follows the course guidelines (section 2A) and Dr. Vipin Venugopal's guide *Writing a Good Journal or Conference Paper* (github.com/VipinBioLab/Research-paper-writing-guide). Every reference was checked against Crossref.
 
 ## Compiling
 

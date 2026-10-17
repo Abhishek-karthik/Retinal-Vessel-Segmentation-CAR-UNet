@@ -84,6 +84,25 @@ for i, (text, col) in enumerate(steps):
 ax.axis("off")
 save("dual_attention_block.png")
 
+# 0b. Preprocessing steps, 2 x 3 grid with readable panel titles ---------------------------------------------
+from PIL import Image
+from src.preprocessing_fives import extract_green_channel, apply_clahe, apply_noise_reduction, normalize_image
+fname = "100_A.png"
+raw_rgb = np.array(Image.open(f"data/FIVES_resized/train/images/{fname}"))
+green = extract_green_channel(raw_rgb)
+clahe = apply_clahe(green, clip_limit=2.0, tile_grid_size=(8, 8))
+denoised = apply_noise_reduction(clahe, method="bilateral")
+panels = [(raw_rgb, f"(a) RGB input ({fname})"), (green, "(b) Green channel"), (clahe, "(c) CLAHE (clip 2.0, 8×8 tiles)"),
+          (denoised, "(d) Bilateral filter (d = 5, σ = 75)"), (normalize_image(denoised), "(e) Normalised to [0, 1]"),
+          (np.array(Image.open(f"data/FIVES_resized/train/masks/{fname}")), "(f) Expert ground truth")]
+fig, ax = plt.subplots(2, 3, figsize=(12, 8.6))
+for a, (img, title) in zip(ax.ravel(), panels):
+    a.imshow(img, cmap=None if img.ndim == 3 else "gray")
+    a.set_title(title, fontsize=13)
+    a.axis("off")
+plt.tight_layout()
+save("preprocessing.png")
+
 # ------------------------------------------------- examples: median baseline Dice per disease (seed 0, not hand-picked)
 per_image = pd.read_csv(f"{RUNS}/car_unet_seed0/test_metrics_per_image.csv")
 per_image["disease"] = per_image["filename"].str.extract(r"_([ADGN])\.png$")[0].map(DISEASE)

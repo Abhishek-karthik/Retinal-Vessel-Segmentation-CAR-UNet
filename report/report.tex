@@ -13,34 +13,36 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \graphicspath{{figures/}}
-% red placeholders: replace every \fillme{...} with the real group details before submission
-\newcommand{\fillme}[1]{\textcolor{red}{\textbf{[#1]}}}
 % the class always prints an "ORCID(s):" footnote; we list no ORCIDs, so switch it off
 \RenewDocumentCommand{\printorcid}{}{}
+% replace the template's "Preprint submitted to Elsevier" footer with the course details
+\ExplSyntaxOn
+\cs_set:Npn \__first_footerline:
+  { \group_begin: \small \sffamily 22AIE437~Medical~Image~Processing~--~Final~Project~Report \group_end: }
+\ExplSyntaxOff
 
 \begin{document}
 \let\WriteBookmarks\relax
 \def\floatpagepagefraction{1}
 \def\textpagefraction{.001}
 
-\shorttitle{Improving CAR-UNet for retinal vessel segmentation on FIVES}
-\shortauthors{Group \fillme{No.}}
+\shorttitle{Thin-vessel segmentation with an improved CAR-UNet on FIVES}
+\shortauthors{Abhishek Karthik J et al.}
 
-\title [mode = title]{Seeing the thin vessels: replicating and improving Channel Attention Residual U-Net for retinal vessel segmentation on the multi-disease FIVES dataset}
-
-\tnotemark[1]
-\tnotetext[1]{Final project report, course 22AIE437 Medical Image Processing, B.Tech CSE (AI), Amrita School of Artificial Intelligence. \textbf{Group \fillme{Group No. / Name}.} Members and roll numbers: Abhishek Karthik J (\fillme{Roll No.}); \fillme{Member 2} (\fillme{Roll No.}); \fillme{Member 3} (\fillme{Roll No.}); \fillme{Member 4} (\fillme{Roll No.}).}
+\title [mode = title]{Improving thin-vessel segmentation in fundus images: dual attention, a topology-aware loss and higher resolution for CAR-UNet on the multi-disease FIVES dataset}
 
 \author[1]{Abhishek Karthik J}
-\author[1]{\fillme{Member 2}}
-\author[1]{\fillme{Member 3}}
-\author[1]{\fillme{Member 4}}
+\author[1]{Abhishek Ramesh}
+\author[1]{Krish S}
+\author[1]{Theerth Krish S}
 
 \affiliation[1]{organization={Amrita School of Artificial Intelligence, Amrita Vishwa Vidyapeetham},
+    city={Coimbatore},
+    state={Tamil Nadu},
     country={India}}
 
 \begin{abstract}
-The retina is the only place in the body where blood vessels can be photographed directly and non-invasively, and changes in their calibre, branching and continuity are early signs of diabetic retinopathy, glaucoma and hypertension. Automatic vessel segmentation is therefore a key step in fundus-image screening, but even strong networks still miss the thinnest capillaries. In this work we replicate the Channel Attention Residual U-Net (CAR-UNet) of \citet{guo2021carunet} on FIVES, a public dataset of 800 high-resolution fundus images covering normal eyes, age-related macular degeneration, diabetic retinopathy and glaucoma, using a strict protocol: a disease-stratified split, identical training settings for all models, three training seeds, all 200 test images and paired significance tests. The replicated CAR-UNet reaches a Dice score of $0.8382 \pm 0.0031$ and outperforms a plain U-Net on 154 of 200 test images. We then address four weaknesses of the base model: we add spatial attention to its channel attention (dual attention), train with a topology-aware clDice loss, work at $1024 \times 1024$ instead of $512 \times 512$ pixels, and select the decision threshold on the validation set. The improved model reaches a Dice score of $0.8436 \pm 0.0027$, an IoU of 0.7379 and a centreline Dice (clDice) of 0.8751, improves vessel connectivity on 175 of 200 test images ($p = 5 \times 10^{-25}$) and gains 2.2 Dice points when scored against the full-resolution ground truth. An ablation study shows the contribution of each component, and we report honestly where the approach does not help.
+Retinal vessel maps support screening for diabetic retinopathy, glaucoma and other eye diseases, but the thinnest capillaries, where early changes appear, remain the main source of segmentation errors. The Channel Attention Residual U-Net (CAR-UNet) reports high accuracy on small single-source benchmarks, yet it has not been tested on large multi-disease data, and its channel-only attention and pixel-wise loss do little to recover thin or broken vessels. We replicated CAR-UNet on the public FIVES dataset of 800 fundus images (normal eyes, age-related macular degeneration, diabetic retinopathy and glaucoma) with a disease-stratified split, three training seeds, all 200 test images and paired Wilcoxon tests, and then extended it with four changes aimed at thin vessels: spatial attention alongside channel attention, a topology-aware centreline Dice (clDice) loss, a working resolution of $1024 \times 1024$ instead of $512 \times 512$ pixels, and a decision threshold selected on validation data. The replicated model reached a Dice score of $0.8382 \pm 0.0031$ and outperformed a plain U-Net on 154 of 200 test images. The extended model reached a Dice score of $0.8436 \pm 0.0027$, an intersection over union of 0.7379 and a clDice of 0.8751, improved vessel connectivity on 175 of 200 test images ($p < 10^{-24}$), and gained 2.2 Dice points against the $1024 \times 1024$ ground truth. Targeting thin vessels therefore improves CAR-UNet consistently on multi-disease data, although glaucoma and very low-quality images remain difficult.
 \end{abstract}
 
 \begin{keywords}
@@ -49,17 +51,26 @@ Retinal vessel segmentation \sep Fundus images \sep CAR-UNet \sep Attention mech
 
 \maketitle
 
+\begin{center}
+\small
+\begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{3em}}l@{\hspace{0.8em}}l@{}}
+\multicolumn{4}{@{}c@{}}{\textbf{Group members} \quad (22AIE437 Medical Image Processing, final project)}\\[3pt]
+Abhishek Karthik J & \texttt{CB.SC.U4AIE23010} & Abhishek Ramesh & \texttt{CB.SC.U4AIE23011} \\
+Krish S & \texttt{CB.SC.U4AIE23040} & Theerth Krish S & \texttt{CB.SC.U4AIE23071} \\
+\end{tabular}
+\end{center}
+
 %% ===============================================================================
 \section{Introduction}
 \label{sec:intro}
 
-The retina offers a rare, non-invasive view of the body's microvasculature. A single fundus photograph shows arteries, veins and capillaries whose width, tortuosity, branching pattern and continuity change with diabetic retinopathy (DR), glaucoma, age-related macular degeneration (AMD) and hypertension. Measuring these changes requires a vessel map, a pixel-wise segmentation of the vascular tree. Producing such maps by hand is slow and tedious, and different experts disagree, especially on the faint capillaries at the ends of the tree. This is exactly where early pathological changes appear, which makes automatic vessel segmentation an attractive target for medical image analysis.
+The retina offers a rare, non-invasive view of the body's microvasculature. A single fundus photograph shows arteries, veins and capillaries whose width, tortuosity, branching pattern and continuity change with diabetic retinopathy (DR), glaucoma, age-related macular degeneration (AMD) and hypertension. Measuring these changes requires a vessel map, a pixel-wise segmentation of the vascular tree. Producing such maps by hand is slow and tedious, and different experts disagree, especially on the faint capillaries at the ends of the tree. Early pathological changes appear precisely there, which makes automatic vessel segmentation an attractive target for medical image analysis.
 
 The task is harder than it first appears. In FIVES, vessels make up only about 7\% of the image (about 10\% of the retinal field of view), so any method is pushed towards predicting background. Illumination varies strongly across the image, the optic disc and lesions such as exudates and haemorrhages produce high-contrast structures that resemble vessels, and the thinnest capillaries are only one or two pixels wide once the image is resized to a manageable resolution. Classical approaches based on vesselness filters \citep{frangi1998} handle the large vessels but break down on these thin, low-contrast structures. Deep convolutional networks have largely replaced them \citep{liskowski2016}, with the U-Net encoder--decoder architecture \citep{ronneberger2015unet} becoming the standard backbone. Many variants add attention, among them Attention U-Net \citep{oktay2018attention}, SA-UNet \citep{guo2021saunet} and CAR-UNet \citep{guo2021carunet}, the base paper of this project. CAR-UNet replaces the convolution blocks of U-Net with residual blocks that contain an efficient channel-attention module, and applies the same attention to the skip connections.
 
-CAR-UNet was evaluated on small, single-source benchmarks with 20 to 40 images, such as DRIVE \citep{staal2004drive}, and only with accuracy, sensitivity, specificity and AUC. It is therefore unclear how it behaves on larger, multi-disease data, and whether its design really recovers the thin vessels that matter clinically. Our own replication shows that most of its remaining errors are exactly there: thin capillaries that are missed or broken into pieces.
+CAR-UNet was evaluated on small, single-source benchmarks with 20 to 40 images, such as DRIVE \citep{staal2004drive}, and only with accuracy, sensitivity, specificity and AUC. It is therefore unclear how it behaves on larger, multi-disease data, and whether its design really recovers the thin vessels that matter clinically. Its design also leaves two gaps for thin vessels: its attention re-weights feature channels but not image locations, and its cross-entropy loss barely penalises a vessel that is broken into pieces. Our replication confirms that most of its remaining errors are thin capillaries that are missed or fragmented.
 
-This report makes the following contributions:
+In this work we argue that the remaining errors of CAR-UNet on multi-disease data come mainly from thin vessels, and that changes aimed specifically at them (spatial attention, a topology-aware loss and a higher working resolution) improve the model consistently. On FIVES, these changes raise the Dice score from 0.8382 to 0.8436 and the centreline Dice from 0.8626 to 0.8751, with gains in all three training seeds. The main contributions are:
 \begin{itemize}
 \item We replicate CAR-UNet on FIVES \citep{jin2022fives}, an 800-image dataset with four disease groups, under a strict and reproducible protocol, and compare it with U-Net.
 \item We identify five weaknesses of the base model and its evaluation, and propose four targeted modifications: dual (channel + spatial) attention, a topology-aware clDice loss, a higher working resolution, and a validation-selected decision threshold.
@@ -73,13 +84,13 @@ The rest of the report is organised as follows. Section~\ref{sec:related} review
 \section{Related work}
 \label{sec:related}
 
-\paragraph{Vessel segmentation.} Early methods enhanced tubular structures with Hessian-based filters \citep{frangi1998} or matched filters and then thresholded the response. Supervised deep networks now dominate. \citet{liskowski2016} showed that convolutional networks trained on image patches clearly outperform hand-crafted pipelines, and the U-Net \citep{ronneberger2015unet}, with its contracting path, expanding path and skip connections, has become the most common backbone because it combines context with precise localisation.
+\paragraph{Vessel segmentation.} Early methods enhanced tubular structures with Hessian-based filters \citep{frangi1998} or matched filters and then thresholded the response. Supervised deep networks now dominate. \citet{liskowski2016} showed that convolutional networks trained on image patches outperform hand-crafted pipelines, and the U-Net \citep{ronneberger2015unet}, with its contracting path, expanding path and skip connections, has become the most common backbone because it combines context with precise localisation. Most of these methods, however, were developed on a few dozen images, and their remaining errors concentrate on thin vessels.
 
-\paragraph{Attention and residual learning.} Residual connections \citep{he2016resnet} make deeper networks easier to optimise. Channel attention, introduced with squeeze-and-excitation networks \citep{hu2018se} and made lightweight by ECA-Net \citep{wang2020eca}, reweights feature channels. CBAM \citep{woo2018cbam} combines channel attention with spatial attention that reweights image locations. In retinal imaging, Attention U-Net \citep{oktay2018attention} gates the skip connections, SA-UNet \citep{guo2021saunet} uses spatial attention, and CAR-UNet \citep{guo2021carunet} builds residual blocks around a modified efficient channel attention (MECA).
+\paragraph{Attention and residual learning.} Residual connections \citep{he2016resnet} make deeper networks easier to optimise. Channel attention, introduced with squeeze-and-excitation networks \citep{hu2018se} and made lightweight by ECA-Net \citep{wang2020eca}, reweights feature channels. CBAM \citep{woo2018cbam} combines channel attention with spatial attention that reweights image locations. In retinal imaging, Attention U-Net \citep{oktay2018attention} gates the skip connections, SA-UNet \citep{guo2021saunet} uses spatial attention, and CAR-UNet \citep{guo2021carunet} builds residual blocks around a modified efficient channel attention (MECA). CAR-UNet therefore decides which feature maps matter, but not where in the image the vessels lie.
 
-\paragraph{Losses and topology.} Cross-entropy and the soft Dice loss \citep{milletari2016vnet} are the usual training objectives, but both count pixels and are almost blind to whether a thin vessel is connected. The clDice loss \citep{shit2021cldice} compares the skeletons of prediction and ground truth and was designed for tubular structures such as vessels.
+\paragraph{Losses and topology.} Cross-entropy and the soft Dice loss \citep{milletari2016vnet} are the usual training objectives, but both count pixels and are almost blind to whether a thin vessel is connected. The clDice loss \citep{shit2021cldice} compares the skeletons of prediction and ground truth and was designed for tubular structures such as vessels. CAR-UNet was trained with cross-entropy alone and does not use such a term.
 
-\paragraph{Datasets.} DRIVE \citep{staal2004drive} and similar benchmarks contain a few dozen images from a single source. FIVES \citep{jin2022fives} provides 800 images at $2048 \times 2048$ pixels, with expert-consensus annotations and a balanced mix of normal, AMD, DR and glaucoma cases, which makes it a much more demanding testbed.
+\paragraph{Datasets.} DRIVE \citep{staal2004drive} and similar benchmarks contain a few dozen images from a single source. FIVES \citep{jin2022fives} provides 800 images at $2048 \times 2048$ pixels, with expert-consensus annotations and a balanced mix of normal, AMD, DR and glaucoma cases, which makes it a more demanding testbed. To our knowledge, CAR-UNet has not been evaluated on it.
 
 %% ===============================================================================
 \section{Base paper and replication}
@@ -255,7 +266,7 @@ Our replication and the paper itself reveal five weaknesses: (W1) the attention 
 \mathbf{F}' &= \sigma\!\left(\mathrm{C1D}_k(\mathrm{AvgPool}(\mathbf{F})) + \mathrm{C1D}_k(\mathrm{MaxPool}(\mathbf{F}))\right) \odot \mathbf{F}, \\
 \mathbf{F}'' &= \sigma\!\left(f^{7\times7}\big([\mathrm{Avg}_c(\mathbf{F}');\, \mathrm{Max}_c(\mathbf{F}')]\big)\right) \odot \mathbf{F}',
 \end{align}
-where $\mathrm{Avg}_c$ and $\mathrm{Max}_c$ are the mean and maximum over channels at each pixel and $f^{7\times7}$ is a $7\times7$ convolution (Fig.~\ref{fig:dual}a). All 13 blocks together add only 1,274 parameters (+0.004\%). Fig.~\ref{fig:dual}b shows that the learned spatial attention map is clearly organised around the vessel tree, including many thin branches; the block therefore re-weights the features according to vessel location, which channel attention alone cannot do.
+where $\mathrm{Avg}_c$ and $\mathrm{Max}_c$ are the mean and maximum over channels at each pixel and $f^{7\times7}$ is a $7\times7$ convolution (Fig.~\ref{fig:dual}a). All 13 blocks together add only 1,274 parameters (+0.004\%). Fig.~\ref{fig:dual}b shows that the learned spatial attention map is organised around the vessel tree, including many thin branches; the block therefore re-weights the features according to vessel location, which channel attention alone cannot do.
 
 \begin{figure}[t]
 \centering
@@ -265,7 +276,7 @@ where $\mathrm{Avg}_c$ and $\mathrm{Max}_c$ are the mean and maximum over channe
 \begin{minipage}[b]{0.62\linewidth}\centering
 \includegraphics[width=\linewidth]{ev_attention.png}\\[2pt]{\small (b)}
 \end{minipage}
-\caption{Dual attention. (a) Structure of the block: channel attention from average and max pooling, followed by spatial attention that assigns one weight to every pixel. (b) A preprocessed input patch (glaucoma test image, $1024\times1024$ model) and the spatial attention map of the first encoder block (light = high weight). The vessel tree is clearly visible in the map; in this early block, vessel pixels receive slightly lower weights than the background (mean 0.85 versus 0.90).}
+\caption{Dual attention. (a) Structure of the block: channel attention from average and max pooling, followed by spatial attention that assigns one weight to every pixel. (b) A preprocessed input patch (glaucoma test image, $1024\times1024$ model) and the spatial attention map of the first encoder block (light = high weight). The vessel tree is visible in the map; in this early block, vessel pixels receive slightly lower weights than the background (mean 0.85 versus 0.90).}
 \label{fig:dual}
 \end{figure}
 
@@ -329,7 +340,7 @@ clDice & $0.8626 \pm 0.0057$ & $\mathbf{0.8751 \pm 0.0005}$ & +1.25 & 175/200 & 
 
 \subsection{Ablation study}
 
-Table~\ref{tab:ablation} and Fig.~\ref{fig:ablation} add the modifications one at a time. Each component has a distinct effect. Dual attention raises Dice by 0.26 points, with a higher Dice on 167/200 images ($p = 2\times10^{-19}$), mainly by removing false detections (precision +0.63 points); it also gives the most stable results across seeds. The clDice loss strongly improves connectivity (+0.88 clDice points over dual attention, better on 191/200 images, $p = 2\times10^{-32}$) and sensitivity (+1.24 points), but at the default threshold it also adds false detections, so Dice stays level. Moving to $1024\times1024$ raises Dice by 0.40 points over the same model at $512\times512$ (better on 150/200 images, $p = 2\times10^{-11}$) and precision by 2.0 points, at the cost of some sensitivity. Finally, the validation-selected threshold (0.44--0.48 for the three high-resolution models) converts this precision into recall: sensitivity rises by 1.39 points and Dice by 0.15 points (better on 148/200 images, $p = 5\times10^{-17}$).
+Table~\ref{tab:ablation} and Fig.~\ref{fig:ablation} add the modifications one at a time. Each component has a distinct effect. Dual attention raises Dice by 0.26 points, with a higher Dice on 167/200 images ($p = 2\times10^{-19}$), mainly by removing false detections (precision +0.63 points); it also gives the most stable results across seeds. The clDice loss improves connectivity (+0.88 clDice points over dual attention, better on 191/200 images, $p = 2\times10^{-32}$) and sensitivity (+1.24 points), but at the default threshold it also adds false detections, so Dice stays level. Moving to $1024\times1024$ raises Dice by 0.40 points over the same model at $512\times512$ (better on 150/200 images, $p = 2\times10^{-11}$) and precision by 2.0 points, at the cost of some sensitivity. Finally, the validation-selected threshold (0.44--0.48 for the three high-resolution models) converts this precision into recall: sensitivity rises by 1.39 points and Dice by 0.15 points (better on 148/200 images, $p = 5\times10^{-17}$).
 
 \begin{table}[t]
 \caption{Ablation study: modifications added one at a time to the replicated CAR-UNet (200 test images, three seeds; Dice: mean $\pm$ standard deviation).}
@@ -358,7 +369,7 @@ CAR-UNet (replicated baseline) & $0.8382 \pm 0.0031$ & 0.7295 & 0.8310 & 0.8557 
 
 \subsection{Per-disease results}
 
-Table~\ref{tab:disease} breaks the results down by disease group. Connectivity improves in every group. Dice improves for AMD, DR and normal eyes, most strongly for normal eyes (+1.78 points), but not for glaucoma ($-0.11$ points), which remains the hardest group for both models. Glaucoma images in FIVES contain the fewest annotated vessels (8.5\% of the field of view, against 11.4\% for normal eyes), so each missed vessel weighs more. The group also contains the two test images on which every model fails (Dice below 0.1): very hazy, dark images whose expert masks contain only 0.7\% and 1.7\% vessel pixels, because few vessels are visible at all. We kept both images in the test set, since excluding hard cases would inflate the results.
+Table~\ref{tab:disease} breaks the results down by disease group. Connectivity improves in every group. Dice improves for AMD, DR and normal eyes, most strongly for normal eyes (+1.78 points), but not for glaucoma ($-0.11$ points), which remains the hardest group for both models. Glaucoma images in FIVES contain the fewest annotated vessels (8.5\% of the field of view, against 11.4\% for normal eyes), so each missed vessel weighs more. The group also contains the two test images on which every model fails (Dice below 0.1): hazy, dark images whose expert masks contain only 0.7\% and 1.7\% vessel pixels, because few vessels are visible at all. We kept both images in the test set, since excluding hard cases would inflate the results.
 
 \begin{table}[t]
 \caption{Dice and clDice per disease group (50 test images each, three seeds).}
@@ -380,11 +391,11 @@ Normal & 0.8363 & \textbf{0.8541} & +1.78 & 0.8635 & \textbf{0.8904} & +2.69 \\
 
 \subsection{Thin vessels}
 
-Two measurements focus on the thin vessels that motivated this work. First, the fraction of thin-vessel pixels (vessel radius $\le 1.5$ pixels in the ground truth) found by the model rises from 0.781 to 0.788 for seed 0, and is higher on 139 of 200 images ($p = 2.7\times10^{-7}$). Second, when all models are scored against the $1024\times1024$ ground truth, in which thin vessels are much better represented, the $1024\times1024$ model reaches a Dice of $0.8796 \pm 0.0015$ and a clDice of 0.8972 (threshold 0.5), against 0.8572 and 0.8791 for the replicated CAR-UNet and 0.8599 and 0.8895 for the same model trained at $512\times512$. Higher resolution therefore accounts for most of the gain at full resolution (+2.2 Dice points over the baseline).
+Two measurements focus on the thin vessels that motivated this work. First, the fraction of thin-vessel pixels (vessel radius $\le 1.5$ pixels in the ground truth) found by the model rises from 0.781 to 0.788 for seed 0, and is higher on 139 of 200 images ($p = 2.7\times10^{-7}$). Second, when all models are scored against the $1024\times1024$ ground truth, in which thin vessels are better represented, the $1024\times1024$ model reaches a Dice of $0.8796 \pm 0.0015$ and a clDice of 0.8972 (threshold 0.5), against 0.8572 and 0.8791 for the replicated CAR-UNet and 0.8599 and 0.8895 for the same model trained at $512\times512$. Higher resolution therefore accounts for most of the gain against the $1024\times1024$ ground truth (+2.2 Dice points over the baseline).
 
 \subsection{Qualitative results}
 
-Fig.~\ref{fig:qualitative} shows the median test image of each disease group processed by both models. At full scale the differences are subtle, since both models trace the main vessels well, but the zoomed error maps reveal them clearly: the improved model leaves fewer missed thin branches (blue) and keeps them connected, at the cost of a few additional false-positive pixels (red) along vessel borders. The improved model scores higher on all four examples, including the glaucoma image, although on average it does not improve Dice for that group (Table~\ref{tab:disease}).
+Fig.~\ref{fig:qualitative} shows the median test image of each disease group processed by both models. At full scale the differences are subtle, since both models trace the main vessels well, but the zoomed error maps reveal them: the improved model leaves fewer missed thin branches (blue) and keeps them connected, at the cost of a few additional false-positive pixels (red) along vessel borders. The improved model scores higher on all four examples, including the glaucoma image, although on average it does not improve Dice for that group (Table~\ref{tab:disease}).
 
 \begin{figure}[t]
 \centering
@@ -401,11 +412,15 @@ Test-time augmentation lowered Dice for every model at the default threshold, by
 \section{Discussion}
 \label{sec:discussion}
 
-The results support the idea that the remaining errors of CAR-UNet are concentrated in thin vessels and connectivity, and that addressing these specifically pays off. Each modification acts on a different part of the problem, and the ablation shows that their effects are complementary. Spatial attention lets the network weight its features by location, the clDice loss makes broken vessels expensive during training, the higher resolution keeps capillaries visible in the first place, and the tuned threshold balances precision and recall at the end. The improvements are larger on the metrics that target thin vessels (sensitivity, clDice, Dice at full resolution) than on Dice at $512\times512$, which is dominated by thick vessels that both models already segment well.
+Our findings demonstrate that the remaining errors of CAR-UNet on multi-disease data lie mainly in thin vessels and connectivity, and that changes aimed at them improve the model consistently. Each modification acts on a different part of the problem, and the ablation shows that their effects are complementary: spatial attention lets the network weight its features by location, the clDice loss makes broken vessels expensive during training, the higher resolution keeps capillaries visible in the first place, and the tuned threshold balances precision and recall at the end. The gains are larger on the measures that target thin vessels (sensitivity, clDice, Dice against the $1024\times1024$ ground truth) than on Dice at $512\times512$, which is dominated by thick vessels that both models already segment well.
 
-The overall Dice gain over the baseline is modest in absolute terms (+0.54 points). It is, however, consistent: the improved model is better in all three seeds and on 140 of 200 test images, and the per-seed standard deviation of the improved model is lower than that of the baseline. The single-seed differences between models in our replication varied by up to one Dice point, which shows why multiple seeds and paired tests were necessary to separate real effects from training noise.
+These observations agree with earlier work. Combining channel and spatial attention helped in natural images \citep{woo2018cbam}, and the authors of CAR-UNet had already used spatial attention alone in SA-UNet \citep{guo2021saunet}; our results suggest that the two forms of attention are complementary for vessels. The clDice loss improved connectivity much more than overlap, which matches the purpose for which it was designed \citep{shit2021cldice}. Absolute values cannot be compared with those of the base paper, because the datasets differ, but our replicated accuracy, specificity and AUC fall in the range the paper reports.
 
-\paragraph{Limitations.} Several limitations should be kept in mind. (i) Our CAR-UNet differs from the original in its convolution geometry, width and regulariser, so absolute numbers are not directly comparable with the paper. (ii) All experiments use a single dataset; we did not test generalisation to images from other cameras. (iii) Glaucoma images are not improved, and two very low-quality images fail for every model. (iv) Because of the higher resolution, the improved model needs about twice the training time of the baseline (about 195 versus 91 minutes per run) and four times as many tiles at inference. (v) The slightly lower precision may matter in applications where false vessels are costly.
+One could argue that the gain comes only from the higher resolution. The ablation does not support this: at $512\times512$, dual attention alone raised Dice on 167 of 200 images, and the clDice loss raised connectivity on 191 of 200 images. A second objection is that a gain of 0.54 Dice points is small. It is, but it is consistent: the improved model is better in all three seeds and on 140 of 200 test images, and its seed-to-seed standard deviation is lower than that of the baseline. Single-seed differences between models in our replication varied by up to one Dice point, which is why multiple seeds and paired tests were necessary to separate real effects from training noise.
+
+\paragraph{Limitations.} (i) Our CAR-UNet differs from the original in its convolution geometry, width and regulariser, so absolute numbers are not directly comparable with the paper. (ii) All experiments use a single dataset; we did not test generalisation to images from other cameras. (iii) Glaucoma images are not improved, and two very low-quality images fail for every model. (iv) Because of the higher resolution, the improved model needs about twice the training time of the baseline (about 195 versus 91 minutes per run) and four times as many tiles at inference. (v) The slightly lower precision may matter in applications where false vessels are costly.
+
+The take-home message is that, for vessel segmentation, the model's attention, its loss and its input resolution should be chosen with the thinnest vessels in mind, and that such improvements should be judged over several seeds with connectivity measures, not by pixel accuracy alone.
 
 %% ===============================================================================
 \section{Conclusion}
@@ -416,16 +431,22 @@ We replicated CAR-UNet on the multi-disease FIVES dataset under a strict, three-
 %% ===============================================================================
 \section*{CRediT authorship contribution statement}
 
-\noindent\textbf{Abhishek Karthik J:} \fillme{e.g.\ Conceptualization, Methodology, Software, Investigation, Writing -- original draft.}\\
-\textbf{\fillme{Member 2}:} \fillme{e.g.\ Data curation, Software, Validation.}\\
-\textbf{\fillme{Member 3}:} \fillme{e.g.\ Formal analysis, Visualization, Writing -- review and editing.}\\
-\textbf{\fillme{Member 4}:} \fillme{e.g.\ Literature review, Writing -- original draft.}
+All four authors contributed equally to this work. \textbf{Abhishek Karthik J, Abhishek Ramesh, Krish S and Theerth Krish S:} Conceptualization, Methodology, Software, Investigation, Formal analysis, Visualization, Writing -- original draft, Writing -- review and editing.
 
 \section*{Declaration of competing interest}
 The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
+\section*{Funding}
+This research did not receive any specific grant from funding agencies in the public, commercial or not-for-profit sectors.
+
+\section*{Ethics statement}
+This study uses only the publicly released, de-identified FIVES dataset \citep{jin2022fives}. No new data were collected from human participants, so no additional ethics approval was required.
+
 \section*{Data and code availability}
 FIVES is publicly available \citep{jin2022fives}. The code, the per-image evaluation results and all scripts needed to reproduce the reported numbers are available at\\ \url{https://github.com/Abhishek-karthik/Retinal-Vessel-Segmentation-CAR-UNet}.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
+During the preparation of this work the authors used Claude (Anthropic) to help draft and edit the text and to prepare the LaTeX formatting and figure scripts. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the publication.
 
 \bibliographystyle{cas-model2-names}
 \bibliography{refs}
