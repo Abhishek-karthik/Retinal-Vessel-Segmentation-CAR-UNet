@@ -32,13 +32,9 @@
 \title [mode = title]{Improving thin-vessel segmentation in fundus images: dual attention, a topology-aware loss and higher resolution for CAR-UNet on the multi-disease FIVES dataset}
 
 \author{Abhishek Karthik J}
-\credit{Conceptualization, Methodology, Software, Investigation, Formal analysis, Visualization, Writing -- original draft, Writing -- review and editing}
 \author{Abhishek Ramesh}
-\credit{Conceptualization, Methodology, Software, Investigation, Formal analysis, Visualization, Writing -- original draft, Writing -- review and editing}
 \author{Krish S}
-\credit{Conceptualization, Methodology, Software, Investigation, Formal analysis, Visualization, Writing -- original draft, Writing -- review and editing}
 \author{Theerth Krish S}
-\credit{Conceptualization, Methodology, Software, Investigation, Formal analysis, Visualization, Writing -- original draft, Writing -- review and editing}
 
 \affiliation{organization={Amrita School of Artificial Intelligence, Amrita Vishwa Vidyapeetham},
     city={Coimbatore},
@@ -460,9 +456,8 @@ The take-home message is that, for vessel segmentation, the model's attention, i
 We replicated CAR-UNet on the multi-disease FIVES dataset under a strict, three-seed protocol and confirmed the paper's claim that it outperforms U-Net, albeit by a small margin. Motivated by an analysis of its errors, we added dual attention, a clDice loss, a higher working resolution and a validation-selected threshold. The improved model reaches a Dice score of 0.8436, an IoU of 0.7379 and a clDice of 0.8751, outperforms the replicated baseline on nine of eleven metrics with statistically significant differences, and gains most where it matters clinically: thin vessels and vessel connectivity. Future work should focus on the glaucoma group and on low-quality images, for example by using the image-quality labels provided with FIVES, explore training at the full $2048\times2048$ resolution, and investigate lighter networks closer to the original 16-filter design for faster screening.
 
 %% ===============================================================================
-\printcredits
-
-\noindent All four authors contributed equally to this work.
+\section*{CRediT authorship contribution statement}
+All four authors (Abhishek Karthik J, Abhishek Ramesh, Krish S and Theerth Krish S) contributed equally to this work, including conceptualization, methodology, software, experiments, analysis and writing of the report.
 
 \section*{Declaration of competing interest}
 The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.

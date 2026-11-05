@@ -4,7 +4,7 @@ Final project report for 22AIE437 Medical Image Processing, written with the Els
 
 | File | Content |
 |---|---|
-| `report.pdf` | Compiled report (15 pages) |
+| `report.pdf` | Compiled report (14 pages) |
 | `report.tex` | LaTeX source |
 | `refs.bib` | BibTeX references (style `cas-model2-names`, author–year) |
 | `figures/` | All figures used in the report |
